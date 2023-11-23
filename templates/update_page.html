@@ -1,0 +1,60 @@
+{% extends 'main.html' %} {% block content %} {% load static %}
+
+<link
+  rel="stylesheet"
+  type="text/css"
+  media="screen"
+  href="{% static 'styles/update_page.css' %}"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+  integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
+
+<div class="claim-body">
+  <div class="container">
+    <form action="/search/" method="GET">
+      <div class="search-bar">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input placeholder="Search" type="search" name="q" class="left" />
+      </div>
+    </form>
+    <h2 class="right">Brgy. 123 / Zone 00</h2>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Last Name</th>
+          <th>First Name</th>
+          <th>Middle Initial</th>
+          <th>Suffix</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {%for senior in seniors%}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ senior.last_name }}</td>
+          <td>{{ senior.first_name }}</td>
+          <td>{{ senior.middle_name }}</td>
+          <td>{{ senior.suffix }}</td>
+          <td>
+            <a href="/update_viewinfo_page/{{ senior.id }}" class="claim-btn"
+              >ViewInfo</a
+            >
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endblock content%}
+  </div>
+</div>

@@ -1,0 +1,43 @@
+{% block content %}
+{% load static %} 
+
+<head>
+    <title>Live Camera Feed</title>
+    <meta  charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'styles/image_upload.css' %}" type="text/css" media="all">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script defer src="{% static 'js/face.js' %}"></script>
+</head>
+
+<body data-senior-id="{{ seniors.id }}">
+
+    <div class="progress-msg">
+        <h1 id="progress-txt">Look into the camera and make sure your face is visible.</h1>
+    </div>
+
+    <div class="camera_body">
+        <video class="live-camera-feed" id="video" width="640" height="480" autoplay></video>
+    </div>
+
+    <div class="btn_row">
+        <button class="btn" id="capture-btn">Capture Image</button>
+        <button class="btn" id="cancel-btn">Cancel</button>
+        <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
+        <a href="#" class="btn" id="retake-btn" style="display: none;">Retake</a>
+        <a href="#" class="btn" id="submit-btn"  style="display: none;">Submit</a>
+        <input type="hidden" name="csrfmiddlewaretoken" value='{% csrf_token %}'>
+    </div>
+
+    <div id="confirmation-popup" class="confirmation-popup">
+        <div class="header"></div>
+        <div class="popup-body">
+            <p>Face doesn't match. Do you want to retake?</p>
+            <button id="popup-yes-button">Yes</button>
+            <button id="popup-cancel-button">Cancel</button>
+        </div>
+    </div>
+</body>
+
+{% endblock content %}

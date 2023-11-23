@@ -1,0 +1,62 @@
+{% extends 'main.html' %}
+
+{% block content %}
+  {% load static %}
+
+    <link rel="stylesheet" type="text/css" media='screen' href="{% static 'styles/claiming1.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<div class="claim-body">
+    <div class="container">
+        <h2 class="left">Summary</h2>
+        <h2 class="right">Brgy. 123 / Zone 00</h2>
+    </div>
+    
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Last Name</th>
+                    <th>First Name</th>
+                    <th>Middle Initial</th>
+                    <th>Suffix</th>
+                    <th></th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {%for senior in seniors%}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td> {{ senior.last_name }}</td>
+                    <td>{{ senior.first_name }}</td>
+                    <td>{{ senior.middle_name }}</td>
+                    <td>{{ senior.suffix }}</td>
+                    <td><input type="checkbox" class="custom-checkbox" 
+                        {% if senior.is_claimed %}checked{% endif %} 
+                        {% if senior.is_claimed %}disabled{% endif %}>
+                    </td>
+                    <td>{% if senior.is_claimed %}
+                            Claimed
+                        {% else %}
+                            Unclaimed
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div> 
+    
+    <div class="button-container">
+        <a href="{% url 'claim_page' %}" class="notify-btn" id=""><i class="fa-solid fa-circle-xmark"></i>Cancel</a>
+        <a href="{% url 'claim_summary_page' %}" class="verify-btn" id=""><i class="fa-regular fa-circle-check"></i>Verify</a>
+    </div>
+
+</div>    
+
+
+{% endblock content%}

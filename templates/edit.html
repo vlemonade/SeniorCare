@@ -1,0 +1,138 @@
+{% extends 'main.html' %} {% block content %} {% load static %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  media="screen"
+  href="{% static 'styles/edit1.css' %}"
+/>
+
+<body>
+  <div class="container">
+    <div class="inner">
+      <form action="/update/{{seniors.id}}"  enctype="multipart/form-data" method="POST">
+        {% csrf_token %}
+        <div class="form-wrapper">
+          <input
+            type="text"
+            class="form-control"
+            name="Firstname"
+            placeholder="First Name"
+            value="{{ seniors.first_name}}"
+          />
+        </div>
+
+        <div class="form-wrapper">
+          <input
+            type="text"
+            class="form-control"
+            name="Lastname"
+            placeholder="Last Name"
+            value="{{ seniors.last_name}}"
+          />
+        </div>
+
+        <div class="form-wrapper">
+          <input
+            type="text"
+            class="form-control"
+            name="Middlename"
+            placeholder="Middle Name"
+            value="{{ seniors.middle_name}}"
+          />
+        </div>
+
+        <div class="form-group">
+          <input
+            type="text"
+            class="form-control"
+            name="Suffix"
+            placeholder="Suffix"
+            value="{{ seniors.suffix}}"
+          />
+          <input
+            name="sex"
+            id="sex"
+            class="form-control"
+            value="{{ seniors.sex}}"
+          />
+        </div>
+
+        <div class="form-group1">
+          <input
+            type="text"
+            class="form-control"
+            name="Birthdate"
+            placeholder="Birth date: dd-mm-yyyy"
+            value="{{ seniors.birth_date}}"
+            disabled
+          />
+          <input
+            type="number"
+            class="form-control"
+            name="Age"
+            placeholder="Age"
+            value="{{ seniors.age}}"
+          />
+        </div>
+
+        <div class="form-wrapper">
+          <input
+            type="text"
+            class="form-control"
+            name="Adress"
+            placeholder="Address"
+            value="{{ seniors.address}}"
+          />
+        </div>
+
+        <div class="form-wrapper">
+          <input
+            type="text"
+            class="form-control"
+            name="phone_number"
+            placeholder="OSCA_ID"
+            value="{{ seniors.phone_number }}"
+          />
+        </div>
+
+        <div class="form-wrapper">
+          <input
+            type="text"
+            class="form-control"
+            name="OSCA_ID"
+            placeholder="OSCA_ID"
+            value="{{ seniors.OSCA_ID  }}"
+            disabled
+          />
+        </div>
+
+        <div class="image">
+          <input
+            type="file"
+            class="form-control"
+            name="senior_image"
+          />
+        </div>
+
+        <div class="form-btn">
+          <button type="submit" class="btn-edit">Save</button>
+          <button class="cancel-btn">Cancel</button>
+        </div>
+
+      </form>
+
+      {% if seniors.senior_image %}
+            <div class="photo-holder">
+                <img src="{{ seniors.senior_image.url }}" alt="profile">
+                <a href="{% url 'camera' %}" target="_blank" class="camera-btn">Take Picture</a>
+            </div>
+        {% else %}
+            <div class="photo-holder">
+                <img src="{% static 'image/profile.png' %}" alt="profile">
+                <a href="{% url 'camera' %}" target="_blank" class="camera-btn">Take Picture</a>
+            </div>
+        {% endif %}
+    </div>
+  </div>
+</body>
+{% endblock content%}

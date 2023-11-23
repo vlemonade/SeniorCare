@@ -1,0 +1,35 @@
+{% extends 'main.html' %}
+
+{% block content %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" media='screen' href="{% static 'styles/home_page.css' %}">
+  <script defer src="{% static 'js/home_page.js' %}"></script>
+
+  <body>
+    <h1 class="banner">Welcome! Brgy. 123 / Zone 00</h1>
+    <table class="home-table">
+        <thead>
+            <tr>
+                <th colspan="2">Downloadable Forms:</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="form-avail"><a href="#">Senior Citizen ID Registration Form</a></td>
+                <td class="doc-type">PDF</td>
+            </tr>
+            <tr>
+                <td class="form-avail2"><a href="#">Barangay Senior Citizen Registry</a><br>
+                    <sub class="sub-form">A comprehensive list of senior citizens registered within the barangay.</sub></td>
+                <td class="doc-type2">PDF</td>
+            </tr>
+        </tbody>
+    </table>
+    <h1 class="slogan">At SeniorCare, we believe that every senior deserves the best care<br>
+        and support to lead a fulfilling life.</h1>
+</body>
+<footer>
+    <img class="footer-logo"src="{% static 'image/senior_care_logo.png'%}" alt="senior care logo">
+</footer>
+
+{% endblock content%}

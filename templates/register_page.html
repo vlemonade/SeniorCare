@@ -1,0 +1,79 @@
+{% extends 'main.html' %}
+
+{% block content %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" media='screen' href="{% static 'styles/register_page2.css' %}" >
+    <script defer src="{% static 'js/register.js' %}"></script>
+    
+    
+    
+    
+    <div class="container">
+        
+        <div class="inner">
+
+            <form class="form" method="post" enctype="multipart/form-data" id="registrationForm">
+                <div id="form-warning-message">
+                </div>
+                {% csrf_token %}
+
+                <div class="form-errors">
+                    {{ form.non_field_errors }}
+                </div>
+
+                <div class="form-wrapper">
+                    {{ form.first_name }}
+                </div>
+
+                <div class="form-wrapper">
+                    {{ form.last_name }}
+                </div>
+
+                <div class="form-wrapper">
+                    {{ form.middle_name }}
+                </div>
+
+                <div class="form-group">
+                    {{ form.suffix }}
+                    {{ form.sex }}
+                </div>
+
+                <div class="form-group1">
+                    {{ form.birth_date}}
+                    {{ form.age }}
+                </div>
+
+                <div class="form-wrapper">
+                    {{ form.address }}
+                </div>
+
+                <div class="form-wrapper">
+                    {{ form.phone_number }}
+                </div>
+
+                <div class="form-wrapper">
+                    {{ form.OSCA_ID }}
+                </div>
+                <div class="image">
+                    {{ form.senior_image }}
+                </div>
+          
+                <button type="button" class="btn-Next" onclick="showConfirmation()">Next</button>
+            </form>
+
+        <div class="photo-holder">
+            <img src="{% static 'image/profile.png' %}" alt="profile">
+            <a href="{% url 'camera' %}" target="_blank" class="camera-btn">Take Picture</a>
+        </div>
+
+        <div id="confirmation-popup" class="confirmation-popup">
+            <div class="header"></div>
+            <div class="popup-body">
+                <p>Are you sure you want to submit the form?</p>
+                <button class="btn-yes" onclick="submitForm()">Yes</button>
+                <button class="btn-no" onclick="hideConfirmation()">Cancel</button>
+            </div>
+        </div>
+    </div>
+  </div>
+{% endblock content %}

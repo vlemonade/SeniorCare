@@ -1,0 +1,163 @@
+body {
+  height: 100vh;
+  max-width: 100vw;
+  margin: 0;
+  background-color: #7895CB;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  justify-content: center;
+
+}
+
+.camera_body{
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.progress-msg{
+  text-align: center;
+}
+
+h1{
+  font-size: 25px;
+  text-align: center;
+  color: #0e1024;
+}
+
+
+#live-camera-feed,
+#captured-image, .live-camera-feed {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.btn_row {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.btn {
+  margin-right: 10px;
+  text-decoration: none;
+  color: black;
+  padding: 10px 20px;
+  background-color: #a0bfe0;
+  font-weight: 600;
+  font-size: 20px;
+  border: 1px solid #7895cb;
+  border-radius: 5px;
+  box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.4);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.btn:hover {
+  background: #c5d5e7;
+  color: #494a4e;
+  border: 1px solid #7895cb;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.confirmation-popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 40%;
+  border-radius: 10px;
+}
+
+.confirmation-popup .header {
+  border-radius: 10px 10px 0 0;
+  width: auto;
+  background: #4a55a2;
+  padding: 20px;
+}
+
+.confirmation-popup .popup-body {
+  padding-bottom: 30px;
+  padding-top: 30px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.confirmation-popup .popup-body p {
+  font-size: 20px;
+}
+
+.confirmation-popup button {
+  width: 100px;
+  margin: 0 10px;
+  padding: 10px 20px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  background: #a0bfe0;
+  transition: 0.2s;
+}
+
+.confirmation-popup button:hover {
+  background: #4a55a2;
+}
+
+
+
+@media (max-width: 800px) {
+  .camera_body{
+    width: 90%;
+  }
+  
+  h1{
+    font-size: 20px;
+  }
+  .confirmation-popup {
+    width: 50%;
+  }
+
+}
+
+@media (max-width: 500px) {
+
+
+  body{
+    position: absolute;
+  }
+
+  .camera_body{
+    width: 100%;
+  }
+
+  #live-camera-feed,
+  #captured-image, .live-camera-feed {
+    border-radius: 0;
+}
+
+.progress-msg{
+  position: relative;
+  top: -5%;
+}
+  
+h1{
+  font-size: 14px;
+}
+
+  .btn_row {
+    margin-top: 20%;
+  }
+
+  .btn {
+    font-size: 13px;
+  }
+
+  .confirmation-popup {
+    width: 80%;
+  }
+
+}

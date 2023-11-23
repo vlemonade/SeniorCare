@@ -1,0 +1,133 @@
+body{
+  background-color: #7895CB;
+  font-family: "Inter", Helvetica;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+
+.banner{
+  color: white;
+  background: #4A55A2;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  margin-top: 60px;
+  border-radius: 50px;
+  width: 50%;
+  padding: 8px;
+  font-size: clamp(var(--min), var(--val), var(--max));/*3vw*/
+}
+
+.banner{
+  --min: 1.3em;
+  --val: 5vw;
+  --max: 2.5em;
+}
+
+/*TABLE*/
+
+.home-table{
+  border-collapse: collapse;
+  border: 1px solid black;
+  border-style: hidden;
+  width: 90%;
+  margin-top: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: clamp(var(--min), var(--val), var(--max));/*2vw*/
+}
+
+.home-table{
+  --min: 1.2em;
+  --val: 3vw;
+  --max: 2em;
+}
+
+.home-table thead tr{
+  background-color: #4A55A2;
+  color: white;
+  text-align: left;
+  border-bottom: 2px solid black;
+}
+
+.home-table thead th{
+  border-top-left-radius: 13px;
+  border-top-right-radius: 13px;
+}
+
+.home-table th{
+  font-weight: lighter;
+  border-bottom: 3px solid black;
+  padding: 20px 35px;
+}
+
+.home-table td{
+  padding: 25px 35px;
+}
+
+.home-table tbody tr{
+  border-bottom: 2px solid black;
+  background-color: #a0bfe0;
+}
+
+.home-table tbody tr:nth-of-type(even){
+  background-color: #cce6ff;
+}
+
+.form-avail a{
+  text-decoration: underline;
+  color: black;
+}
+
+.form-avail2 a{
+  text-decoration: underline;
+  color: black;
+}
+
+.home-table tbody .form-avail2{
+  border-bottom-left-radius: 13px;
+}
+
+.home-table tbody .doc-type2{
+  border-bottom-right-radius: 13px;
+}
+
+.sub-form{
+  font-style: italic;
+  font-size: clamp(var(--min), var(--val), var(--max));/*1.3vw;*/
+  padding-top: none;
+  line-height: 0.25em;
+}
+
+.sub-form{
+  --min: 0.6em;
+  --val: 1vw;
+  --max: 1.5em;
+}
+
+.doc-type, .doc-type2{
+  color: #625f5f;
+}
+
+.slogan{
+  color: white;
+  text-align: center;
+  margin-top: 60px;
+  font-size: clamp(var(--min), var(--val), var(--max));/*3vw;*/
+  font-weight:550;
+}
+
+.slogan{
+  --min: 1.3em;
+  --val: 5vw;
+  --max: 2.5em;
+}
+
+.footer-logo{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 35%;
+}
+

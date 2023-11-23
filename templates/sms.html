@@ -1,0 +1,64 @@
+{% extends 'main.html' %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" type="text/css" media='screen' href="{% static 'styles/sms.css' %}">
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#smsForm').submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                success: function (data) {
+                    if (data.status === 'success') {
+                        alert(data.message);  // Display success message
+                        // Reset form fields
+                        $('#smsForm')[0].reset();
+                    } else {
+                        alert(data.message);  // Display error message
+                    }
+                }
+            });
+        });
+    });
+
+</script>
+
+<div class="container">
+    <div class="send-sms">
+        <form id="smsForm" action="{% url 'sms' %}" method="post">
+            {% csrf_token %}
+            <label for="toNumber">To Number:</label>
+            <input type="text" name="phone_number" placeholder="Enter recipient number" required>
+
+            <label for="messageBody">Message Body:</label>
+            <input name="body_message" placeholder="Type your message" required>
+
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <h2>Message History</h2>
+
+    <form action="{% url 'clear_messages' %}" method="post">
+      {% csrf_token %}
+      <button type="submit">Clear Messages</button>
+  </form>
+  
+    <div class="message-box">
+        {% for message in messages %}
+        <div class="message">
+            <p class="from">{{ message.from_number }}</p>
+            <p class="body">{{ message.body }}</p>
+            <p class="timestamp">{{ message.timestamp }}</p>
+            <a href="{% url 'delete_individual_message' message.id %}">
+              <button >Delete</button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock content %}

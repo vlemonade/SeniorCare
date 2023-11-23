@@ -1,0 +1,53 @@
+
+
+
+<html>
+  {%load static%} 
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" media='screen' href="{% static 'styles/index2.css' %}">
+        <title>Log In</title>
+    </head>
+        <body>
+          <form method='POST' action="">
+            {% csrf_token %}
+            <div class="loginpage">
+              <img class="senior" src="{% static 'image/senior_care_logo.png'%}" alt="senior care logo">
+              <img class="avatar" src="{% static 'image/user_avatar.png'%}" alt="user avatar">
+                <div class="loginput">
+                    <input type="text" class="username" name="username" placeholder="Username" required>
+                    <input type="password" class="password" name="password" placeholder="Password" required>
+             
+                    <input type="submit" class="login" value="Log in">
+                </div>
+            </div>
+          </form>
+          <div class="overlay" id="overlay">
+            <div class="overlay-content">
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <button onclick="closeOverlay()">Close</button>
+            </div>
+        </div>
+
+        <script>
+            // Function to close the overlay
+            function closeOverlay() {
+                document.getElementById('overlay').style.display = 'none';
+            }
+
+            // Display the overlay when there are messages
+            {% if messages %}
+                document.getElementById('overlay').style.display = 'flex';
+            {% endif %}
+        </script>
+        </body>
+</html>
+
+
+

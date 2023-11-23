@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+{%load static%} 
+  <meta charset="UTF-8">
+  <title>Page Title</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" type="text/css" media='screen' href="{% static 'styles/main.css' %}">
+  <link rel="stylesheet" type="text/css" media='screen' href="{% static 'styles/NavBar1.css' %}">
+  <script defer src="{% static 'js/NavBar.js' %}"></script>
+
+
+</head> 
+
+<header>
+    <div class="navi">
+        <div class="logo">
+            <a href="#"><img src="{% static 'image/senior_care_logo.png'%}" alt="senior care logo"></a>
+        </div>
+    
+        <button class="mobile-nav-toggle" aria-controls="primary-navigation" aria-expanded="false"></button>
+            <nav>
+            <ul class="primary-navigation" id="primary-navigation" data-visible="false">
+                <li><a class="pages" href="{% url 'update_page' %}"> <span aria-hidden="true"> Update </span></a>
+                </li>
+                <li><a class="pages" href="{% url 'register_page' %}"> <span aria-hidden="true"> Register </span></a>
+                </li>
+                <li><a class="pages" href="{% url 'sms' %}"> <span aria-hidden="true"> SMS </span></a>
+                </li>
+                <li><a class="pages" href="{% url 'claim_page' %}"> <span aria-hidden="true"> Claim </span></a>
+                </li>                           
+                <li><a href="#" class="nav-link"><span aria-hidden="true"> Profile </span></a></li>
+                <li><a href="{% url 'index' %}" class="nav-link"><span aria-hidden="true"> Log Out </span></a></li>
+            </ul>
+        </nav>
+        <div class="user">
+            <label for="btn">
+                <img src="{% static 'image/user_avatar2.png'%}" alt="user avatar">
+            </label>
+            <input type="checkbox" id="btn">
+            <ul class="menu">
+                <li><a href="#">Profile</a></li>
+                <li><a href="{% url 'index' %}">Log Out</a></li>
+            </ul>
+        </div>
+    </div>    
+</header>
+<body>
+    {% block content%}
+
+    {%endblock%}
+</body>
+</body>
+</html>
+
