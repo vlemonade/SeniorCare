@@ -17,7 +17,7 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 TWILIO_ACCOUNT_SID = 'AC2ec02df56c8e4df50f8fc3cf9d806542'
-TWILIO_AUTH_TOKEN = '3e764c5a59255109b329eb2c4ef0dc5c'
+TWILIO_AUTH_TOKEN = '39817bfe9ae2c54a383f31477d53a44e'
 TWILIO_PHONE_NUMBER = '+15673471882'
 
 # Quick-start development settings - unsuitable for production
