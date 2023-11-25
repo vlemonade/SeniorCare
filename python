@@ -1,0 +1,3 @@
+Migrations for 'base':
+  base\migrations\0009_senior_list_proof_of_claiming.py
+    - Add field proof_of_claiming to senior_list

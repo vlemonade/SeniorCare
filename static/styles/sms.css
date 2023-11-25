@@ -33,7 +33,7 @@ input {
   border-radius: 4px;
 }
 
-button {
+form button {
   background-color: #d0d4ca;
   color: #0c0c0c;
   padding: 12px;
@@ -43,7 +43,7 @@ button {
   width: 100%;
 }
 
-button:hover {
+form button:hover {
   background-color: #4a55a2;
   color: white;
 }
@@ -92,8 +92,11 @@ button:hover {
     padding: 15px;
   }
 
-  input,
-  button {
+  input {
+    padding: 8px;
+  }
+
+  form button {
     padding: 8px;
   }
 
