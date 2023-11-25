@@ -126,6 +126,9 @@
         </div>
       </form>
 
+      <div class="pic-container">
+
+      <div class="new-container">
       {% if seniors.senior_image %}
       <div class="photo-holder">
         <img src="{{ seniors.senior_image.url }}" alt="profile" />
@@ -135,6 +138,26 @@
         <img src="{% static 'image/profile.png' %}" alt="profile" />
       </div>
       {% endif %}
+      </div>
+      
+      <div class="added-info">
+        <div class="status">
+            <p>Status:</p>
+        </div>
+        <div class="created">
+            <p>Creation Date: <span class="info">{{ seniors.created|date:"M d, Y"}}</span></p>
+        </div>
+        <div class="claim">
+            {% if seniors.claimed_date %}
+                <p>Last Claim Date: <span class="info">{{ seniors.claimed_date|date:"M d, Y" }}</span></p>
+            {% else %}
+                <p>Last Claim: <span class="info">none</span></p>
+            {% endif %}
+        </div>
+      </div>
+
+    </div>
+
       <div id="confirmation-popup" class="confirmation-popup">
         <div class="header"></div>
         <div class="popup-body">

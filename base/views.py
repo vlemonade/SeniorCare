@@ -27,6 +27,7 @@ from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 import face_recognition
 import dlib
+from PIL import Image
 
 
 from django.http import HttpResponseRedirect, FileResponse
@@ -300,8 +301,10 @@ def capture_image(request):
             image_data = base64.b64decode(image_data.split(',')[1])
             nparr = np.frombuffer(image_data, np.uint8)
             img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            
+            img = cv2.resize(img, (256, 256))
 
-            timestamp = datetime.now().strftime("%Y%m%d%")
+            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
             filename = f"captured_image_{timestamp}.png"
             filepath = os.path.join(settings.MEDIA_ROOT, filename)
             cv2.imwrite(filepath, img)
@@ -320,9 +323,10 @@ def facial_recognition(request, id):
     seniors = senior_list.objects.get(id=id)
 
     if request.method == 'POST':
-        captured_image_data_url = request.POST.get('captured_image', '')
-        
-        _, captured_image_base64 = captured_image_data_url.split(',')
+        captured_image_data = request.POST.get('captured_image', '')
+
+        # Decode the base64 image data
+        _, captured_image_base64 = captured_image_data.split(',')
         captured_image = np.frombuffer(base64.b64decode(captured_image_base64), np.uint8)
 
         captured_image_np = cv2.imdecode(captured_image, -1)
@@ -343,8 +347,21 @@ def facial_recognition(request, id):
                 seniors.claimed_date = timezone.now()
                 seniors.save()
 
-                return JsonResponse({'match': True})
-    
+                # Save the proof_of_claiming image
+                proof_folder = 'media/proof/'
+                os.makedirs(proof_folder, exist_ok=True)
+
+                timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+                proof_image_path = f'{proof_folder}{id}_proof_{timestamp}.png'
+
+                cv2.imwrite(proof_image_path, cv2.cvtColor(captured_image_np, cv2.COLOR_BGR2RGB))
+
+                # Update the database with the proof_of_claiming image path
+                seniors.proof_of_claiming = proof_image_path
+                seniors.save()
+
+                return JsonResponse({'match': True, 'proof_image_path': proof_image_path})
+
     return JsonResponse({'match': False})
 
 def get_known_face_encoding(image_path):
@@ -364,6 +381,12 @@ def compare_faces(known_encoding, captured_encoding):
 
     return distance <= threshold
 
+def resize_to_square(image):
+    pil_image = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+    size = min(pil_image.size)
+    left, top, right, bottom = (pil_image.width - size) / 2, (pil_image.height - size) / 2, (pil_image.width + size) / 2, (pil_image.height + size) / 2
+    cropped_image = pil_image.crop((left, top, right, bottom)).resize((256, 256))
+    return cv2.cvtColor(np.array(cropped_image), cv2.COLOR_RGB2BGR)
 
 def camera_page(request, id):
     seniors = senior_list.objects.get(id=id)

@@ -17,6 +17,7 @@ class senior_list(models.Model):
   is_claimed = models.BooleanField(default=False)
   claimed_date = models.DateTimeField(null=True, blank=True)
   senior_image = models.ImageField(upload_to='media/', blank=True, null=True)
+  proof_of_claiming = models.ImageField(upload_to='proof/', blank=True, null=True)
 
   def __str__(self):
         return f"{self.first_name} "

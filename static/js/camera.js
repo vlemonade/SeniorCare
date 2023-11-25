@@ -17,8 +17,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         var canvas = document.createElement("canvas");
         var context = canvas.getContext("2d");
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
+        canvas.width = 300;
+        canvas.height = 300;
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
         var imageDataUrl = canvas.toDataURL("image/jpeg");

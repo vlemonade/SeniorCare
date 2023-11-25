@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
         submitLink.style.display = 'block';
 
         captureButton.style.display = 'none';
+        cancelButton.style.display = 'none';
     });
 
     cancelButton.addEventListener('click', function () {
@@ -41,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
         retakeButton.style.display = 'none';
         submitLink.style.display = 'none';
         captureButton.style.display = 'block';
+        cancelButton.style.display = 'block';
 
     });
 
