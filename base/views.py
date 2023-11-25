@@ -28,6 +28,7 @@ from django.views.decorators.csrf import csrf_exempt
 import face_recognition
 import dlib
 from PIL import Image
+from django.db.models import Count
 
 
 from django.http import HttpResponseRedirect, FileResponse
@@ -191,20 +192,30 @@ def claim_verify_page(request):
 
     return render(request, 'claim_verify_page.html', {'seniors': seniors})
 
+from django.db.models import Count, Q
+from django.db.models import Min
+
 def claim_summary_page(request):
-    claimed_seniors = senior_list.objects.filter(is_claimed=True)
-    unclaimed_seniors = senior_list.objects.filter(is_claimed=False)
+    # Get the latest and oldest claimed entries
+    latest_claimed_entry = senior_list.objects.filter(is_claimed=True).order_by('-claimed_date').first()
+    oldest_claimed_entry = senior_list.objects.filter(is_claimed=True).order_by('claimed_date').first()
 
-    claimed_count = claimed_seniors.count()
-    unclaimed_count = unclaimed_seniors.count()
-    overall_count = claimed_count + unclaimed_count
+    # Annotate the counts in a single query
+    counts = senior_list.objects.aggregate(
+        claimed_count=Count('pk', filter=Q(is_claimed=True)),
+        unclaimed_count=Count('pk', filter=Q(is_claimed=False)),
+        overall_count=Count('pk')
+    )
 
-    return render(request, 'claim_summary_page.html', {
-        'claimed_count': claimed_count,
-        'unclaimed_count': unclaimed_count,
-        'overall_count': overall_count,
-    })
+    context = {
+        'latest_claimed_entry': latest_claimed_entry,
+        'oldest_claimed_entry': oldest_claimed_entry,
+        'claimed_count': counts['claimed_count'],
+        'unclaimed_count': counts['unclaimed_count'],
+        'overall_count': counts['overall_count'],
+    }
 
+    return render(request, 'claim_summary_page.html', context)
 
 def download_summary(request):
     seniors = senior_list.objects.all().order_by('last_name')
@@ -400,3 +411,4 @@ def check_osca_id(request):
     osca_id = request.GET.get('osca_id', '')
     is_taken = senior_list.objects.filter(OSCA_ID=osca_id).exists()
     return JsonResponse({'is_taken': is_taken})
+

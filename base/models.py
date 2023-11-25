@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 # Create your models here.
 class senior_list(models.Model):
@@ -18,7 +19,11 @@ class senior_list(models.Model):
   claimed_date = models.DateTimeField(null=True, blank=True)
   senior_image = models.ImageField(upload_to='media/', blank=True, null=True)
   proof_of_claiming = models.ImageField(upload_to='proof/', blank=True, null=True)
+  status = models.BooleanField(default=True)
 
+  def is_active(self):
+        return self.status and (timezone.now() - self.created).days <= 30
+  
   def __str__(self):
         return f"{self.first_name} "
 
