@@ -8,7 +8,13 @@ class senior_list(models.Model):
   middle_name= models.CharField(max_length=20)
   suffix= models.CharField(max_length=5, null=True)
   age= models.BigIntegerField(null=True)
-  sex= models.CharField(max_length=10,null=True)
+  
+  SEX_CHOICES = [
+        ('male', 'Male'),
+        ('female', 'Female'),
+    ]
+    
+  sex = models.CharField(max_length=10, choices=SEX_CHOICES)
   birth_date= models.DateField(null=True)
   address= models.CharField(max_length=100, null=True)
   phone_number= models.CharField(max_length=12, null=True)
