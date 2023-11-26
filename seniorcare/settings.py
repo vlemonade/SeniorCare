@@ -88,15 +88,12 @@ WSGI_APPLICATION = 'seniorcare.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'test_code2',
-        'USER':'root',
-        'PASSWORD':'',
-        'HOST':'localhost',
-        'PORT':'3306',
-        'OPTIONS': {
-            'sql_mode': 'STRICT_ALL_TABLES',  # Enable Strict Mode
-        },
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': '3babdEBGaA5G5cgfeCae25DA5fC24B2B',
+        'HOST': 'viaduct.proxy.rlwy.net',  
+        'PORT': '34529',     
     }
 }
 # Password validation
