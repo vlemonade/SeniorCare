@@ -1,1 +1,1 @@
-web: python manage.py migrate && python manage.py collectstatic --no-input && gunicorn seniorcare.wsgi --log-file -
+web: python manage.py migrate && gunicorn seniorcare.wsgi --log-file -
