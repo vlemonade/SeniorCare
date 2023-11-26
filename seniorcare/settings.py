@@ -86,28 +86,19 @@ WSGI_APPLICATION = 'seniorcare.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': '3babdEBGaA5G5cgfeCae25DA5fC24B2B',
-        'HOST': 'viaduct.proxy.rlwy.net',  
-        'PORT': '34529',     
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'test_code2',
+        'USER':'root',
+        'PASSWORD':'',
+        'HOST':'localhost',
+        'PORT':'3306',
+        'OPTIONS': {
+            'sql_mode': 'STRICT_ALL_TABLES',  # Enable Strict Mode
+        },
     }
 }
-
-#DATABASES={
-  #'default':{
-   # 'ENGINE':'django.db.backends.sqlite3',
-  #  'Name':os.path.join(BASE_DIR, 'db.sqlite3'),
- # }
-#}
-
-#db_from_env = dj_database_url.config(conn_max_age=600)
-#DATABASES['default'].update(db_from_env)
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 

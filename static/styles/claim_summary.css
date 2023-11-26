@@ -23,6 +23,7 @@ h1{
 
 h2{
     margin-bottom: 10px;
+    color: black;
 }
 
 .claimed_header h1 {
@@ -37,7 +38,7 @@ h2{
 
 .senior_detail {
   flex: 1 1 45%; 
-  background-color: #C5DFF8;
+  background-color: white;
   padding: 15px;
   border-radius: 10px;
 }
