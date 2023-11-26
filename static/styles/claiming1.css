@@ -336,6 +336,14 @@ tr:nth-child(even) td{
 
 @media(max-width: 500px){
 
+  td a{
+    font-size: 17px;
+  }
+
+  .legend-container{
+    display: none;
+  }
+
   form {
     display: flex;
     margin-bottom: 20px;
@@ -383,32 +391,18 @@ select {
       margin-bottom: 10px;
     }
 
-
-  .button-container .notify-btn{
-      padding: 10px 35px;
-      font-size: 18px;
-  }
+    .footer{
+      justify-content: center;
+    }
 
   .button-container .verify-btn{
       padding: 10px 35px;
       font-size: 18px;
   }
 
-  .left {
-      position: relative;
-      font-size: 20px;
-      top: 15px;
-  }
 }
 
 @media(max-width: 375px){
-
-
-  
-  .search-bar input {
-    width:100%;
-  }
-  
 
   .button-container{
       display: flex;

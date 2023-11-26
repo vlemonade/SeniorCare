@@ -247,6 +247,9 @@ from django.db.models import Count, Q
 from django.db.models import Min
 from django.db.models.functions import TruncMonth
 
+from django.db.models import Count, Q
+from django.utils import timezone
+
 def claim_summary_page(request):
     latest_claimed_entry = senior_list.objects.filter(is_claimed=True).order_by('-claimed_date').first()
     oldest_claimed_entry = senior_list.objects.filter(is_claimed=True).order_by('claimed_date').first()
@@ -254,10 +257,9 @@ def claim_summary_page(request):
     counts = senior_list.objects.aggregate(
         claimed_count=Count('pk', filter=Q(is_claimed=True)),
         unclaimed_count=Count('pk', filter=Q(is_claimed=False, deletion_reason__isnull=True)),
-        deleted_count=Count('pk', filter=Q(deletion_reason__isnull=False)),  
-        overall_count=Count('pk')
+        deleted_count=Count('pk', filter=Q(deletion_reason__isnull=False)),
+        overall_count=Count('pk'),
     )
-
     if latest_claimed_entry and oldest_claimed_entry:
         show_one_month = (
             latest_claimed_entry.claimed_date.month == oldest_claimed_entry.claimed_date.month and

@@ -36,7 +36,7 @@
 
         <div class="display-form">
             <label>Reason of delete:</label>
-            <input  value="₱ {{ seniors.deletion_reason }}" disabled>
+            <input  value="{{ seniors.deletion_reason }}" disabled>
         </div>
     </div>
 
@@ -45,8 +45,6 @@
             <label>Deleted by:</label>
             <input  value="{{ request.user.username }}" disabled>
         </div>
-
-
     </div>
 
       <div class="btnn">
