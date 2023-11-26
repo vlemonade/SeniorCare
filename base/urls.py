@@ -54,10 +54,6 @@ urlpatterns = [
     path('save_allowance/<int:id>/', views.save_allowance, name='save_allowance'),
     path('delete/<int:id>/', views.delete, name='delete'),
     path('retrieve_entry/<int:id>/', views.retrieve_entry, name='retrieve_entry'),
-    
-
-
-
 ]
 
 if settings.DEBUG:

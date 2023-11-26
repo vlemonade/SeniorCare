@@ -170,6 +170,16 @@ p {
   transition: 0.2s;
 }
 
+.delete-reasons {
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+.delete-reasons label {
+  display: block;
+  margin-bottom: 5px;
+}
+
 .confirm-delete {
   text-align: center;
   margin-top: 10%;
@@ -277,7 +287,7 @@ p {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   text-align: center;
   width: 40%;
-  height: 50%;
+  height: 55%;
   border-radius: 10px;
 }
 
@@ -298,6 +308,8 @@ p {
   font-size: 20px;
   
 }
+
+
 
 .confirmation-popup button {
   margin: 0 10px;

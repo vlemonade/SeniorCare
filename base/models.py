@@ -32,6 +32,8 @@ class senior_list(models.Model):
   date_of_deletion = models.DateTimeField(null=True, blank=True)
   allowance_type = models.CharField(max_length=50, choices=[('none', 'Select Type of Allowance'), ('Monthly Monetary Allowance', 'Monthly Monetary Allowance')], blank=True, null=True)
   allowance_amount = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
+ 
+
 
 def __str__(self):
       return f"{self.first_name}"
