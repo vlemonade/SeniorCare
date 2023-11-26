@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 class senior_list(models.Model):
@@ -14,7 +15,7 @@ class senior_list(models.Model):
         ('female', 'Female'),
     ]
     
-  sex = models.CharField(max_length=10, choices=SEX_CHOICES)
+  sex = models.CharField(max_length=10, choices=SEX_CHOICES, null=True)
   birth_date= models.DateField(null=True)
   address= models.CharField(max_length=100, null=True)
   phone_number= models.CharField(max_length=12, null=True)
@@ -40,3 +41,4 @@ class SMSMessage(models.Model):
 
     def __str__(self):
         return f"{self.from_number}: {self.body}"
+    
