@@ -2,10 +2,13 @@
 
 {% block content %}
   {% load static %}
-  <link rel="stylesheet" type="text/css" media='screen' href="{% static 'styles/claiming1.css' %}">
+  <link rel="stylesheet" type="text/css" media='screen' href="{% static 'styles/claim_detail.css' %}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script>const saveAllowanceUrl = "{% url 'save_allowance' seniors.id %}";</script>
   <script defer src="{% static 'js/claim.js' %}"></script>
 <body>
+
+    
     <div class="claim-detail-container" id="blur" data-camera-url="{% url 'camera_page' seniors.id %}">
     <div class="closebtn-container">
         <div class="close-btn">
@@ -13,13 +16,7 @@
         </div>
     </div>
 
-    {% if seniors.is_claimed %}
-        <div class="claimed-message">
-            <i class="fa-solid fa-circle-exclamation"></i>
-            <h2>Allowance is already claimed on <span>{{ seniors.claimed_date|date:"F j, Y" }}</span></h2>
-        </div>
-    {% endif %}
-
+    <div class="detail-column">
         <div class="display-form">
             <label>Last Name</label>
             <input value="{{ seniors.last_name}}" disabled>
@@ -30,33 +27,38 @@
             <input value="{{ seniors.first_name}}"  disabled>
         </div>
 
-        <div class="detail-column">
-            <div class="display-form">
-                <label>Middle Name</label>
-                <input value="{{ seniors.middle_name}}"  disabled>
-            </div>
-    
-            <div class="display-form">
-                <label>Suffix</label>
-                <input value="{{ seniors.suffix}}" disabled>
-            </div>
+        <div class="display-form">
+            <label>Middle Name</label>
+            <input value="{{ seniors.middle_name}}"  disabled>
         </div>
+    </div>
+    <div class="detail-column4">
+        <div class="display-form">
+            <label>Suffix</label>
+            <input value="{{ seniors.suffix}}" disabled>
+        </div>
+        <div class="display-form">
+        <label>Age</label>
+            <input value="{{ seniors.age}}" disabled>
+        </div>
+
+        <div class="display-form">
+            <label>Gender</label>
+            <input value="{{ seniors.sex}}" disabled>
+        </div>
+    </div>
 
 
         <div class="detail-column1">
-            <div class="display-form">
-                <label>Age</label>
-                <input value="{{ seniors.age}}" disabled>
-            </div>
-    
-            <div class="display-form">
-                <label>Gender</label>
-                <input value="{{ seniors.sex}}" disabled>
-            </div>
-          
+
             <div class="display-form">
                 <label>Birthdate</label>
                 <input value="{{ seniors.birth_date}}" disabled>
+            </div>
+
+            <div class="display-form">
+                <label>Phone no.</label>
+                <input value="{{ seniors.phone_number}}"  disabled>
             </div>
         </div>
 
@@ -66,35 +68,37 @@
                 <input  value="{{ seniors.OSCA_ID}}" disabled>
             </div>
 
-        {% if seniors.is_claimed %}
-            <a href="{% url 'claimed_success' seniors.id %}"><h1>Next</h1><i class="fa-solid fa-chevron-right"></i></a>
-        {% else %}
-
-            {% if seniors.senior_image %}   
-                <a href="#"  onclick="toggle()"><h1>Next</h1><i class="fa-solid fa-chevron-right"></i></a>
-            {% else %}
-                <a href="{% url 'claimed_succesfully' seniors.id %}"><h1>Next</h1><i class="fa-solid fa-chevron-right"></i></a>
-            {% endif %}
-
-        {% endif %}
-        </div>
-    </div>
-
-    <div class="popup" id="popup">
-        <div class="modal-header">  
-        </div>
-        <div class="modal-body">
-            <i class="fa-solid fa-camera"></i>
-            <h2>Would you like to use facial recognition for authentication?</h2>
+            <div class="display-form">
+                <label>Status</label>
+                {% if seniors.is_active %}
+                <input value="Active" disabled>
+                {% else %}
+                <input value="Inactive" disabled>
+                {% endif %}
+            </div>
         </div>
 
-        <div class="btn-ftr">
-            <a href="#"  class="btn-Yes">Yes</a>
-            <form method="post" action="{% url 'claimed_succesfully' seniors.id %}">
-                {% csrf_token %}
-                <button type="submit" class="btn-No">No</button>
-             </form>
-        </div>
+        <form method="post" action="{% url 'save_allowance' seniors.id %}">
+            {% csrf_token %}
+            <div class="detail-column3">
+                <div class="display-form">
+                    <label>Type of Allowance</label>
+                    <select id="allowanceType" name="allowanceType">
+                        {% for value, display_name in choices %}
+                            <option value="{{ value }}" {% if senior.allowance_type == value %}selected{% endif %}>{{ display_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="display-form">
+                    <label>Enter Amount</label>
+                    <input type="number" id="allowanceAmount" name="allowanceAmount" >
+                </div>
+            </div>
+
+            <div class="btn-next">
+                <button type="button" class="btn-no" onclick="toggleAdditionalPopup()">Next<i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+        </form>
     </div>
 
     <div id="additional-popup" class="additional-popup" style="display: none;">
@@ -111,8 +115,21 @@
         </div>
 
         <div class="btn-ftr">
-            <button class="ok-btn" id="ok-btn">OK</button>
+            <button class="ok-btn" id="ok-btn" >OK</button>
             <button class="cancelx-btn" id="cancel-btn" onclick="cancel()">Cancel</button>
+        </div>
+    </div>
+
+    <div id="warning-popup" class="popup-warning">
+        <div class="modal-header">
+        </div>
+
+        <div class="modal-body">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <p>Please fill in all the required fields.</p>
+        </div>
+        <div class="modal-btn">
+            <button onclick="closeWarningPopup()">OK</button>
         </div>
     </div>
 </body>

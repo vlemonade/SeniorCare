@@ -2,43 +2,61 @@
 
 {% block content %}
   {% load static %}
-  <link rel="stylesheet" type="text/css" media='screen' href="{% static 'styles/claiming1.css' %}">
+  <link rel="stylesheet" type="text/css" media='screen' href="{% static 'styles/claim_match.css' %}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 <head>
     <title>Claim Successful</title>
 </head>
 <body>
-    <div class="claimed_container">
-
-    <div class="claimed_header">
+    <div class="claim-detail-container">
+        <h1>Verified Benificiary<i class="fa-regular fa-circle-check"></i></h1>  
+    <div class="detail-column">
+        <div class="display-form">
+            <label>Name</label>
+            <input value="{{ seniors.last_name}} {{ seniors.first_name}}" disabled>
         </div>
-            <div class="claimed_body">
-                <i class="fa-solid fa-circle-check"></i>
-                <h2>Verified! Successfuly claimed!</h2>
-            </div>
 
-            <div class="claimed_form">
-                <div class="senior_detail">
-                    <label>Name: </label>
-                    <input value="{{ seniors.last_name }}, {{ seniors.first_name }}  {{ seniors.middle_name }}" disabled>
-            </div>
+        <div class="display-form">
+            <label>OSCA ID</label>
+            <input  value="{{ seniors.OSCA_ID}}" disabled>
+        </div>
 
-            <div class="senior_detail">
-                <label>OSCA_ID: </label>
-                <input value="{{ seniors.OSCA_ID }}" disabled>
-            </div>
-
-            <div class="senior_detail">
-                <label>Claimed Date: </label>
-                <input value="{{ seniors.claimed_date|date:'F j, Y' }}" disabled>
-            </div>
-            </div>
-
-            <div class="claimed_footer">
-                <a href="{% url 'claim_page' %}" class="btn-Okay">Continue</a>
-            </div>
+        <div class="display-form">
+            <label>Registered on</label>
+            <input value="{{ seniors.created|date:'F j, Y'}}"  disabled>
+        </div>
     </div>
-</body>
 
+    <div class="detail-column">
+        <div class="display-form">
+            <label>Type of allowance</label>
+            <input  value="{{ seniors.allowance_type }}" disabled>
+        </div>
+
+        <div class="display-form">
+            <label>Amount</label>
+            <input  value="₱ {{ seniors.allowance_amount }}" disabled>
+        </div>
+    </div>
+
+    <div class="detail-column">
+        <div class="display-form">
+            <label>Claimed on</label>
+            <input  value="{{ seniors.claimed_date|date:'F j, Y' }} at {{ seniors.claimed_date|time:'g:iA' }}" disabled>
+        </div>
+
+        <div class="display-form">
+            <label>Processed by</label>
+            <input  value="{{ request.user.username }}" disabled>
+        </div>
+
+    </div>
+
+    <div class="btnn">
+        <a href="{% url 'claim_page' %}">Done</a>
+    </div>
+    
+</div>
+</body>
 {% endblock content%}

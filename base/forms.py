@@ -19,7 +19,8 @@ class register_form(ModelForm):
             'OSCA_ID': forms.NumberInput(attrs={'placeholder': 'OSCA_ID', 'required': True, 'id': 'id_osca_id', 'class': 'form-control'}),
             'senior_image': forms.FileInput(attrs={'required': False, 'id': 'image', 'class':'form-control'}), 
             'phone_number': forms.TextInput(attrs={'placeholder': 'Contact No.', 'required': True, 'class': 'form-control'}),
-
+            'allowance_type': forms.Select(attrs={'class': 'form-control'}),  
+            'allowance_amount': forms.NumberInput(attrs={'placeholder': 'Allowance Amount', 'required': True, 'class': 'form-control'})
         }
 
     def clean_OSCA_ID(self):

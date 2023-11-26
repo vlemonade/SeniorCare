@@ -34,7 +34,7 @@
           <th>First Name</th>
           <th>Middle Initial</th>
           <th>Suffix</th>
-          <th></th>
+          <th>Status</th>
           <th></th>
         </tr>
       </thead>
@@ -46,12 +46,16 @@
           <td>{{ senior.last_name }}</td>
           <td>{{ senior.first_name }}</td>
           <td>{{ senior.middle_name }}</td>
-          <td>{{ senior.suffix }}</td>
-          <td><input type="checkbox" class="custom-checkbox" /></td>
+          <td>{{ senior.suffix }}
+            <td>
+              <span class="status-circle {% if senior.is_active %}active-status{% else %}inactive-status{% endif %}"></span>
+            </td>
           <td>
-            <a href="/claim_detail_page/{{ senior.id }}" class="claim-btn"
-              >Claim</a
-            >
+            {% if senior.is_claimed %}
+            <a href="/match/{{ senior.id }}">Claimed</a>
+            {% else %}
+            <a href="/claim_detail_page/{{ senior.id }}" class="claim-btn">Claim</a>
+            {% endif %}
           </td>
         </tr>
         {% endfor %}
@@ -60,10 +64,7 @@
   </div>
 
   <div class="button-container">
-    <a href="#" class="notify-btn" id=""
-      ><i class="fa-solid fa-bell"></i>Notify</a
-    >
-    <a href="{% url 'claim_verify_page' %}" class="verify-btn" id=""
+    <a href="{% url 'claim_summary_page' %}" class="verify-btn" id=""
       ><i class="fa-regular fa-circle-check"></i>Verify</a
     >
   </div>
