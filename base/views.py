@@ -50,6 +50,7 @@ def download_summary(request):
     textob.setTextOrigin(inch, inch)
     textob.setFont("Helvetica", 12)
 
+    c.rotate(0)
     
     header_image_path = r'C:\Users\Jeryrl\Desktop\ADRIAN\BSIT 4-1N\Capstone 2\seniorcare\static\image\brgy_logo.jpg'
     c.drawImage(header_image_path, inch, letter[1] - 11 * inch, width=1*inch, height=1*inch)  # Adjust Y-coordinate
@@ -303,19 +304,17 @@ from django.db.models import Count, Q
 from django.db.models import Min
 from django.db.models.functions import TruncMonth
 
-from django.db.models import Count, Q
-from django.utils import timezone
-
 def claim_summary_page(request):
     latest_claimed_entry = senior_list.objects.filter(is_claimed=True).order_by('-claimed_date').first()
     oldest_claimed_entry = senior_list.objects.filter(is_claimed=True).order_by('claimed_date').first()
 
     counts = senior_list.objects.aggregate(
         claimed_count=Count('pk', filter=Q(is_claimed=True)),
-        unclaimed_count=Count('pk', filter=Q(is_claimed=False, deletion_reason__isnull=True)),
-        deleted_count=Count('pk', filter=Q(deletion_reason__isnull=False)),
-        overall_count=Count('pk'),
+        unclaimed_count=Count('pk', filter=Q(is_claimed=False)),
+        deleted_count=Count('pk', filter=Q(status=False)),  
+        overall_count=Count('pk')
     )
+
     if latest_claimed_entry and oldest_claimed_entry:
         show_one_month = (
             latest_claimed_entry.claimed_date.month == oldest_claimed_entry.claimed_date.month and
@@ -424,10 +423,6 @@ def capture_image(request):
 
     return JsonResponse({'error': 'Invalid request method.'}, status=400)
 
-def mobile_friendly_face_detection(image_path):
-    image = face_recognition.load_image_file(image_path)
-    face_locations = face_recognition.face_locations(image, model='hog')  
-    return [(top, right, bottom, left) for top, right, bottom, left in face_locations]
 
 
 @csrf_exempt
@@ -441,20 +436,14 @@ def facial_recognition(request, id):
         captured_image = np.frombuffer(base64.b64decode(captured_image_base64), np.uint8)
 
         captured_image_np = cv2.imdecode(captured_image, -1)
-        captured_image_np = cv2.resize(captured_image_np, (0, 0), fx=0.5, fy=0.5) 
 
         if captured_image_np is None:
             return JsonResponse({'error': 'Unable to load the image.'})
 
-        face_locations = mobile_friendly_face_detection(seniors.senior_image.path)
-
-        if not face_locations:
-            return JsonResponse({'error': 'No faces found in the captured image.'})
-
-        top, right, bottom, left = face_locations[0]
-        captured_face_encodings = face_recognition.face_encodings(captured_image_np, [(top, right, bottom, left)])
-
         known_face_encoding = get_known_face_encoding(seniors.senior_image.path)
+
+        face_locations = face_recognition.face_locations(captured_image_np)
+        captured_face_encodings = face_recognition.face_encodings(captured_image_np, face_locations)
 
         for captured_face_encoding in captured_face_encodings:
             match = compare_faces(known_face_encoding, captured_face_encoding)
@@ -540,8 +529,8 @@ def retrieve_entry(request, id):
     seniors = get_object_or_404(senior_list, id=id)
 
     if request.method == 'POST':
-        seniors.date_of_deletion = None
-        seniors.deletion_reason = None
+        seniors.deletion_date = None
+        seniors.deletion_reason = ''
         seniors.status = True
         seniors.save()
 
