@@ -32,6 +32,8 @@ from django.db.models import Count
 
 
 from django.http import HttpResponseRedirect, FileResponse
+from django.templatetags.static import static
+from django.contrib.staticfiles.storage import staticfiles_storage
 import io
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
@@ -41,6 +43,60 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 
 # Create your views here.
+def download_summary(request):
+    buf = io.BytesIO()
+    c = canvas.Canvas(buf, pagesize = letter, bottomup = 0)
+    textob = c.beginText()
+    textob.setTextOrigin(inch, inch)
+    textob.setFont("Helvetica", 12)
+
+    
+    header_image_path = r'C:\Users\Jeryrl\Desktop\ADRIAN\BSIT 4-1N\Capstone 2\seniorcare\static\image\brgy_logo.jpg'
+    c.drawImage(header_image_path, inch, letter[1] - 11 * inch, width=1*inch, height=1*inch)  # Adjust Y-coordinate
+
+    header_image_path_1 = r'C:\Users\Jeryrl\Desktop\ADRIAN\BSIT 4-1N\Capstone 2\seniorcare\static\image\mnl_logo.jpg'
+    c.drawImage(header_image_path_1, 6*inch, letter[1] - 11 * inch, width=0.9*inch, height=0.9*inch)
+
+
+
+    seniors = senior_list.objects.all()    
+
+    lines = []
+
+    for senior in seniors:
+        lines.append(f"First Name: {senior.first_name}")
+        lines.append(f"Last Name: {senior.last_name}")
+        lines.append(f"Middle Name: {senior.middle_name}")
+        lines.append(f"Suffix: {senior.suffix}")
+        lines.append(f"Age: {senior.age}")
+        lines.append(f"Sex: {senior.get_sex_display()}")
+        lines.append(f"Birth Date: {senior.birth_date}")
+        lines.append(f"Address: {senior.address}")
+        lines.append(f"Phone Number: {senior.phone_number}")
+        lines.append(f"OSCA ID: {senior.OSCA_ID}")
+        lines.append(f"Updated: {senior.updated}")
+        lines.append(f"Is Claimed: {senior.is_claimed}")
+        lines.append(f"Claimed Date: {senior.claimed_date}")
+        lines.append("--------------------------")
+   
+
+    for line in lines:
+        textob.textLine(line)
+
+    c.drawText(textob)
+    c.showPage()
+    c.save()
+    buf.seek(0)
+
+    seniors_to_delete = senior_list.objects.filter(deletion_reason__isnull=False)
+    seniors_to_delete.delete()
+
+    senior_list.objects.update(is_claimed=False)
+
+    return FileResponse(buf, filename='summary.pdf')
+
+   
+    
 
 def index(request):
     return render(request, 'index.html'  )
@@ -278,29 +334,7 @@ def claim_summary_page(request):
 
     return render(request, 'claim_summary_page.html', context)
 
-def download_summary(request):
-    seniors = senior_list.objects.all().order_by('last_name')
 
-    content = {'seniors': seniors}
-    template_path = 'report.html'
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'filename="report.pdf"'
-
-    template = get_template(template_path)
-    html = template.render(content)
-
-    pisa_status = pisa.CreatePDF(html, dest=response)
-
-    if pisa_status.err:
-        return HttpResponse('We had some errors <pre>' + html + '</pre>')
-
-    seniors_to_delete = senior_list.objects.filter(deletion_reason__isnull=False)
-    seniors_to_delete.delete()
-
-    senior_list.objects.update(is_claimed=False)
-
-    return response
-    
 
 def sms(request):
     messages = SMSMessage.objects.all()
