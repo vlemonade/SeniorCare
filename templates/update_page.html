@@ -17,12 +17,14 @@
 <div class="claim-body">
   <div class="container">
     <form method="GET" id="statusFilterForm">
+      <div class="filter">
       <label for="status_filter">Status:</label>
       <select name="status_filter" id="status_filter" onchange="document.getElementById('statusFilterForm').submit()">
           <option value="all" {% if request.GET.status_filter == 'all' %}selected{% endif %}>All</option>
           <option value="active" {% if request.GET.status_filter == 'active' %}selected{% endif %}>Active</option>
           <option value="inactive" {% if request.GET.status_filter == 'inactive' %}selected{% endif %}>Inactive</option>
       </select>
+    </div>
   </form>
 
     <div class="brgy">
@@ -44,22 +46,26 @@
       </thead>
 
       <tbody>
-        {%for senior in seniors%}
-        <tr>
-          <td>{{ forloop.counter }}</td>
-          <td>{{ senior.last_name }}</td>
-          <td>{{ senior.first_name }}</td>
-          <td>{{ senior.middle_name }}</td>
-          <td>
-            <span class="status-circle {% if senior.is_active %}active-status{% else %}inactive-status{% endif %}"></span>
-          </td>
-          <td>
-            <a href="/update_viewinfo_page/{{ senior.id }}" class="claim-btn"
-              >ViewInfo</a
-            >
-          </td>
-        </tr>
-        {% endfor %}
+        {% for senior in seniors %}
+        {% if not senior.deletion_reason %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ senior.last_name }}</td>
+                <td>{{ senior.first_name }}</td>
+                <td>{{ senior.middle_name }}</td>
+                <td>
+                    {% if senior.status %}
+                        <i class="fa-solid fa-circle" style="color: green;"></i>
+                    {% else %}
+                        <i class="fa-solid fa-circle" style="color: red;"></i>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="/update_viewinfo_page/{{ senior.id }}" class="claim-btn">ViewInfo</a>
+                </td>
+            </tr>
+          {% endif %}
+      {% endfor %}
       </tbody>
     </table>
     {% endblock content%}

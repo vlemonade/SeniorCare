@@ -68,13 +68,25 @@
           <td>{{ senior.middle_name }}</td>
           <td>{{ senior.suffix }}
             <td>
-              <span class="status-circle {% if senior.is_active %}active-status{% else %}inactive-status{% endif %}"></span>
+              {% if senior.status %}
+                <i class="fa-solid fa-circle" style="color: green;"></i>
+              {% else %}
+                <i class="fa-solid fa-circle" style="color: red;"></i>
+              {% endif %}
             </td>
           <td>
             {% if senior.is_claimed %}
-            <a href="/match/{{ senior.id }}">Claimed</a>
+              {% if senior.deletion_reason %}
+                <a href="/deleted/{{ senior.id }}">Deleted</a>
+              {% else %}
+                <a href="/match/{{ senior.id }}">Claimed</a>
+              {% endif %}
             {% else %}
-            <a href="/claim_detail_page/{{ senior.id }}" class="claim-btn">Claim</a>
+              {% if senior.deletion_reason %}
+                <a href="/deleted/{{ senior.id }}">Deleted</a>
+              {% else %}
+                <a href="/claim_detail_page/{{ senior.id }}" class="claim-btn">Claim</a>
+              {% endif %}
             {% endif %}
           </td>
         </tr>

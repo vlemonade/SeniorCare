@@ -30,20 +30,6 @@
     border-radius: 50%;
   }
 
-  .active-status {
-    background-color: green;  /* Color for active status */
-    border: 2px solid green;  /* Border color for active status */
-  }
-
-  .inactive-status {
-    background-color: red;  /* Color for inactive status */
-    border: 2px solid red;  /* Border color for inactive status */
-  }
-
-
-form{
-  display: block;
-}
 
 form {
     display: flex;
@@ -68,7 +54,7 @@ label {
 }
 
 select {
-    width: 200%;
+    width: 290%;
     padding: 9px;
     border: 1px solid black;
     border-radius: 4px;

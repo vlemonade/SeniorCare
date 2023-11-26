@@ -88,13 +88,16 @@ def main_page(request):
 def register_page(request):
     form = register_form()
     if request.method == 'POST':
-        form = register_form(request.POST, request.FILES)  
+        form = register_form(request.POST, request.FILES)
         if form.is_valid():
-            seniors = form.save()
+            seniors = form.save(commit=False)
+            seniors.status = True 
+            seniors.save()
+
             return redirect('preview', id=seniors.id)
+
     context = {'form': form}
     return render(request, 'register_page.html', context)
-
 def update_page(request):
 
     status_filter = request.GET.get('status_filter', 'all')
@@ -118,12 +121,28 @@ def update_viewinfo_page(request, id):
     seniors = senior_list.objects.get(id=id)
     return render(request, 'update_viewinfo_page.html', {'seniors': seniors})
 
+def delete(request, id):
+    seniors = senior_list.objects.get(id=id)
+
+    if request.method == 'POST':
+        selected_deletion_reason = request.POST.get('selected_deletion_reason')
+        if selected_deletion_reason:
+            seniors.deletion_reason = selected_deletion_reason
+            seniors.status = False
+            seniors.date_of_deletion = timezone.now()
+            seniors.save()
+            messages.success(request, 'Information updated successfully.')
+            return HttpResponseRedirect('/update_page/')  
+
+    return render(request, 'update_viewinfo_page.html', {'seniors': seniors})
+
 def edit(request, id):
     seniors = senior_list.objects.get(id=id)
     return render(request, 'edit.html', {'seniors': seniors})
 
-
-
+def edit(request, id):
+    seniors = senior_list.objects.get(id=id)
+    return render(request, 'edit.html', {'seniors': seniors})
 
 def update(request, id):
 
@@ -147,24 +166,6 @@ def update(request, id):
     context = {'seniors': seniors}
     return render ( request, 'update_viewinfo_page.html', context)
     
-
-
-#oks na to delete function
-def delete(request, id):
-    seniors = senior_list.objects.get(id=id)
-
-    # Get the active_status from the query parameters
-    active_status = request.GET.get('active_status', None)
-
-    # Update the active_status based on the selected radio button
-    if active_status:
-        seniors.active_status = active_status
-        seniors.save()
-
-
-    # Return an HTTP response (you can customize this based on your needs)
-    return redirect(update_page)
-
 
 def search(request):
     if 'q' in request.GET:
@@ -253,8 +254,10 @@ def claim_summary_page(request):
     counts = senior_list.objects.aggregate(
         claimed_count=Count('pk', filter=Q(is_claimed=True)),
         unclaimed_count=Count('pk', filter=Q(is_claimed=False)),
+        deleted_count=Count('pk', filter=Q(status=False)),  
         overall_count=Count('pk')
     )
+
     if latest_claimed_entry and oldest_claimed_entry:
         show_one_month = (
             latest_claimed_entry.claimed_date.month == oldest_claimed_entry.claimed_date.month and
@@ -268,6 +271,7 @@ def claim_summary_page(request):
         'oldest_claimed_entry': oldest_claimed_entry,
         'claimed_count': counts['claimed_count'],
         'unclaimed_count': counts['unclaimed_count'],
+        'deleted_count': counts['deleted_count'],
         'overall_count': counts['overall_count'],
         'show_one_month': show_one_month,
     }
@@ -277,25 +281,25 @@ def claim_summary_page(request):
 def download_summary(request):
     seniors = senior_list.objects.all().order_by('last_name')
 
-
-    content={'seniors':seniors}
+    content = {'seniors': seniors}
     template_path = 'report.html'
-    # Create a Django response object, and specify content_type as pdf
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'filename="report.pdf"'
-    # find the template and render it.
+
     template = get_template(template_path)
     html = template.render(content)
 
-    # create a pdf
-    pisa_status = pisa.CreatePDF(
-       html, dest=response)
-    # if error then show some funny view
-    if pisa_status.err:
-       return HttpResponse('We had some errors <pre>' + html + '</pre>')
-    senior_list.objects.update(is_claimed=False)
-    return response
+    pisa_status = pisa.CreatePDF(html, dest=response)
 
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>' + html + '</pre>')
+
+    seniors_to_delete = senior_list.objects.filter(deletion_reason__isnull=False)
+    seniors_to_delete.delete()
+
+    senior_list.objects.update(is_claimed=False)
+
+    return response
     
 
 def sms(request):
@@ -412,6 +416,7 @@ def facial_recognition(request, id):
             if match:
                 seniors.is_claimed = True
                 seniors.claimed_date = timezone.now()
+                seniors.status = True
                 seniors.save()
 
                 proof_folder = 'media/proof/'
@@ -461,6 +466,10 @@ def match(request, id):
     seniors = senior_list.objects.get(id=id)
     return render(request, 'match.html', {'seniors': seniors})
 
+def deleted(request, id):
+    seniors = senior_list.objects.get(id=id)
+    return render(request, 'deleted.html', {'seniors': seniors})
+
 def check_osca_id(request):
     osca_id = request.GET.get('osca_id', '')
     is_taken = senior_list.objects.filter(OSCA_ID=osca_id).exists()
@@ -480,3 +489,17 @@ def save_allowance(request, id):
         return JsonResponse({'status': 'success', 'id': seniors.id})
 
     return JsonResponse({'status': 'error'})
+
+def retrieve_entry(request, id):
+    seniors = get_object_or_404(senior_list, id=id)
+
+    if request.method == 'POST':
+        seniors.deletion_date = None
+        seniors.deletion_reason = ''
+        seniors.status = True
+        seniors.save()
+
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'success': False, 'message': 'Invalid request method'})
+    

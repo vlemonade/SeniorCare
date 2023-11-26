@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser, Group, Permission
+from datetime import timedelta
 
 # Create your models here.
 class senior_list(models.Model):
@@ -27,18 +28,13 @@ class senior_list(models.Model):
   senior_image = models.ImageField(upload_to='media/', blank=True, null=True)
   proof_of_claiming = models.ImageField(upload_to='proof/', blank=True, null=True)
   status = models.BooleanField(default=True)
-<<<<<<< HEAD
-  active_status = models.CharField(max_length=20, default='active', null=True)
-=======
+  deletion_reason = models.CharField(max_length=255, blank=True, null=True)
+  date_of_deletion = models.DateTimeField(null=True, blank=True)
   allowance_type = models.CharField(max_length=50, choices=[('none', 'Select Type of Allowance'), ('Monthly Monetary Allowance', 'Monthly Monetary Allowance')], blank=True, null=True)
   allowance_amount = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
->>>>>>> f0e7e164ff0b1098da6653131bf0b2f3731d9bf1
 
-  def is_active(self):
-        return self.status and (timezone.now() - self.created).days <= 30
-  
-  def __str__(self):
-        return f"{self.first_name} "
+def __str__(self):
+      return f"{self.first_name}"
 
 class SMSMessage(models.Model):
     from_number = models.CharField(max_length=15)

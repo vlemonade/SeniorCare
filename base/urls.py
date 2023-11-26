@@ -48,13 +48,16 @@ urlpatterns = [
     path('camera_page/<int:id>/', views.camera_page, name='camera_page'),
     path('facial_recognition/<int:id>/', views.facial_recognition, name='facial_recognition'),
     path('match/<int:id>/', views.match, name='match'),
+    path('deleted/<int:id>/', views.deleted, name='deleted'),
     path('check_osca_id/', views.check_osca_id, name='check_osca_id'),
-<<<<<<< HEAD
-
-     path('profile_page/', views.profile_page, name='profile_page'),
-=======
+    path('profile_page/', views.profile_page, name='profile_page'),
     path('save_allowance/<int:id>/', views.save_allowance, name='save_allowance'),
->>>>>>> f0e7e164ff0b1098da6653131bf0b2f3731d9bf1
+    path('delete/<int:id>/', views.delete, name='delete'),
+    path('retrieve_entry/<int:id>/', views.retrieve_entry, name='retrieve_entry'),
+    
+
+
+
 ]
 
 if settings.DEBUG:

@@ -157,39 +157,49 @@
       </div>
 
     </div>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
     <div id="confirmation-popup" class="confirmation-popup">
-      <div class="header"></div>
-      <div class="popup-body">
-        <p>What is the reason for deleting this information?</p><br>
-        <div class="delete-reasons">
-          <label>
-            <input type="radio" name="deletion_reason" value="deceased" onclick="updateActiveStatus('deceased')"> The person is deceased
-          </label><br>
-          <label>
-            <input type="radio" name="deletion_reason" value="inactive" onclick="updateActiveStatus('inactive')"> The person no longer resides in Manila
-          </label><br>
-          <label>
-            <input type="radio" name="deletion_reason" value="others" onclick="updateActiveStatus('other')"> Other reasons
-          </label>
+        <div class="header"></div>
+        <div class="popup-body">
+          <form method="POST" action="{% url 'delete' seniors.id %}" id="deletionForm">
+            {% csrf_token %}
+        
+            <input type="hidden" name="selected_deletion_reason" id="selected_deletion_reason" value="">
+            
+            <p>What is the reason for deleting this information?</p><br>
+            <div class="delete-reasons">
+                <label>
+                    <input type="radio" name="deletion_reason" value="deceased" onclick="updateActiveStatusAndSubmit('The person is deceased')"> The person is deceased
+                </label><br>
+                <label>
+                    <input type="radio" name="deletion_reason" value="inactive" onclick="updateActiveStatusAndSubmit('The person no longer resides in Manila')"> The person no longer resides in Manila
+                </label><br>
+            </div>
+            <div class="confirm-delete">
+                <button type="submit" id="btn-delete" class="btn-delete1">Yes</button>
+                <a onclick="hideConfirmation()" class="btn-cancel1">Cancel</a>
+            </div>
+        </form>
         </div>
-        <div class="confirm-delete">
-          <a href="#" id="btn-delete" class="btn-delete1">Yes</a>
-          <a onclick="hideConfirmation()" class="btn-cancel1">Cancel</a>
-        </div>
-      </div>
     </div>
+
+
     </div>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
   <script>
-    function updateActiveStatus(activeStatus) {
-      // Update the value of the active_status variable
-      activeStatusValue = activeStatus;
-
-      // Enable the "Yes" button
-      $('#btn-delete').attr('href', '/delete/{{ seniors.id }}?active_status=' + activeStatusValue);
+    function updateActiveStatusAndSubmit(reason) {
+      console.log('Reason:', reason);
+      document.getElementById('selected_deletion_reason').value = reason;
+      console.log('Form Value:', document.getElementById('selected_deletion_reason').value);
     }
 
     function hideConfirmation() {
