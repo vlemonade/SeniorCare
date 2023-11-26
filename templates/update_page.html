@@ -16,13 +16,18 @@
 
 <div class="claim-body">
   <div class="container">
-    <form action="/search/" method="GET">
-      <div class="search-bar">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input placeholder="Search" type="search" name="q" class="left" />
-      </div>
-    </form>
-    <h2 class="right">Brgy. 123 / Zone 00</h2>
+    <form method="GET" id="statusFilterForm">
+      <label for="status_filter">Status:</label>
+      <select name="status_filter" id="status_filter" onchange="document.getElementById('statusFilterForm').submit()">
+          <option value="all" {% if request.GET.status_filter == 'all' %}selected{% endif %}>All</option>
+          <option value="active" {% if request.GET.status_filter == 'active' %}selected{% endif %}>Active</option>
+          <option value="inactive" {% if request.GET.status_filter == 'inactive' %}selected{% endif %}>Inactive</option>
+      </select>
+  </form>
+
+    <div class="brgy">
+      <h2 class="right">Barangay 558 / Zone 55</h2>
+    </div>
   </div>
 
   <div class="table-container">
@@ -33,7 +38,7 @@
           <th>Last Name</th>
           <th>First Name</th>
           <th>Middle Initial</th>
-          <th>Suffix</th>
+          <th>Status</th>
           <th></th>
         </tr>
       </thead>
@@ -45,7 +50,9 @@
           <td>{{ senior.last_name }}</td>
           <td>{{ senior.first_name }}</td>
           <td>{{ senior.middle_name }}</td>
-          <td>{{ senior.suffix }}</td>
+          <td>
+            <span class="status-circle {% if senior.is_active %}active-status{% else %}inactive-status{% endif %}"></span>
+          </td>
           <td>
             <a href="/update_viewinfo_page/{{ senior.id }}" class="claim-btn"
               >ViewInfo</a

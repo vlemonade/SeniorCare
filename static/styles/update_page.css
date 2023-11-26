@@ -12,48 +12,115 @@
 .container {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
   padding: 0;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 10px;
+  height: auto;
+}
+
+.footer{
+  display: flex;
+  justify-content: space-between;
+}
+  .status-circle {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+  }
+
+  .active-status {
+    background-color: green;  /* Color for active status */
+    border: 2px solid green;  /* Border color for active status */
+  }
+
+  .inactive-status {
+    background-color: red;  /* Color for inactive status */
+    border: 2px solid red;  /* Border color for inactive status */
+  }
+
+
+form{
+  display: block;
+}
+
+form {
+    display: flex;
+    padding-top: 7px;
+    justify-content: center;
+    align-items: center;
+}
+
+.legend-container{
+  display: block;
+  background: #c5d5e7;
+  padding: 10px;
+  height: 60px;
+  border-radius: 7px;
+  margin-top: 15px;
 }
 
 
-.left {
-  font-size: 40px;
-  color: white;
+label {
+  display: block;
+    color: white;
 }
 
+select {
+    width: 200%;
+    padding: 9px;
+    border: 1px solid black;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+select option {
+  background: white; 
+  color: #000000; 
+  padding: 10px;
+}
+
+select option:hover {
+  background: #C5DFF8; 
+}
+
+.brgy {
+  margin: 20px;
+}
 
 .right {
-  justify-content: end;
+  text-align: end;
   font-size: 40px;
   color: white;
 }
 
-.search-bar {
-  position: relative;
-  width: 100%;
-  left: 0;
+.legend-container h1{
+  font-size: 15px;
+  border-bottom: 1px solid black;
 }
 
-.search-bar input {
-  width:150%;
-  padding-left: 70px; 
-  height: 50px;
-  background-color: white;
-  border-radius: 30px;
-  color: black;
-  border: none;
-  font-size: 25px;
-  outline: none;
+.legend {
+  display: flex;
+  justify-content: space-evenly;
+}
+.active-legend{
+  font-size: 15px;
+  margin-right: 10px;
 }
 
-.search-bar i {
-  position: absolute;
-  top: 10px;
-  left: 25px;
-  font-size: 28px;
-  background: transparent;
+.inactive-legend{
+  font-size: 15px;
 }
+
+.active-legend i{
+  color: green;
+}
+
+.inactive-legend i{
+  color: red;
+}
+
 
 .table-container {
   width: 100%; 

@@ -16,13 +16,33 @@
 
 <div class="claim-body">
   <div class="container">
-    <form action="/search1/" method="GET">
-      <div class="search-bar">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input placeholder="Search" type="search" name="q" class="left" />
+    <form method="GET" id="statusFilterForm">
+
+
+      <div class="filter">
+      <div class="status">   
+      <label for="status_filter">Status:</label>
+      <select name="status_filter" id="status_filter" onchange="document.getElementById('statusFilterForm').submit()">
+          <option value="all" {% if request.GET.status_filter == 'all' %}selected{% endif %}>All</option>
+          <option value="active" {% if request.GET.status_filter == 'active' %}selected{% endif %}>Active</option>
+          <option value="inactive" {% if request.GET.status_filter == 'inactive' %}selected{% endif %}>Inactive</option>
+      </select>
       </div>
-    </form>
-    <h2 class="right">Brgy. 123 / Zone 00</h2>
+
+      <div class="claim">
+      <label for="is_claimed">Claimed:</label>
+      <select name="is_claimed" id="is_claimed" onchange="document.getElementById('statusFilterForm').submit()">
+          <option value="all" {% if request.GET.is_claimed == 'all' %}selected{% endif %}>All</option>
+          <option value="claimed" {% if request.GET.is_claimed == 'claimed' %}selected{% endif %}>Claimed</option>
+          <option value="not_claimed" {% if request.GET.is_claimed == 'not_claimed' %}selected{% endif %}>Not Claimed</option>
+      </select>
+      </div>
+    </div>
+  </form>
+
+    <div class="brgy">
+      <h2 class="right">Barangay 558 / Zone 55</h2>
+    </div>
   </div>
 
   <div class="table-container">
@@ -63,10 +83,20 @@
     </table>
   </div>
 
+  <div class="footer">
   <div class="button-container">
     <a href="{% url 'claim_summary_page' %}" class="verify-btn" id=""
       ><i class="fa-regular fa-circle-check"></i>Verify</a
     >
+  </div>
+
+  <div class="legend-container">
+    <h1>Legend:</h1>
+    <div class="legend">
+      <h3 class="active-legend"><i class="fa-solid fa-circle"></i> Active: {{ total_active }} </h3>
+      <h3 class="inactive-legend"><i class="fa-solid fa-circle"></i> Inactive: {{ total_inactive }} </h3>
+    </div> 
+  </div>
   </div>
 </div>
 

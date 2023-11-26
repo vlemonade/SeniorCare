@@ -5,74 +5,77 @@
   <link rel="stylesheet" type="text/css" media='screen' href="{% static 'styles/claim_summary.css' %}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-<head>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Claim Summary</title>
-</head>
-<body>
+  </head>
+
+  <body>
     <div class="claimed_container">
-
-    <div class="claimed_header">
-        </div>
-        <h1>Monthly Monetary Allowance Summary</h1>
-        {% if latest_claimed_entry %}
-            {% if show_one_month %}
-                <h2>Month of {{ latest_claimed_entry.claimed_date|date:"F" }}</h2>
+        <div class="claimed_header">
+            <h1>Monthly Monetary Allowance Summary</h1>
+            {% if latest_claimed_entry %}
+                {% if show_one_month %}
+                    <h2>{{ claimed_date_label }}</h2>
+                {% else %}
+                    <h2>{{ claimed_date_label }}</h2>
+                {% endif %}
             {% else %}
-                <h2>Month range from {{ oldest_claimed_entry.claimed_date|date:"F" }} to {{ latest_claimed_entry.claimed_date|date:"F" }}</h2>
+                <p>No claimed entries found.</p>
             {% endif %}
-        {% else %}
-            <p>No claimed entries found.</p>
-        {% endif %}
-            <div class="claimed_form">
-                <div class="senior_detail">
-                    <p>Total Eligible Recipients:</p>
-                    <h1>{{ overall_count }}</h1>
-                </div>
-            
-                <div class="senior_detail">
-                    <p>Total of New Registered Senior Citizens:</p>
-                    <h1>{{ new_registered_count }}</h1>
-                </div>
-            
-                <div class="senior_detail">
-                    <p>Total Deleted Accounts:</p>
-                    <h1>{{ deleted_accounts_count }}</h1>
-                </div>
-            
-                <div class="senior_detail">
-                    <p>Total Claimed Allowance by Seniors:</p>
-                    <h1>{{ claimed_count }}</h1>
-                </div>
-            
-                <div class="senior_detail">
-                    <p>Total Unclaimed Allowance by Seniors:</p>
-                    <h1>{{ unclaimed_count }}</h1>
-                </div>
-            </div>
-
-            <div class="claimed_footer">
-                <a href="{% url 'claim_page' %}" class="btn-Back">Back</a>
-                <a href="#" onclick="showPrintSummaryConfirmation()" class="btn-Confirm">Generate Summary</a>
-            </div>
         </div>
-            <div id="confirmation-modal" class="modal">
-                <div class="modal-container1">
-                    <div class="modal-head">
 
-                    </div>
-                    <div class="modal-content">
-                    <i class="fa-solid fa-circle-exclamation"></i>
-                    <p>Are you sure you want to download the summary now?  <br> This will reset all claimed list.</p>
-                    </div>
-                    <div class="modal-buttons">
-                        <a href="#" onclick="showPrintSummaryConfirmation()" > <button id="confirm-button" class="btnContinue">Continue</button></a>
-                        <button id="cancel-button" class="btnCancel">Cancel</button>
-                    </div>
-                </div>
-            </div>
-        
-            <script>
-                function showPrintSummaryConfirmation() {
+      <div class="claimed_form">
+        <div class="senior_detail">
+          <p>Total Eligible Recipients:</p>
+          <h1>{{ overall_count }}</h1>
+        </div>
+
+        <div class="senior_detail">
+            <p>Total of New Registered Senior Citizens:</p>
+            <h1>{{ new_registered_count }}</h1>
+        </div>
+    
+        <div class="senior_detail">
+            <p>Total Deleted Accounts:</p>
+            <h1>{{ deleted_accounts_count }}</h1>
+        </div>
+    
+        <div class="senior_detail">
+            <p>Total Claimed Allowance by Seniors:</p>
+            <h1>{{ claimed_count }}</h1>
+        </div>
+    
+        <div class="senior_detail">
+            <p>Total Unclaimed Allowance by Seniors:</p>
+            <h1>{{ unclaimed_count }}</h1>
+        </div>
+
+      </div>
+
+      <div class="claimed_footer">
+        <a href="{% url 'claim_page' %}" class="btn-Back">Back</a>
+        <a href="#" onclick="showPrintSummaryConfirmation()" class="btn-Confirm">Generate Summary</a>
+      </div>
+
+      <div id="confirmation-modal" class="modal">
+        <div class="modal-container1">
+          <div class="modal-head"></div>
+          <div class="modal-content">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            <p>Are you sure you want to download the summary now?  <br> This will reset all claimed list.</p>
+          </div>
+          <div class="modal-buttons">
+            <a href="#" onclick="showPrintSummaryConfirmation()" > <button id="confirm-button" class="btnContinue">Continue</button></a>
+            <button id="cancel-button" class="btnCancel">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <script>
+                        function showPrintSummaryConfirmation() {
                     var modal = document.getElementById('confirmation-modal');
                     modal.style.display = 'block';
             
@@ -101,8 +104,8 @@
                         }, 1000); // 1000 milliseconds = 1 second, adjust as needed
                     }
                 }
-            </script>
-</body>           
-            
-{% endblock content%}
-
+      </script>
+    </div>
+  </body>
+  </html>
+{% endblock content %}

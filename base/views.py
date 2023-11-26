@@ -89,8 +89,23 @@ def register_page(request):
     return render(request, 'register_page.html', context)
 
 def update_page(request):
-    seniors = senior_list.objects.all().order_by('last_name')
-    return render(request, 'update_page.html', {'seniors': seniors})
+
+    status_filter = request.GET.get('status_filter', 'all')
+    is_claimed_filter = request.GET.get('is_claimed', 'all')
+
+    if status_filter == 'active':
+        seniors = senior_list.objects.filter(status=True)
+    elif status_filter == 'inactive':
+        seniors = senior_list.objects.filter(status=False)
+    else:
+        seniors = senior_list.objects.all()
+
+    seniors = seniors.order_by('last_name')
+    total_active = seniors.filter(status=True).count()
+    total_inactive = seniors.filter(status=False).count()
+
+    return render(request, 'update_page.html', {'seniors': seniors, 'total_active': total_active, 'total_inactive': total_inactive})
+
 
 def update_viewinfo_page(request, id):
     seniors = senior_list.objects.get(id=id)
@@ -157,8 +172,26 @@ def search1(request):
     return render(request, 'claim_page.html', context)
 
 def claim_page(request):
-    seniors = senior_list.objects.all().order_by('last_name')
-    return render(request, 'claim_page.html', {'seniors': seniors})
+    status_filter = request.GET.get('status_filter', 'all')
+    is_claimed_filter = request.GET.get('is_claimed', 'all')
+
+    if status_filter == 'active':
+        seniors = senior_list.objects.filter(status=True)
+    elif status_filter == 'inactive':
+        seniors = senior_list.objects.filter(status=False)
+    else:
+        seniors = senior_list.objects.all()
+
+    if is_claimed_filter == 'claimed':
+        seniors = seniors.filter(is_claimed=True)
+    elif is_claimed_filter == 'not_claimed':
+        seniors = seniors.filter(is_claimed=False)
+
+    seniors = seniors.order_by('last_name')
+    total_active = seniors.filter(status=True).count()
+    total_inactive = seniors.filter(status=False).count()
+
+    return render(request, 'claim_page.html', {'seniors': seniors, 'total_active': total_active, 'total_inactive': total_inactive})
 
 def claim_detail_page(request, id):
     seniors = senior_list.objects.get(id=id)
@@ -197,22 +230,21 @@ from django.db.models import Min
 from django.db.models.functions import TruncMonth
 
 def claim_summary_page(request):
-    # Get the latest and oldest claimed entries
     latest_claimed_entry = senior_list.objects.filter(is_claimed=True).order_by('-claimed_date').first()
     oldest_claimed_entry = senior_list.objects.filter(is_claimed=True).order_by('claimed_date').first()
 
-    # Annotate the counts in a single query
     counts = senior_list.objects.aggregate(
         claimed_count=Count('pk', filter=Q(is_claimed=True)),
         unclaimed_count=Count('pk', filter=Q(is_claimed=False)),
         overall_count=Count('pk')
     )
-
-    # Check if the latest and oldest entries are in the same month
-    show_one_month = (
-        latest_claimed_entry.claimed_date.month == oldest_claimed_entry.claimed_date.month and
-        latest_claimed_entry.claimed_date.year == oldest_claimed_entry.claimed_date.year
-    )
+    if latest_claimed_entry and oldest_claimed_entry:
+        show_one_month = (
+            latest_claimed_entry.claimed_date.month == oldest_claimed_entry.claimed_date.month and
+            latest_claimed_entry.claimed_date.year == oldest_claimed_entry.claimed_date.year
+        )
+    else:
+        show_one_month = False
 
     context = {
         'latest_claimed_entry': latest_claimed_entry,

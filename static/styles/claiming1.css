@@ -16,6 +16,12 @@
   margin-left: 0;
   margin-right: 0;
   margin-bottom: 10px;
+  height: auto;
+}
+
+.footer{
+  display: flex;
+  justify-content: space-between;
 }
   .status-circle {
     display: inline-block;
@@ -34,43 +40,86 @@
     border: 2px solid red;  /* Border color for inactive status */
   }
 
-.left {
-  font-size: 40px;
-  color: white;
+
+.filter {
+    display: flex;
+    padding-top: 7px;
+    justify-content: center;
+    align-items: center;
 }
 
+.legend-container{
+  display: block;
+  background: #c5d5e7;
+  padding: 10px;
+  height: 60px;
+  border-radius: 7px;
+  margin-top: 20px;
+}
+
+
+label {
+  display: block;
+    color: white;
+}
+
+.status{
+  margin-right: 60px;
+}
+
+select {
+    width: 150%;
+    padding: 9px;
+    border: 1px solid black;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+
+select option {
+  background: white; 
+  color: #000000; 
+  padding: 10px;
+}
+
+select option:hover {
+  background: #C5DFF8; 
+}
+
+.brgy {
+  margin: 20px;
+}
 
 .right {
-  justify-content: end;
+  text-align: end;
   font-size: 40px;
   color: white;
-  margin-top: 1px;
 }
 
-.search-bar {
-  position: relative;
-  width: 100%;
-  left: 0;
+.legend-container h1{
+  font-size: 15px;
+  border-bottom: 1px solid black;
 }
 
-.search-bar input {
-  width:150%;
-  padding-left: 70px; 
-  height: 50px;
-  background-color: white;
-  border-radius: 30px;
-  color: black;
-  border: none;
-  font-size: 25px;
-  outline: none;
+.legend {
+  display: flex;
+  justify-content: space-evenly;
+}
+.active-legend{
+  font-size: 15px;
+  margin-right: 10px;
 }
 
-.search-bar i {
-  position: absolute;
-  top: 10px;
-  left: 25px;
-  font-size: 28px;
-  background: transparent;
+.inactive-legend{
+  font-size: 15px;
+}
+
+.active-legend i{
+  color: green;
+}
+
+.inactive-legend i{
+  color: red;
 }
 
 .table-container {
@@ -287,12 +336,38 @@ tr:nth-child(even) td{
 
 @media(max-width: 500px){
 
-  .search-bar input {
-    width:100%;
+  form {
+    display: flex;
+    margin-bottom: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+label {
+    display: block; 
+    margin-bottom: 5px; 
+    font-size: 15px;
   }
 
+.status{
+  margin-right: 20px;
+}
+
+select {
+  width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+
+
+
   .container {
-    margin-bottom: 20px;
+    margin-bottom: 0px;
   }
 
 

@@ -36,7 +36,7 @@ h2{
 }
 
 .senior_detail {
-  flex: 1 1 45%; /* Adjust as needed */
+  flex: 1 1 45%; 
   background-color: #C5DFF8;
   padding: 15px;
   border-radius: 10px;
