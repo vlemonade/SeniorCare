@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group, Permission
 
 # Create your models here.
 class senior_list(models.Model):
@@ -27,6 +27,7 @@ class senior_list(models.Model):
   senior_image = models.ImageField(upload_to='media/', blank=True, null=True)
   proof_of_claiming = models.ImageField(upload_to='proof/', blank=True, null=True)
   status = models.BooleanField(default=True)
+  active_status = models.CharField(max_length=20, default='active', null=True)
 
   def is_active(self):
         return self.status and (timezone.now() - self.created).days <= 30
@@ -42,3 +43,4 @@ class SMSMessage(models.Model):
     def __str__(self):
         return f"{self.from_number}: {self.body}"
     
+

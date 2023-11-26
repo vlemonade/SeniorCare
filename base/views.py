@@ -45,6 +45,13 @@ from xhtml2pdf import pisa
 def index(request):
     return render(request, 'index.html'  )
 
+def profile_page(request):
+    user = request.user
+    context = {
+        'user': user,
+    }
+    return render(request, 'profile_page.html', context)
+
 def index(request):
     page = 'index'
 
@@ -130,7 +137,17 @@ def update(request, id):
 #oks na to delete function
 def delete(request, id):
     seniors = senior_list.objects.get(id=id)
-    seniors.delete()
+
+    # Get the active_status from the query parameters
+    active_status = request.GET.get('active_status', None)
+
+    # Update the active_status based on the selected radio button
+    if active_status:
+        seniors.active_status = active_status
+        seniors.save()
+
+
+    # Return an HTTP response (you can customize this based on your needs)
     return redirect(update_page)
 
 
