@@ -1,0 +1,129 @@
+{% extends 'main.html' %} 
+{% block content %} 
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile Page</title>
+    <style>
+      /* ... (other CSS code) */
+
+      body {
+          margin: ;
+          padding: 0;
+      }
+      
+      .container {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100vh; /* Set the height to 100% of the viewport height */
+      }
+      
+      .profile-container {
+          margin-top: 60px;
+          background-color: #fff;
+          overflow: hidden;
+          max-width: 400px;
+          width: 100%;
+          text-align: center;
+      }
+      
+      .profile-header {
+          background-color: #4a55a2;
+          color: #fff;
+          padding: 20px;
+      }
+      
+      img {
+          width: 100%; /* Make the image responsive within its container */
+          height: auto;
+      }
+      
+      .profile-body {
+          padding: 30px;
+      }
+      
+      .profile-image {
+          width: 100px;
+          height: 100px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 36px;
+          color: #fff;
+          margin-left: auto; /* Center the profile image horizontally */
+          margin-right: auto;
+      }
+      
+      .label {
+          color: #4a55a2;
+          font-weight: bold;
+          margin-bottom: 5px;
+          display: block;
+      }
+      
+      .profile-info p {
+          margin-bottom: 10px;
+      }
+      
+      .profile-info {
+          font-size: 16px;
+          color: #333;
+          text-align: left;
+      }
+      
+      /* Media queries for responsiveness */
+      
+      @media only screen and (max-width: 600px) {
+          /* Adjust styles for screens with a maximum width of 600px */
+          .container {
+              flex-direction: column; /* Stack items vertically on smaller screens */
+              align-items: stretch;
+          }
+      
+          .profile-image {
+              margin-left: auto;
+              margin-right: auto;
+          }
+      }
+      
+      .profile-name{
+        color: #4a55a2;
+        margin-top:0;
+        font-weight: bold;  
+        font-size:50px;
+      }
+      
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="profile-container">
+            <div class="profile-header">
+              <a href="#"><img src="{% static 'image/senior_care_logo.png'%}" alt="senior care logo"></a>
+            </div>
+            <div class="profile-body">
+              <div class="profile-image" style="background-color: #4a55a2;">
+                {{ user.first_name.0|upper }}{{ user.last_name.0|upper }}
+            </div>
+                <div class="profile-name">{{user.username}}</div>
+                <div class="profile-info">
+                    <p><span class="label">First Name:</span>{{ user.first_name }} </p>
+                    <p><span class="label">Last Name:</span>{{ user.last_name }} </p>
+                    <p><span class="label">Email:</span>{{ user.email }} </p>
+                    <p><span class="label">Location:</span> Brgy. 123 / Zone 00</p>
+                    <p><span class="label">Barangay Position:</span> Secretary</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+{% endblock %}
