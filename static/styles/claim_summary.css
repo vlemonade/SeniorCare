@@ -1,0 +1,142 @@
+
+body,
+h1,
+h2,
+p {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #A0BFE0;
+}
+
+.claimed_container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1{
+    font-weight: bolder;
+}
+
+h2{
+    margin-bottom: 10px;
+}
+
+.claimed_header h1 {
+  color: black;
+}
+
+.claimed_form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.senior_detail {
+  flex: 1 1 45%; /* Adjust as needed */
+  background-color: #C5DFF8;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.senior_detail h1 {
+  color: #4a55a2;
+  font-weight: bolder;
+}
+
+.claimed_footer {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn-Back,
+.btn-Confirm {
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: bold;
+  background-color: #7895CB;
+  color: black;
+  text-decoration: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-Back:hover,
+.btn-Confirm:hover {
+  background-color: #4A55A2;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    text-align:center;
+}
+
+.modal-head{
+    border-radius: 10px 10px 0 0;
+    width: 100%;
+    background: #4a55a2;
+    padding: 20px;
+}
+
+.modal-container1 {
+  position: fixed;
+  top: 20%;
+  left: 34%;
+  background: white;
+  border-radius: 10px;
+  max-width: 500px;
+  text-align: center;
+}
+
+
+.modal-content {
+    padding-bottom: 30px;
+    padding-top: 30px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 0;
+    font-size: 18px;
+    color: black;
+}
+
+.modal-content i{
+    color: red;
+    font-size: 35px;
+    padding-bottom: 10px;
+}
+
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+}
+
+.btnContinue,
+.btnCancel {
+    margin: 0 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #a0bfe0;
+    color: black;
+    border: none;
+    border-radius: 10px;
+}
+
+.btnContinue:hover,
+.btnCancel:hover {
+  background-color: #4A55A2;
+}

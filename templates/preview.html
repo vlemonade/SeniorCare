@@ -22,7 +22,7 @@
                 <img src="{% static 'image/profile.png' %}" alt="profile">
             </div>
         {% endif %}
-    </div>
+        </div>
         <div class="display-form">
             <label>Last Name</label>
             <input value="{{ seniors.last_name}}" disabled>
@@ -74,5 +74,4 @@
             <a href="{% url 'register_page' %}">Done</a>
         </div>
     </div>
-</div>
 {%endblock%}

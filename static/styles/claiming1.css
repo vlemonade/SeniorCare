@@ -17,7 +17,22 @@
   margin-right: 0;
   margin-bottom: 10px;
 }
+  .status-circle {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+  }
 
+  .active-status {
+    background-color: green;  /* Color for active status */
+    border: 2px solid green;  /* Border color for active status */
+  }
+
+  .inactive-status {
+    background-color: red;  /* Color for inactive status */
+    border: 2px solid red;  /* Border color for inactive status */
+  }
 
 .left {
   font-size: 40px;
@@ -84,6 +99,18 @@ th, td {
   padding: 15px;
   text-align: center;
 
+}
+
+td a{
+  padding: 15px;
+  color:#4A55A2 ;
+  text-decoration: none;
+  font-size: 20px;
+  font-style: italic;
+}
+
+td a:hover{
+  color:#7895CB ;
 }
 
 th{

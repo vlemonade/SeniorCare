@@ -179,12 +179,12 @@ def claim_page(request):
 
 def claim_detail_page(request, id):
     seniors = senior_list.objects.get(id=id)
-    return render(request, 'claim_detail_page.html', {'seniors': seniors})
+    choices = seniors._meta.get_field('allowance_type').choices
+    return render(request, 'claim_detail_page.html', {'seniors': seniors, 'choices': choices})
 
 def claimed_success(request, id):
     seniors = senior_list.objects.get(id=id)
     return render(request, 'claimed_success.html', {'seniors': seniors})
-
 
 def claimed_succesfully(request, id):
     seniors = get_object_or_404(senior_list, pk=id)
@@ -211,6 +211,7 @@ def claim_verify_page(request):
 
 from django.db.models import Count, Q
 from django.db.models import Min
+from django.db.models.functions import TruncMonth
 
 def claim_summary_page(request):
     # Get the latest and oldest claimed entries
@@ -224,12 +225,19 @@ def claim_summary_page(request):
         overall_count=Count('pk')
     )
 
+    # Check if the latest and oldest entries are in the same month
+    show_one_month = (
+        latest_claimed_entry.claimed_date.month == oldest_claimed_entry.claimed_date.month and
+        latest_claimed_entry.claimed_date.year == oldest_claimed_entry.claimed_date.year
+    )
+
     context = {
         'latest_claimed_entry': latest_claimed_entry,
         'oldest_claimed_entry': oldest_claimed_entry,
         'claimed_count': counts['claimed_count'],
         'unclaimed_count': counts['unclaimed_count'],
         'overall_count': counts['overall_count'],
+        'show_one_month': show_one_month,
     }
 
     return render(request, 'claim_summary_page.html', context)
@@ -353,7 +361,6 @@ def facial_recognition(request, id):
     if request.method == 'POST':
         captured_image_data = request.POST.get('captured_image', '')
 
-        # Decode the base64 image data
         _, captured_image_base64 = captured_image_data.split(',')
         captured_image = np.frombuffer(base64.b64decode(captured_image_base64), np.uint8)
 
@@ -375,7 +382,6 @@ def facial_recognition(request, id):
                 seniors.claimed_date = timezone.now()
                 seniors.save()
 
-                # Save the proof_of_claiming image
                 proof_folder = 'media/proof/'
                 os.makedirs(proof_folder, exist_ok=True)
 
@@ -384,7 +390,6 @@ def facial_recognition(request, id):
 
                 cv2.imwrite(proof_image_path, cv2.cvtColor(captured_image_np, cv2.COLOR_BGR2RGB))
 
-                # Update the database with the proof_of_claiming image path
                 seniors.proof_of_claiming = proof_image_path
                 seniors.save()
 
@@ -429,3 +434,17 @@ def check_osca_id(request):
     is_taken = senior_list.objects.filter(OSCA_ID=osca_id).exists()
     return JsonResponse({'is_taken': is_taken})
 
+def save_allowance(request, id):
+    if request.method == 'POST':
+        seniors = get_object_or_404(senior_list, id=id)
+
+        allowance_type = request.POST.get('allowanceType')
+        allowance_amount = request.POST.get('allowanceAmount')
+
+        seniors.allowance_type = allowance_type
+        seniors.allowance_amount = allowance_amount
+        seniors.save()
+
+        return JsonResponse({'status': 'success', 'id': seniors.id})
+
+    return JsonResponse({'status': 'error'})

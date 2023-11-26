@@ -49,8 +49,12 @@ urlpatterns = [
     path('facial_recognition/<int:id>/', views.facial_recognition, name='facial_recognition'),
     path('match/<int:id>/', views.match, name='match'),
     path('check_osca_id/', views.check_osca_id, name='check_osca_id'),
+<<<<<<< HEAD
 
      path('profile_page/', views.profile_page, name='profile_page'),
+=======
+    path('save_allowance/<int:id>/', views.save_allowance, name='save_allowance'),
+>>>>>>> f0e7e164ff0b1098da6653131bf0b2f3731d9bf1
 ]
 
 if settings.DEBUG:
