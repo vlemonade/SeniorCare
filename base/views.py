@@ -58,15 +58,12 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.utils import ImageReader
 from reportlab.platypus import Image
 
-# ... (import statements for your model and other necessary libraries)
-
 def download_summary(request):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'filename="senior_list_report.pdf"'
 
     seniors = senior_list.objects.all()
 
-    # Combine claimed and unclaimed data into a single table
     all_data = [['Last Name','First Name', 'OSCA ID', 'Claimed Date', 'Allowance Type', 'Allowance Amount', 'Status']]
 
     claimed_count = seniors.filter(is_claimed=True).count()
@@ -88,12 +85,8 @@ def download_summary(request):
         ]
         all_data.append(row)
 
-
-    # Create a table with the combined data
     combined_table = Table(all_data)
 
-
-    # Apply styles to the table
     style = [
     ('BACKGROUND', (0, 0), (-1, 0), colors.white),
     ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
@@ -124,42 +117,33 @@ def download_summary(request):
     <b>BRGY. 558, ZONE 55</b>
     """
 
-# Add margin at the bottom of the header
     header_text_with_margin = f'{header_text}<br/><br/>'
 
     header_style = ParagraphStyle(
         'Header',
         parent=getSampleStyleSheet()['Heading1'],
-        alignment=1,  # Center alignment
+        alignment=1,  
         fontSize=14,
     )
 
-# Header flowable
-
     header = Paragraph(header_text_with_margin, header_style)
 
-# Set the margin for the header and images
     image_margin = 30
 
-# Create a table to arrange the left image, header, and right image horizontally
     header_table_data = [
         [left_image, Spacer(1, image_margin), header, Spacer(1, image_margin), right_image]
     ]
 
-# Create a table with the combined data
     header_table = Table(header_table_data, colWidths=[50, image_margin, None, image_margin, 50])
 
-# Apply styles to the table
     header_table_style = TableStyle([
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
     ])
 
     header_table.setStyle(header_table_style)
 
-# Create the PDF document
     pdf = SimpleDocTemplate(response, pagesize=letter)
 
-    # Include summary report above the table
     summary_report = [
         f'Total Senior Citizens Who Claimed Allowances: {claimed_count}',
         f'Total Unclaimed Senior Citizens: {unclaimed_count}',
@@ -169,22 +153,13 @@ def download_summary(request):
         '',
     ]
 
-    # Use Paragraph to create a flowable for the summary report
     summary_report_paragraphs = [Paragraph(line, getSampleStyleSheet()['Normal']) for line in summary_report]
 
-# Set the margin for the summary report
     summary_report_margin = 20
-
-# Add a spacer with the specified margin at the top
     summary_report_with_margin = [Spacer(1, summary_report_margin)] + summary_report_paragraphs
-
-    # Set the margin for the tables
     table_margin = 20
 
-    # Build the PDF with header, summary report, and the combined table
     pdf.build([header_table] + summary_report_with_margin + [Spacer(1, table_margin), combined_table])
-
-
     return response
 
     
@@ -245,11 +220,9 @@ def register_page(request):
 
     context = {'form': form}
     return render(request, 'register_page.html', context)
+
 def update_page(request):
-
     status_filter = request.GET.get('status_filter', 'all')
-    is_claimed_filter = request.GET.get('is_claimed', 'all')
-
     if status_filter == 'active':
         seniors = senior_list.objects.filter(status=True)
     elif status_filter == 'inactive':
