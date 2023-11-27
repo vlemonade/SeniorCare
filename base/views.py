@@ -160,6 +160,7 @@ def download_summary(request):
     table_margin = 20
 
     pdf.build([header_table] + summary_report_with_margin + [Spacer(1, table_margin), combined_table])
+    seniors.update(is_claimed=False)
     return response
 
     
@@ -487,32 +488,22 @@ def capture_image(request):
     return JsonResponse({'error': 'Invalid request method.'}, status=400)
 
 
-def mobile_friendly_face_detection(image_path):
-    image = face_recognition.load_image_file(image_path)
-    face_locations = face_recognition.face_locations(image, model='hog')  
-    return [(top, right, bottom, left) for top, right, bottom, left in face_locations]
+
 
 @csrf_exempt
 def facial_recognition(request, id):
     seniors = senior_list.objects.get(id=id)
 
     if request.method == 'POST':
-        captured_image_data = request.POST.get('captured_image', '')
+        captured_image_data_url = request.POST.get('captured_image', '')
+        
+        _, captured_image_base64 = captured_image_data_url.split(',')
+        captured_image = np.frombuffer(base64.b64decode(captured_image_base64), np.uint8)
 
-        _, captured_image_base64 = captured_image_data.split(',')
-
-        captured_image_np = np.frombuffer(base64.b64decode(captured_image_base64), np.uint8)
-        captured_image_np = cv2.imdecode(captured_image_np, cv2.IMREAD_COLOR)
-        captured_image_np = cv2.resize(captured_image_np, (0, 0), fx=0.5, fy=0.5)
+        captured_image_np = cv2.imdecode(captured_image, -1)
 
         if captured_image_np is None:
             return JsonResponse({'error': 'Unable to load the image.'})
-
-        face_locations = mobile_friendly_face_detection(seniors.senior_image.path)
-        if not face_locations:
-            return JsonResponse({'error': 'No faces found in the captured image.'})
-        top, right, bottom, left = face_locations[0]
-        captured_face_encodings = face_recognition.face_encodings(captured_image_np, [(top, right, bottom, left)])
 
         known_face_encoding = get_known_face_encoding(seniors.senior_image.path)
 
@@ -525,22 +516,10 @@ def facial_recognition(request, id):
             if match:
                 seniors.is_claimed = True
                 seniors.claimed_date = timezone.now()
-                seniors.status = True
                 seniors.save()
 
-                proof_folder = 'media/proof/'
-                os.makedirs(proof_folder, exist_ok=True)
-
-                timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-                proof_image_path = f'{proof_folder}{id}_proof_{timestamp}.png'
-
-                cv2.imwrite(proof_image_path, cv2.cvtColor(captured_image_np, cv2.COLOR_BGR2RGB))
-
-                seniors.proof_of_claiming = proof_image_path
-                seniors.save()
-
-                return JsonResponse({'match': True, 'proof_image_path': proof_image_path})
-
+                return JsonResponse({'match': True})
+    
     return JsonResponse({'match': False})
 
 def get_known_face_encoding(image_path):
