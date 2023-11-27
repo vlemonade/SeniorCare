@@ -181,6 +181,7 @@ img {
   position: relative;
   top: 20px;
   width: 30%;
+  height: 20%;
   border: none;
   border-radius: 5px;
   padding: 15px 15px;
@@ -188,6 +189,7 @@ img {
   background: #a0bfe0;
   transition: 0.2s;
   color: black;
+  text-align: center;
 }
 
 .camera-btn:hover {
