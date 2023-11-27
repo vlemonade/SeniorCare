@@ -11,62 +11,98 @@
     <div class="container">
         
         <div class="inner">
+            <div id="form-warning-message">
+            </div>
 
             <form class="form" method="post" enctype="multipart/form-data" id="registrationForm">
-                <div id="form-warning-message">
-                </div>
+
                 {% csrf_token %}
 
-                <div class="form-errors">
-                    {{ form.non_field_errors }}
+                <div class="head-container">
+                    <div class="img">
+                        {% if seniors.senior_image %}
+                        <div class="photo-holder">
+                            <img src="{{ seniors.senior_image.url }}" alt="profile">
+                        </div>
+                        {% else %}
+                        <div class="photo-holder">
+                            <img src="{% static 'image/profile.png' %}" alt="profile">
+                        </div>
+                        {% endif %}
+                        <a href="{% url 'camera' %}" target="_blank" class="camera-btn">Capture Image<i class="fa-solid fa-camera"></i></a>
+                    </div>
+                    <div class="detail-column">
+                        <div class="display-form">
+                            <label>Last Name</label>
+                            {{ form.last_name }}
+                        </div>
+                
+                        <div class="display-form">
+                            <label>First Name</label>
+                            {{ form.first_name }}
+                        </div>
+                
+                        <div class="display-form">
+                            <label>Middle Name</label>
+                            {{ form.middle_name }}
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-wrapper">
-                    {{ form.first_name }}
+                    
+                <div class="detail-column4">
+                    <div class="display-form">
+                        <label>Suffix</label>
+                        {{ form.suffix }}
+                    </div>
+                    <div class="display-form">
+                    <label>Age</label>
+                        {{ form.age }}
+                    </div>
+    
+                    <div class="display-form">
+                        <label>Gender</label>
+                        {{ form.sex }}
+                    </div>
+                </div>
+  
+                <div class="detail-column1">
+
+                    <div class="display-form">
+                        <label>Birthdate</label>
+                        {{ form.birth_date}}
+                    </div>
+  
+                    <div class="display-form">
+                        <label>Phone no.</label>
+                        {{ form.phone_number }}
+                    </div>
                 </div>
 
-                <div class="form-wrapper">
-                    {{ form.last_name }}
+                <div class="detail-column2">
+                    <div class="display-form">
+                        <label>ID</label>
+                        {{ form.OSCA_ID }}
+                    </div>
+    
+                    <div class="display-form">
+                        <label>Address</label>
+                        {{ form.address }}
+                    </div>
+                </div>
+    
+                <div class="detail-column2">
+                    <div class="display-form">
+                        <label>Upload Image</label>
+                        {{ form.senior_image }}
+                    </div>
                 </div>
 
-                <div class="form-wrapper">
-                    {{ form.middle_name }}
+                <div class="form-btn">
+                    <button type="button" class="btn-Next" onclick="showConfirmation()">Next</button>
                 </div>
-
-                <div class="form-group">
-                    {{ form.suffix }}
-                    {{ form.sex }}
-                </div>
-
-                <div class="form-group1">
-                    {{ form.birth_date}}
-                    {{ form.age }}
-                </div>
-
-                <div class="form-wrapper">
-                    {{ form.address }}
-                </div>
-
-                <div class="form-wrapper">
-                    {{ form.phone_number }}
-                </div>
-
-                <div class="form-wrapper">
-                    {{ form.OSCA_ID }}
-                </div>
-                <div class="image">
-                    {{ form.senior_image }}
-                </div>
-          
-                <button type="button" class="btn-Next" onclick="showConfirmation()">Next</button>
             </form>
-
-        <div class="photo-holder">
-            <img src="{% static 'image/profile.png' %}" alt="profile">
-        </div>
-         
-        <a href="{% url 'camera' %}" target="_blank" class="camera-btn">Take Picture</a>
-
+            
         <div id="confirmation-popup" class="confirmation-popup">
             <div class="header"></div>
             <div class="popup-body">
