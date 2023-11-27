@@ -41,62 +41,152 @@ from reportlab.lib.pagesizes import letter
 
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+from django.http import HttpResponse
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
+from django.db.models import Sum
+from django.db.models.functions import TruncMonth
+from django.db.models import Max, Min
+from reportlab.platypus import Spacer
+from django.http import HttpResponse
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.utils import ImageReader
+from reportlab.platypus import Image
 
-# Create your views here.
+# ... (import statements for your model and other necessary libraries)
+
 def download_summary(request):
-    buf = io.BytesIO()
-    c = canvas.Canvas(buf, pagesize = letter, bottomup = 0)
-    textob = c.beginText()
-    textob.setTextOrigin(inch, inch)
-    textob.setFont("Helvetica", 12)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="senior_list_report.pdf"'
 
-    c.rotate(0)
-    
-    header_image_path = r'C:\Users\Jeryrl\Desktop\ADRIAN\BSIT 4-1N\Capstone 2\seniorcare\static\image\brgy_logo.jpg'
-    c.drawImage(header_image_path, inch, letter[1] - 11 * inch, width=1*inch, height=1*inch)  # Adjust Y-coordinate
+    seniors = senior_list.objects.all()
 
-    header_image_path_1 = r'C:\Users\Jeryrl\Desktop\ADRIAN\BSIT 4-1N\Capstone 2\seniorcare\static\image\mnl_logo.jpg'
-    c.drawImage(header_image_path_1, 6*inch, letter[1] - 11 * inch, width=0.9*inch, height=0.9*inch)
+    # Combine claimed and unclaimed data into a single table
+    all_data = [['Last Name','First Name', 'OSCA ID', 'Claimed Date', 'Allowance Type', 'Allowance Amount', 'Status']]
+
+    claimed_count = seniors.filter(is_claimed=True).count()
+    claimed_oldest_month = seniors.filter(is_claimed=True).aggregate(oldest_month=Min(TruncMonth('claimed_date')))
+    claimed_latest_month = seniors.filter(is_claimed=True).aggregate(latest_month=Max(TruncMonth('claimed_date')))
+    total_claimed_amount = seniors.filter(is_claimed=True).aggregate(total_amount=Sum('allowance_amount'))
+    unclaimed_count = seniors.filter(is_claimed=False).count()
+
+    for senior in seniors.order_by('-is_claimed', 'last_name'):
+        status = 'Claimed' if senior.is_claimed else 'Unclaimed'
+        row = [
+            senior.last_name,
+            senior.first_name,
+            senior.OSCA_ID,
+            senior.claimed_date.strftime('%Y-%m-%d') if senior.claimed_date else '',
+            senior.allowance_type if senior.is_claimed else '', 
+            senior.allowance_amount if senior.is_claimed else '',
+            status,
+        ]
+        all_data.append(row)
 
 
+    # Create a table with the combined data
+    combined_table = Table(all_data)
 
-    seniors = senior_list.objects.all()    
 
-    lines = []
+    # Apply styles to the table
+    style = [
+    ('BACKGROUND', (0, 0), (-1, 0), colors.white),
+    ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+    ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+    ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+    ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]
 
-    for senior in seniors:
-        lines.append(f"First Name: {senior.first_name}")
-        lines.append(f"Last Name: {senior.last_name}")
-        lines.append(f"Middle Name: {senior.middle_name}")
-        lines.append(f"Suffix: {senior.suffix}")
-        lines.append(f"Age: {senior.age}")
-        lines.append(f"Sex: {senior.get_sex_display()}")
-        lines.append(f"Birth Date: {senior.birth_date}")
-        lines.append(f"Address: {senior.address}")
-        lines.append(f"Phone Number: {senior.phone_number}")
-        lines.append(f"OSCA ID: {senior.OSCA_ID}")
-        lines.append(f"Updated: {senior.updated}")
-        lines.append(f"Is Claimed: {senior.is_claimed}")
-        lines.append(f"Claimed Date: {senior.claimed_date}")
-        lines.append("--------------------------")
-   
+    for i in range(1, len(all_data)): 
+        if all_data[i][-1] == 'Claimed':
+            style.append(('BACKGROUND', (0, i), (-1, i), colors.lightseagreen))
+        elif all_data[i][-1] == 'Unclaimed':
+            style.append(('BACKGROUND', (0, i), (-1, i), colors.lightcoral))
 
-    for line in lines:
-        textob.textLine(line)
+    combined_table.setStyle(TableStyle(style))
 
-    c.drawText(textob)
-    c.showPage()
-    c.save()
-    buf.seek(0)
+    pdf = SimpleDocTemplate(response, pagesize=letter)
+    left_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'mnl_logo.jpg')
+    right_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'brgy_logo.jpg')
 
-    seniors_to_delete = senior_list.objects.filter(deletion_reason__isnull=False)
-    seniors_to_delete.delete()
+    left_image = Image(left_image_path, width=100, height=100)
+    right_image = Image(right_image_path, width=100, height=100)
 
-    senior_list.objects.update(is_claimed=False)
+    header_text = """
+    <b>REPUBLIC OF THE PHILIPPINES</b><br/>
+    <b>CITY OF MANILA</b><br/>
+    <b>BRGY. 558, ZONE 55</b>
+    """
 
-    return FileResponse(buf, filename='summary.pdf')
+# Add margin at the bottom of the header
+    header_text_with_margin = f'{header_text}<br/><br/>'
 
-   
+    header_style = ParagraphStyle(
+        'Header',
+        parent=getSampleStyleSheet()['Heading1'],
+        alignment=1,  # Center alignment
+        fontSize=14,
+    )
+
+# Header flowable
+
+    header = Paragraph(header_text_with_margin, header_style)
+
+# Set the margin for the header and images
+    image_margin = 30
+
+# Create a table to arrange the left image, header, and right image horizontally
+    header_table_data = [
+        [left_image, Spacer(1, image_margin), header, Spacer(1, image_margin), right_image]
+    ]
+
+# Create a table with the combined data
+    header_table = Table(header_table_data, colWidths=[50, image_margin, None, image_margin, 50])
+
+# Apply styles to the table
+    header_table_style = TableStyle([
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+    ])
+
+    header_table.setStyle(header_table_style)
+
+# Create the PDF document
+    pdf = SimpleDocTemplate(response, pagesize=letter)
+
+    # Include summary report above the table
+    summary_report = [
+        f'Total Senior Citizens Who Claimed Allowances: {claimed_count}',
+        f'Total Unclaimed Senior Citizens: {unclaimed_count}',
+        f'Oldest Claimed Month: {claimed_oldest_month["oldest_month"].strftime("%B %Y") if claimed_oldest_month["oldest_month"] else "N/A"}',
+        f'Latest Claimed Month: {claimed_latest_month["latest_month"].strftime("%B %Y") if claimed_latest_month["latest_month"] else "N/A"}',
+        f'Total Amount of All Senior Allowance Amounts: {total_claimed_amount["total_amount"]}',
+        '',
+    ]
+
+    # Use Paragraph to create a flowable for the summary report
+    summary_report_paragraphs = [Paragraph(line, getSampleStyleSheet()['Normal']) for line in summary_report]
+
+# Set the margin for the summary report
+    summary_report_margin = 20
+
+# Add a spacer with the specified margin at the top
+    summary_report_with_margin = [Spacer(1, summary_report_margin)] + summary_report_paragraphs
+
+    # Set the margin for the tables
+    table_margin = 20
+
+    # Build the PDF with header, summary report, and the combined table
+    pdf.build([header_table] + summary_report_with_margin + [Spacer(1, table_margin), combined_table])
+
+
+    return response
+
     
 
 def index(request):
@@ -424,6 +514,10 @@ def capture_image(request):
     return JsonResponse({'error': 'Invalid request method.'}, status=400)
 
 
+def mobile_friendly_face_detection(image_path):
+    image = face_recognition.load_image_file(image_path)
+    face_locations = face_recognition.face_locations(image, model='hog')  
+    return [(top, right, bottom, left) for top, right, bottom, left in face_locations]
 
 @csrf_exempt
 def facial_recognition(request, id):
@@ -433,12 +527,19 @@ def facial_recognition(request, id):
         captured_image_data = request.POST.get('captured_image', '')
 
         _, captured_image_base64 = captured_image_data.split(',')
-        captured_image = np.frombuffer(base64.b64decode(captured_image_base64), np.uint8)
 
-        captured_image_np = cv2.imdecode(captured_image, -1)
+        captured_image_np = np.frombuffer(base64.b64decode(captured_image_base64), np.uint8)
+        captured_image_np = cv2.imdecode(captured_image_np, cv2.IMREAD_COLOR)
+        captured_image_np = cv2.resize(captured_image_np, (0, 0), fx=0.5, fy=0.5)
 
         if captured_image_np is None:
             return JsonResponse({'error': 'Unable to load the image.'})
+
+        face_locations = mobile_friendly_face_detection(seniors.senior_image.path)
+        if not face_locations:
+            return JsonResponse({'error': 'No faces found in the captured image.'})
+        top, right, bottom, left = face_locations[0]
+        captured_face_encodings = face_recognition.face_encodings(captured_image_np, [(top, right, bottom, left)])
 
         known_face_encoding = get_known_face_encoding(seniors.senior_image.path)
 
@@ -485,13 +586,6 @@ def compare_faces(known_encoding, captured_encoding):
     distance = face_recognition.face_distance([known_encoding], captured_encoding)
 
     return distance <= threshold
-
-def resize_to_square(image):
-    pil_image = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
-    size = min(pil_image.size)
-    left, top, right, bottom = (pil_image.width - size) / 2, (pil_image.height - size) / 2, (pil_image.width + size) / 2, (pil_image.height + size) / 2
-    cropped_image = pil_image.crop((left, top, right, bottom)).resize((256, 256))
-    return cv2.cvtColor(np.array(cropped_image), cv2.COLOR_RGB2BGR)
 
 def camera_page(request, id):
     seniors = senior_list.objects.get(id=id)
