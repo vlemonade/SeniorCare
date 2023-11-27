@@ -19,7 +19,7 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 TWILIO_ACCOUNT_SID = 'AC2ec02df56c8e4df50f8fc3cf9d806542'
-TWILIO_AUTH_TOKEN = '67d7991ba13189b7b3237233da506443'
+TWILIO_AUTH_TOKEN = '47abd02e6045bb625cd7280b61614d42'
 TWILIO_PHONE_NUMBER = '+15673471882'
 
 # Quick-start development settings - unsuitable for production
