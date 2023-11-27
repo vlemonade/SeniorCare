@@ -89,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
         retakeButton.style.display = 'none';
         submitLink.style.display = 'none';
         captureButton.style.display = 'block';
+        cancelButton.style.display = 'block';
     });
 
     popupCancelButton.addEventListener('click', function () {

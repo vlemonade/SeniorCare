@@ -69,9 +69,9 @@
           <td>{{ senior.suffix }}
             <td>
               {% if senior.status %}
-                <i class="fa-solid fa-circle" style="color: green;"></i>
+                Active
               {% else %}
-                <i class="fa-solid fa-circle" style="color: red;"></i>
+                Inactive
               {% endif %}
             </td>
           <td>
@@ -100,14 +100,6 @@
     <a href="{% url 'claim_summary_page' %}" class="verify-btn" id=""
       ><i class="fa-regular fa-circle-check"></i>Verify</a
     >
-  </div>
-
-  <div class="legend-container">
-    <h1>Legend:</h1>
-    <div class="legend">
-      <h3 class="active-legend"><i class="fa-solid fa-circle"></i> Active: {{ total_active }} </h3>
-      <h3 class="inactive-legend"><i class="fa-solid fa-circle"></i> Inactive: {{ total_inactive }} </h3>
-    </div> 
   </div>
   </div>
 </div>

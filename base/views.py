@@ -78,7 +78,7 @@ def download_summary(request):
             senior.last_name,
             senior.first_name,
             senior.OSCA_ID,
-            senior.claimed_date.strftime('%Y-%m-%d') if senior.claimed_date else '',
+            senior.claimed_date.strftime('%Y-%m-%d') if senior.is_claimed and senior.claimed_date else '',
             senior.allowance_type if senior.is_claimed else '', 
             senior.allowance_amount if senior.is_claimed else '',
             status,
@@ -98,42 +98,11 @@ def download_summary(request):
 
     for i in range(1, len(all_data)): 
         if all_data[i][-1] == 'Claimed':
-            style.append(('BACKGROUND', (0, i), (-1, i), colors.lightseagreen))
+            style.append(('BACKGROUND', (0, i), (-1, i), colors.white))
         elif all_data[i][-1] == 'Unclaimed':
-            style.append(('BACKGROUND', (0, i), (-1, i), colors.lightcoral))
+            style.append(('BACKGROUND', (0, i), (-1, i), colors.gray))
 
     combined_table.setStyle(TableStyle(style))
-
-
-    deleted_accounts_data = [['Last Name', 'First Name', 'OSCA ID', 'Registered Date', 'Deletion Date', 'Deletion Reason']]
-
-    deleted_accounts = seniors.filter(date_of_deletion__isnull=False)
-
-    for deleted_senior in deleted_accounts.order_by('-date_of_deletion', 'last_name'):
-        deleted_row = [
-            deleted_senior.last_name,
-            deleted_senior.first_name,
-            deleted_senior.OSCA_ID,
-            deleted_senior.created.strftime('%Y-%m-%d') if deleted_senior.created else '',
-            deleted_senior.date_of_deletion.strftime('%Y-%m-%d') if deleted_senior.date_of_deletion else '',
-            deleted_senior.deletion_reason,
-        ]
-        deleted_accounts_data.append(deleted_row)
-
-    deleted_accounts_table = Table(deleted_accounts_data)
-
-    deleted_accounts_style = [
-        ('BACKGROUND', (0, 0), (-1, 0), colors.white),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.gray),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black),
-    ]
-
-    deleted_accounts_table.setStyle(TableStyle(deleted_accounts_style))
-    deleted_accounts.delete()
 
     pdf = SimpleDocTemplate(response, pagesize=letter)
     left_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'mnl_logo.jpg')
@@ -186,12 +155,48 @@ def download_summary(request):
 
     summary_report_paragraphs = [Paragraph(line, getSampleStyleSheet()['Normal']) for line in summary_report]
 
-    summary_report_margin = 20
+    summary_report_margin = 30
     summary_report_with_margin = [Spacer(1, summary_report_margin)] + summary_report_paragraphs
     table_margin = 20
+    
+    deleted_accounts_data = [['Last Name', 'First Name', 'OSCA ID', 'Registered Date', 'Deletion Date', 'Deletion Reason']]
 
-    pdf.build([header_table] + summary_report_with_margin + [Spacer(1, table_margin), combined_table, Spacer(1, table_margin), deleted_accounts_table])
-    seniors.update(is_claimed=False)
+    deleted_accounts = seniors.filter(date_of_deletion__isnull=False)
+
+    for deleted_senior in deleted_accounts.order_by('-date_of_deletion', 'last_name'):
+        deleted_row = [
+            deleted_senior.last_name,
+            deleted_senior.first_name,
+            deleted_senior.OSCA_ID,
+            deleted_senior.created.strftime('%Y-%m-%d') if deleted_senior.created else '',
+            deleted_senior.date_of_deletion.strftime('%Y-%m-%d') if deleted_senior.date_of_deletion else '',
+            deleted_senior.deletion_reason,
+        ]
+        deleted_accounts_data.append(deleted_row)
+
+# Check if there are rows in deleted_accounts_data before creating the table
+    if len(deleted_accounts_data) > 1:  # Check if there is more than the header row
+        deleted_accounts_table = Table(deleted_accounts_data)
+
+        deleted_accounts_style = [
+            ('BACKGROUND', (0, 0), (-1, 0), colors.white),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.gray),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ]
+
+        deleted_accounts_table.setStyle(TableStyle(deleted_accounts_style))
+
+        pdf.build([header_table] + summary_report_with_margin + [Spacer(1, table_margin), combined_table, Spacer(1, table_margin), deleted_accounts_table])
+        seniors.update(is_claimed=False)
+    else:
+        # If there are no deleted accounts, only include the other tables
+        pdf.build([header_table] + summary_report_with_margin + [Spacer(1, table_margin), combined_table])
+        seniors.update(is_claimed=False)
+
     return response
 
     
@@ -283,7 +288,6 @@ def delete(request, id):
             seniors.status = False
             seniors.date_of_deletion = timezone.now()
             seniors.save()
-            messages.success(request, 'Information updated successfully.')
             return HttpResponseRedirect('/update_page/')  
 
     return render(request, 'update_viewinfo_page.html', {'seniors': seniors})
@@ -310,6 +314,9 @@ def update(request, id):
         seniors.sex = request.POST.get('sex')
         seniors.address = request.POST.get('Adress')
         seniors.phone_number = request.POST.get('phone_number')
+        new_status = request.POST.get('status')
+        seniors.status = new_status if new_status is not None else True
+        seniors.status = new_status
         seniors.save()
     context = {'seniors': seniors}
     return render ( request, 'update_viewinfo_page.html', context)

@@ -54,11 +54,11 @@
                 <td>{{ senior.first_name }}</td>
                 <td>{{ senior.middle_name }}</td>
                 <td>
-                    {% if senior.status %}
-                        <i class="fa-solid fa-circle" style="color: green;"></i>
-                    {% else %}
-                        <i class="fa-solid fa-circle" style="color: red;"></i>
-                    {% endif %}
+                  {% if senior.status %}
+                    Active
+                  {% else %}
+                    Inactive
+                  {% endif %}
                 </td>
                 <td>
                     <a href="/update_viewinfo_page/{{ senior.id }}" class="claim-btn">ViewInfo</a>
