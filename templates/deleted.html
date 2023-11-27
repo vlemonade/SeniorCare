@@ -43,7 +43,7 @@
     <div class="detail-column">
         <div class="display-form">
             <label>Deleted by:</label>
-            <input  value="{{ request.user.username }}" disabled>
+            <input  value="{{ request.user.get_full_name }}" disabled>
         </div>
     </div>
 

@@ -530,7 +530,7 @@ def retrieve_entry(request, id):
 
     if request.method == 'POST':
         seniors.deletion_date = None
-        seniors.deletion_reason = ''
+        seniors.deletion_reason = None
         seniors.status = True
         seniors.save()
 

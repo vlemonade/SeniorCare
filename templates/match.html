@@ -48,7 +48,7 @@
 
         <div class="display-form">
             <label>Processed by</label>
-            <input  value="{{ request.user.username }}" disabled>
+            <input  value="{{ request.user.get_full_name }}" disabled>
         </div>
 
     </div>
