@@ -134,7 +134,7 @@
 
 @media (max-width: 500px)
 {
-  .preview-container{
+  .container{
     max-width: 95vw;
     margin: 20px auto;
     padding: 20px;
