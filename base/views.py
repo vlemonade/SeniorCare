@@ -104,6 +104,37 @@ def download_summary(request):
 
     combined_table.setStyle(TableStyle(style))
 
+
+    deleted_accounts_data = [['Last Name', 'First Name', 'OSCA ID', 'Registered Date', 'Deletion Date', 'Deletion Reason']]
+
+    deleted_accounts = seniors.filter(date_of_deletion__isnull=False)
+
+    for deleted_senior in deleted_accounts.order_by('-date_of_deletion', 'last_name'):
+        deleted_row = [
+            deleted_senior.last_name,
+            deleted_senior.first_name,
+            deleted_senior.OSCA_ID,
+            deleted_senior.created.strftime('%Y-%m-%d') if deleted_senior.created else '',
+            deleted_senior.date_of_deletion.strftime('%Y-%m-%d') if deleted_senior.date_of_deletion else '',
+            deleted_senior.deletion_reason,
+        ]
+        deleted_accounts_data.append(deleted_row)
+
+    deleted_accounts_table = Table(deleted_accounts_data)
+
+    deleted_accounts_style = [
+        ('BACKGROUND', (0, 0), (-1, 0), colors.white),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.gray),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]
+
+    deleted_accounts_table.setStyle(TableStyle(deleted_accounts_style))
+    deleted_accounts.delete()
+
     pdf = SimpleDocTemplate(response, pagesize=letter)
     left_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'mnl_logo.jpg')
     right_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'brgy_logo.jpg')
@@ -159,7 +190,7 @@ def download_summary(request):
     summary_report_with_margin = [Spacer(1, summary_report_margin)] + summary_report_paragraphs
     table_margin = 20
 
-    pdf.build([header_table] + summary_report_with_margin + [Spacer(1, table_margin), combined_table])
+    pdf.build([header_table] + summary_report_with_margin + [Spacer(1, table_margin), combined_table, Spacer(1, table_margin), deleted_accounts_table])
     seniors.update(is_claimed=False)
     return response
 
@@ -374,9 +405,9 @@ def claim_summary_page(request):
 
     counts = senior_list.objects.aggregate(
         claimed_count=Count('pk', filter=Q(is_claimed=True)),
-        unclaimed_count=Count('pk', filter=Q(is_claimed=False)),
-        deleted_count=Count('pk', filter=Q(status=False)),  
-        overall_count=Count('pk')
+        unclaimed_count=Count('pk', filter=Q(is_claimed=False, date_of_deletion__isnull=True)),
+        deleted_count=Count('pk', filter=Q(status=False, date_of_deletion__isnull=False)),
+        overall_count=Count('pk', filter=Q(date_of_deletion__isnull=True)),
     )
 
     if latest_claimed_entry and oldest_claimed_entry:
