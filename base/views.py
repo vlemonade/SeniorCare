@@ -292,10 +292,6 @@ def edit(request, id):
     seniors = senior_list.objects.get(id=id)
     return render(request, 'edit.html', {'seniors': seniors})
 
-def edit(request, id):
-    seniors = senior_list.objects.get(id=id)
-    return render(request, 'edit.html', {'seniors': seniors})
-
 def update(request, id):
 
     seniors = senior_list.objects.get(id=id)
@@ -545,6 +541,7 @@ def facial_recognition(request, id):
             match = compare_faces(known_face_encoding, captured_face_encoding)
 
             if match:
+                seniors.status = True
                 seniors.is_claimed = True
                 seniors.claimed_date = timezone.now()
                 seniors.save()
@@ -606,7 +603,7 @@ def retrieve_entry(request, id):
     seniors = get_object_or_404(senior_list, id=id)
 
     if request.method == 'POST':
-        seniors.deletion_date = None
+        seniors.date_of_deletion = None
         seniors.deletion_reason = None
         seniors.status = True
         seniors.save()
