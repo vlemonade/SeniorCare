@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-6#h1(y^pg5+v&5e^n(b5!%e1dr$ss(haab&j8e07qn24$5=796
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['senior-care-4343252e6002.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['seniorcare5-d3e1f1b67a9d.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
