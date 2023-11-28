@@ -100,7 +100,7 @@ def download_summary(request):
         if all_data[i][-1] == 'Claimed':
             style.append(('BACKGROUND', (0, i), (-1, i), colors.white))
         elif all_data[i][-1] == 'Unclaimed':
-            style.append(('BACKGROUND', (0, i), (-1, i), colors.gray))
+            style.append(('BACKGROUND', (0, i), (-1, i), colors.white))
 
     combined_table.setStyle(TableStyle(style))
 
@@ -180,7 +180,7 @@ def download_summary(request):
 
         deleted_accounts_style = [
             ('BACKGROUND', (0, 0), (-1, 0), colors.white),
-            ('BACKGROUND', (0, 1), (-1, -1), colors.gray),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.white),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
             ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
@@ -267,9 +267,12 @@ def update_page(request):
     else:
         seniors = senior_list.objects.all()
 
-    seniors = seniors.order_by('last_name')
+    
     total_active = seniors.filter(status=True).count()
     total_inactive = seniors.filter(status=False).count()
+    claimed_seniors = senior_list.objects.filter(status=True).order_by('last_name')
+    unclaimed_seniors = senior_list.objects.filter(status=False).order_by('last_name')
+    seniors = list(claimed_seniors) + list(unclaimed_seniors)
 
     return render(request, 'update_page.html', {'seniors': seniors, 'total_active': total_active, 'total_inactive': total_inactive})
 
@@ -360,9 +363,13 @@ def claim_page(request):
     elif is_claimed_filter == 'not_claimed':
         seniors = seniors.filter(is_claimed=False)
 
-    seniors = seniors.order_by('last_name')
+    
     total_active = seniors.filter(status=True).count()
     total_inactive = seniors.filter(status=False).count()
+
+    claimed_seniors = senior_list.objects.filter(is_claimed=False).order_by('last_name')
+    unclaimed_seniors = senior_list.objects.filter(is_claimed=True).order_by('last_name')
+    seniors = list(claimed_seniors) + list(unclaimed_seniors)
 
     return render(request, 'claim_page.html', {'seniors': seniors, 'total_active': total_active, 'total_inactive': total_inactive})
 

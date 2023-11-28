@@ -79,6 +79,11 @@ a {
   margin-top: 15px;
 }
 
+
+.filter-con{
+  display: flex ;
+}
+
 .display-form label{
   color: black;
   margin-left: 5px;

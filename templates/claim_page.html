@@ -20,14 +20,12 @@
 
 
       <div class="filter">
-      <div class="status">   
-      <label for="status_filter">Status:</label>
-      <select name="status_filter" id="status_filter" onchange="document.getElementById('statusFilterForm').submit()">
-          <option value="all" {% if request.GET.status_filter == 'all' %}selected{% endif %}>All</option>
-          <option value="active" {% if request.GET.status_filter == 'active' %}selected{% endif %}>Active</option>
-          <option value="inactive" {% if request.GET.status_filter == 'inactive' %}selected{% endif %}>Inactive</option>
-      </select>
-      </div>
+          <form action="/search/" method="GET">
+            <div class="search-bar">
+              <h2>Search:</h2>
+              <input placeholder="Search" type="search" name="q" class="left" />
+            </div>
+          </form>
 
       <div class="claim">
       <label for="is_claimed">Claimed:</label>
@@ -61,6 +59,7 @@
 
       <tbody>
         {%for senior in seniors%}
+        {% if not senior.deletion_reason %}
         <tr>
           <td>{{ forloop.counter }}</td>
           <td>{{ senior.last_name }}</td>
@@ -76,20 +75,13 @@
             </td>
           <td>
             {% if senior.is_claimed %}
-              {% if senior.deletion_reason %}
-                <a href="/deleted/{{ senior.id }}">Deleted</a>
-              {% else %}
-                <a href="/match/{{ senior.id }}">Claimed</a>
-              {% endif %}
+              <a href="/match/{{ senior.id }}">Claimed</a>              
             {% else %}
-              {% if senior.deletion_reason %}
-                <a href="/deleted/{{ senior.id }}">Deleted</a>
-              {% else %}
-                <a href="/claim_detail_page/{{ senior.id }}" class="claim-btn">Claim</a>
-              {% endif %}
+              <a href="/claim_detail_page/{{ senior.id }}" class="claim-btn">Claim</a>
             {% endif %}
           </td>
         </tr>
+        {% endif %}
         {% endfor %}
       </tbody>
     </table>

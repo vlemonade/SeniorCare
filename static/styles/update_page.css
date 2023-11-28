@@ -8,6 +8,39 @@
   background: #7895CB;
   font-family: "Inter", Helvetica;
 }
+td a{
+  padding: 15px;
+  color:#4A55A2 ;
+  text-decoration: none;
+  font-size: 20px;
+  font-style: italic;
+}
+.filter-con{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-bar{
+  margin-right: 20px;
+  
+}
+.search-bar input{
+  width: 100%;
+  height: 39px;
+  margin-top: -5px;
+  border: 1px solid black;
+  border-radius: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
+  color: black;
+}
+
+.search-bar h2{
+  font-size: 17px;
+  display: block;
+    color: white;
+}
 
 .container {
   display: flex;
@@ -48,13 +81,15 @@ form {
 }
 
 
-label {
+
+
+label , .search-bar h2 {
   display: block;
     color: white;
 }
 
 select {
-    width: 290%;
+    width: 150%;
     padding: 9px;
     border: 1px solid black;
     border-radius: 4px;
@@ -304,11 +339,22 @@ tr:nth-child(even) td{
   th, td {
       padding: 12px;
   }
+
+  .search-bar{
+    margin-right: 20px;
+    text-align: left;
+    
+  }
+  .search-bar input{
+    margin-top: -1px;
+    padding-left: 5px;
+    padding-right: 2px;
+  }
 }
 
 @media(max-width: 500px){
-  .search-bar input {
-    width:100%;
+  .search-bar h2 {
+    display: none;
   }
 
   .container {
@@ -318,21 +364,6 @@ tr:nth-child(even) td{
 
 @media(max-width: 415px){
 
-  .search-bar i {
-      z-index: 1;
-      top: 26px;
-      left: 15px;
-      font-size: 25px;
-      background: transparent;
-    }
-
-    .search-bar {
-      margin-bottom: 10px;
-    }
-
-    .search-bar input {
-      padding-left: 55px; 
-    }
 
   .button-container .notify-btn{
       padding: 10px 35px;
