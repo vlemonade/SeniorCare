@@ -238,25 +238,25 @@ def index(request):
 def home_page(request):
     return render(request, 'home_page.html'  )
 
-def register_page(request):
-    return render(request, 'register_page.html')
+#def register_page(request):
+#    return render(request, 'register_page.html')
 
 def main_page(request):
     return render(request, 'main.html')
 
-def register_page(request):
-    form = register_form()
-    if request.method == 'POST':
-        form = register_form(request.POST, request.FILES)
-        if form.is_valid():
-            seniors = form.save(commit=False)
-            seniors.status = True 
-            seniors.save()
-
-            return redirect('preview', id=seniors.id)
-
-    context = {'form': form}
-    return render(request, 'register_page.html', context)
+#def register_page(request):
+#    form = register_form()
+#    if request.method == 'POST':
+#        form = register_form(request.POST, request.FILES)
+#        if form.is_valid():
+#            seniors = form.save(commit=False)
+#            seniors.status = True 
+#            seniors.save()
+#
+#            return redirect('preview', id=seniors.id)
+#
+#    context = {'form': form}
+#    return render(request, 'register_page.html', context)
 
 def update_page(request):
     status_filter = request.GET.get('status_filter', 'all')
