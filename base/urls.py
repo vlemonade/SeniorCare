@@ -18,8 +18,8 @@ urlpatterns = [
     path('update_page/', views.update_page, name='update_page'),
     path('update_viewinfo_page/<int:id>', views.update_viewinfo_page, name='update_viewinfo_page'),
     
+    path('add_senior', views.add_senior, name='add_senior'),
     path('edit/<int:id>', views.edit, name='edit'),
-
     path('update/<int:id>', views.update, name='update'),
     path('delete/<int:id>', views.delete, name = 'delete'),
    
@@ -39,11 +39,11 @@ urlpatterns = [
     path('claim_summary_page/', views.claim_summary_page, name='claim_summary_page'),
 
     path('camera/', views.camera, name='camera'),
+    path('osca_preview/<int:id>', views.osca_preview, name='osca_preview'),
     path('preview/<int:id>', views.preview, name='preview'),
     path('capture_image/', views.capture_image, name='capture_image'),
 
     path('download_summary/', views.download_summary, name='download_summary'),
-
     
     path('camera_page/<int:id>/', views.camera_page, name='camera_page'),
     path('facial_recognition/<int:id>/', views.facial_recognition, name='facial_recognition'),

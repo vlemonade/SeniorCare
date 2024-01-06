@@ -1,13 +1,12 @@
-
-
 .claim-body{
   position: absolute;
-  width: 90vw;
+  width: 100vw;
+  padding: 20px 40px;
   display: block;
-  margin: 2% 5% 4% 5%;
   background: #7895CB;
   font-family: "Inter", Helvetica;
 }
+
 td a{
   padding: 15px;
   color:#4A55A2 ;
@@ -45,11 +44,19 @@ td a{
 .container {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  margin: 0;
   padding: 0;
-  margin-left: 0;
-  margin-right: 0;
-  margin-bottom: 10px;
-  height: auto;
+  max-width: 100%;
+}
+
+.addButton{
+  width: 100%;
+  padding: 9px;
+  border: 1px solid black;
+  border-radius: 4px;
+  margin-right: 10px;
+
 }
 
 .footer{
@@ -89,8 +96,8 @@ label , .search-bar h2 {
 }
 
 select {
-    width: 150%;
     padding: 9px;
+    padding-right: 50px;
     border: 1px solid black;
     border-radius: 4px;
     margin-right: 10px;
@@ -106,15 +113,7 @@ select option:hover {
   background: #C5DFF8; 
 }
 
-.brgy {
-  margin: 20px;
-}
 
-.right {
-  text-align: end;
-  font-size: 40px;
-  color: white;
-}
 
 .legend-container h1{
   font-size: 15px;
@@ -140,6 +139,146 @@ select option:hover {
 
 .inactive-legend i{
   color: red;
+}
+
+.modal-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+
+
+
+.modalBox{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 10px;
+}
+
+.closeModalBtn{
+  position: absolute;
+  right: 15px;
+  top: 20px;
+  background-color: transparent;
+  border: none;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 400px;
+  position: relative;
+  border-radius: 10px;
+}
+
+.modalHeader{
+  background: #7895CB;
+  padding: 30px;
+  border-radius: 10px 10px 0 0;
+}
+
+.modalBody{
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  margin: 0;
+}
+
+#addSeniorForm{
+  margin: 0;
+  padding: 0;
+}
+
+.modalBody label{
+  color: #000000;
+  margin: 5px 0;
+}
+
+.modalInput {
+  position: relative;
+  display: inline-block;
+}
+
+.oscaIdInput {
+  padding-right: 30px; 
+  outline: none;
+  font-size: 20px;
+}
+
+.oscaIdInput,
+.modalInput button {
+  border: 1px solid #ccc;
+  padding: 8px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  height: 40px; /* Adjust the height as needed */
+}
+
+.modalInput button i{
+  font-size: 20px;
+  padding: 0 5px;
+}
+
+.error-message{
+  color: red;
+  margin-top: 5px;
+}
+
+.result-message{
+  color: #000000;
+  margin-top: 5px;
+}
+
+.info-link{
+  color: #4A55A2;
+}
+
+.modalInput button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: none;
+  background-color: #7895CB;
+  cursor: pointer;
+}
+
+.modalButton{
+  display: flex;
+  position: relative;
+  justify-content: end;
+  padding: 10px 10px;
+  margin-bottom: 5px;
+}
+
+.modalButton button{
+  background: #656669;
+  border: 1px solid ;
+  color: white;
+  padding: 10px 20px 10px 20px;
+  border-radius: 5px;
+  margin-right: 20px;
+  font-weight: bold;
+  font-size: 15px;
+  box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.4);
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.modalButton button:hover{
+  background: #c5d5e7;
+  color: #494a4e;
+  border: 1px solid #7895CB;
+  cursor: pointer;
+  box-shadow: none;
+
 }
 
 

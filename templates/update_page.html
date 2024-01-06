@@ -13,33 +13,38 @@
   crossorigin="anonymous"
   referrerpolicy="no-referrer"
 />
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script defer src="{% static 'js/ViewInfo.js' %}"></script>
 <title>Update Page</title>
 
 <div class="claim-body">
   <div class="container">
     <div class="filter-con">
-    <form action="/search/" method="GET">
-      <div class="search-bar">
-        <h2>Search:</h2>
-        <input placeholder="Search" type="search" name="q" class="left" />
-      </div>
-    </form>
+      <form action="/search/" method="GET">
+        <div class="search-bar">
+          <h2>Search:</h2>
+          <input placeholder="Search" type="search" name="q" class="left" />
+        </div>
+      </form>
 
-    <form method="GET" id="statusFilterForm">
-      <div class="filter">
-      <label for="status_filter">Status:</label>
-      <select name="status_filter" id="status_filter" onchange="document.getElementById('statusFilterForm').submit()">
-          <option value="all" {% if request.GET.status_filter == 'all' %}selected{% endif %}>All</option>
-          <option value="active" {% if request.GET.status_filter == 'active' %}selected{% endif %}>Active</option>
-          <option value="inactive" {% if request.GET.status_filter == 'inactive' %}selected{% endif %}>Inactive</option>
-      </select>
+      <form method="GET" id="statusFilterForm">
+        <div class="filter">
+          <label for="status_filter">Status:</label>
+          <select name="status_filter" id="status_filter" onchange="document.getElementById('statusFilterForm').submit()">
+            <option value="all" {% if request.GET.status_filter == 'all' %}selected{% endif %}>All</option>
+            <option value="active" {% if request.GET.status_filter == 'active' %}selected{% endif %}>Active</option>
+            <option value="inactive" {% if request.GET.status_filter == 'inactive' %}selected{% endif %}>Inactive</option>
+          </select>
+        </div>
+      </form>
     </div>
-  </form>
-</div>
 
     <div class="brgy">
-      <h2 class="right">Barangay 558 / Zone 55</h2>
+      <button class="addButton" onclick="openModal()"><i class="fa-solid fa-plus"></i> Add Senior</button>
     </div>
+
   </div>
 
   <div class="table-container">
@@ -82,6 +87,30 @@
       {% endfor %}
       </tbody>
     </table>
-    {% endblock content%}
+  </div>
+
+  <div class="modal-background" id="addSeniorModal">
+    <div class="modal-content">
+      <div class="modalHeader">
+        <button class="closeModalBtn" onclick="closeModal()"><i class="fa-solid fa-x"></i></button>
+      </div>
+      <form method="post" action="{% url 'add_senior' %}" id="addSeniorForm">
+        {% csrf_token %}
+
+        <div class="modalBox">
+          <div class="modalBody">
+            <label for="oscaIdInput">Enter OSCA ID:</label>
+              <div class="modalInput">
+                <input class="oscaIdInput" type="text" id="oscaIdInput" name="osca_id">
+                <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+              </div>
+          </div>
+      
+          <div class="result-message"></div>
+          <div class="error-message"></div>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
+{% endblock content%}

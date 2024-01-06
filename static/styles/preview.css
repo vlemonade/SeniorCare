@@ -106,12 +106,29 @@
   transition: .2s ease;
 }
 
+.btn-preview button {
+  display: inline-block;
+  text-decoration: none;
+  border: none;
+  background-color: #7895CB;
+  color: white;
+  padding: 10px 30px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: .2s ease;
+}
+
 .btn-preview a i{
   font-size: 16px;
   margin-left: 5px;
 }
 
 .btn-preview a:hover {
+  background-color:#4A55A2;
+}
+
+.btn-preview button:hover {
   background-color:#4A55A2;
 }
 

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login,logout
 from django. contrib import messages
-from .models import senior_list, SMSMessage
+from .models import senior_list, SMSMessage, osca_list
 from .forms import register_form
 from django.db.models import Q
 from django.shortcuts import redirect, get_object_or_404
@@ -174,8 +174,7 @@ def download_summary(request):
         ]
         deleted_accounts_data.append(deleted_row)
 
-# Check if there are rows in deleted_accounts_data before creating the table
-    if len(deleted_accounts_data) > 1:  # Check if there is more than the header row
+    if len(deleted_accounts_data) > 1: 
         deleted_accounts_table = Table(deleted_accounts_data)
 
         deleted_accounts_style = [
@@ -193,7 +192,6 @@ def download_summary(request):
         pdf.build([header_table] + summary_report_with_margin + [Spacer(1, table_margin), combined_table, Spacer(1, table_margin), deleted_accounts_table])
         seniors.update(is_claimed=False)
     else:
-        # If there are no deleted accounts, only include the other tables
         pdf.build([header_table] + summary_report_with_margin + [Spacer(1, table_margin), combined_table])
         seniors.update(is_claimed=False)
 
@@ -276,6 +274,26 @@ def update_page(request):
 
     return render(request, 'update_page.html', {'seniors': seniors, 'total_active': total_active, 'total_inactive': total_inactive})
 
+
+
+def add_senior(request):
+    result = None
+    view_info_link = None
+
+    if request.method == 'POST':
+        osca_id = request.POST.get('osca_id')
+        try:
+            senior = osca_list.objects.get(OSCA_ID=osca_id)
+            result = f'OSCA ID is valid. '
+            view_info_link = reverse('osca_preview', args=[senior.id])
+        except osca_list.DoesNotExist:
+            result = f'NOT FOUND!'
+
+    return JsonResponse({'result': result, 'view_info_link': view_info_link})
+
+def osca_preview(request, id):
+    senior = get_object_or_404(osca_list, id=id)
+    return render(request, 'osca_preview.html', {'senior': senior})
 
 def update_viewinfo_page(request, id):
     seniors = senior_list.objects.get(id=id)

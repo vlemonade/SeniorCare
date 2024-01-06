@@ -3,6 +3,9 @@ from .models import senior_list,SMSMessage
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin 
+from .models import osca_list
+
+admin.site.register(osca_list)
 # Register your models here.
 admin.site.register(senior_list)
 admin.site.register(SMSMessage)
