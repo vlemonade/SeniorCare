@@ -8,22 +8,28 @@
         <title>Log In</title>
     </head>
         <body>
-            <div class="admin-link">
-                <a href="admin/"><i class="fa-solid fa-arrow-left"></i>Admin</a>
+            <div class="background-container">
+                <div class="background"></div>
             </div>
-          <form method='POST' action="">
-            {% csrf_token %}
-            <div class="loginpage">
-              <img class="senior" src="{% static 'image/senior_care_logo.png'%}" alt="senior care logo">
-              <img class="avatar" src="{% static 'image/user_avatar.png'%}" alt="user avatar">
-                <div class="loginput">
-                    <input type="text" class="username" name="username" placeholder="Username" required>
-                    <input type="password" class="password" name="password" placeholder="Password" required>
-             
-                    <input type="submit" class="login" value="Log in">
+        
+            <div class="login-container">
+                <div class="admin-link">
+                    <a href="admin/"><i class="fa-solid fa-arrow-left"></i>Admin</a>
                 </div>
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <div class="loginpage">
+                        <img class="senior" src="{% static 'image/senior_care_logo.png'%}" alt="senior care logo">
+                        <img class="avatar" src="{% static 'image/user_avatar.png'%}" alt="user avatar">
+                        <div class="loginput">
+                            <input type="text" class="username" name="username" placeholder="Username" required>
+                            <input type="password" class="password" name="password" placeholder="Password" required>
+                            <input type="submit" class="login" value="Log in">
+                        </div>
+                    </div>
+                </form>
             </div>
-          </form>
+
           <div class="overlay" id="overlay">
             <div class="overlay-content">
                 {% if messages %}
@@ -38,6 +44,20 @@
         </div>
 
         <script>
+            document.addEventListener("DOMContentLoaded", function() {
+            var images = ['/static/image/1.jpg', '/static/image/2.jpg', '/static/image/3.jpg'];
+            var index = 0;
+            var backgroundElement = document.querySelector('.background');
+
+            function changeBackground() {
+                backgroundElement.style.backgroundImage = 'url(' + images[index] + ')';
+                index = (index + 1) % images.length;
+            }
+            changeBackground();
+
+            setInterval(changeBackground, 3000);
+            });
+            
             // Function to close the overlay
             function closeOverlay() {
                 document.getElementById('overlay').style.display = 'none';

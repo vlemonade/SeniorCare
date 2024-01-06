@@ -1,27 +1,52 @@
-body{
-  background-color: #4a55a2;
+body {
   margin: 0;
-  box-sizing: border-box;
-  max-width: 100%;
+  padding: 0;
+  overflow: hidden; 
 }
 
-.admin-link{
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: background-image 1s ease;
+}
+
+.login-container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(74, 85, 162, 0.7); 
+  z-index: 1; 
+}
+.admin-link {
+  margin-bottom: 20px;
   position: absolute;
   top: 20px;
-  left: 20px ;
+  right: calc(100% + 20px); 
+  z-index: 2000;
 }
 
 .admin-link a {
   text-decoration: none;
-  color: black;
+  color: white;
   font-size: 15px;
   transition: .2s ease;
-  
 }
 
-.admin-link a i{
+.admin-link a i {
   padding-right: 5px;
-  color: black;
+  color: white;
   font-size: 15px;
   transition: .2s ease;
 }
@@ -30,38 +55,50 @@ body{
   color: #98a1e4;
 }
 
-
-.username:hover, .password:hover{
+.username:hover,
+.password:hover {
   background-color: rgba(228, 229, 240, 0.979);
 }
-.login:hover{
+
+.login:hover {
   background-color: #98a1e4;
-  color:white;
+  color: white;
 }
 
-.loginpage .senior{
+.loginpage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%; 
+  padding: 20px;
+  text-align: center;
+}
+
+.loginpage .senior {
   display: block;
-  margin-top: min(10%, 2rem);
-  margin-left: auto;
-  margin-right: auto;
   height: auto;
-  width: 50%;
+  width: 60%;
 }
 
-.loginpage .avatar{
+.loginpage .avatar {
   display: block;
   margin-top: 10px;
   margin-bottom: 10px;
-  margin-left: auto;
-  margin-right: auto;
-  height: auto;
   width: 15%;
 }
 
-.loginput input{
+.loginput {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loginput input {
   display: block;
-  margin-left: auto;
-  margin-right: auto;
   margin-bottom: 20px;
   font-family: "Inter", Helvetica;
   font-size: 30px;
@@ -71,93 +108,16 @@ body{
   outline: none;
   padding: 15px;
   background-color: #cce6ff;
-  height: auto;
-  width: 40%;
+  width: 100%;
 }
 
-.loginput input[type="submit"]{
+.loginput input[type="submit"] {
   border-radius: 25px;
   font-weight: bold;
   cursor: pointer;
-  width: 20%;
+  width: 50%;
 }
 
-@media (max-width: 900px){
-  .loginpage .senior{
-      width: 70%;
-  }
-
-  .loginpage .avatar{
-      width: 25%;
-  }
-
-  .loginput input{
-      width: 55%;;
-      font-size: 35px;
-  }
-
-  .loginput input[type="submit"]{
-      width: 25%;
-  }
-
-
-}
-
-@media (max-width: 700px){
-  .loginpage .senior{
-      width: 90%;
-  }
-
-  .loginpage .avatar{
-      width: 28%;
-  }
-
-  .loginput input{
-      width: 65%;
-      height: 4.5rem;
-      font-size: 25px;
-  }
-
-  .loginput input[type="submit"]{
-      width: 40%;
-  }
-
-
-}
-
-@media (max-width: 500px){
-
-  .loginpage .senior{
-    margin-top: 80px;
-  }
-  
-.admin-link{
-  position: absolute;
-  top: 20px;
-  left: 20px ;
-}
-
-
-  .loginpage .avatar{
-      width: 30%;
-  }
-
-  .loginput input{
-      width: 80%;
-      height: 4rem;
-      font-size: 19px;
-      margin-bottom: 10px;
-  }
-
-  .loginput input[type="submit"]{
-      width: 40%;
-      margin-top: 15px;
-  }
-}
-
-@media (max-width: 385px){
-
-}
 
 .overlay {
   display: none;
@@ -166,15 +126,15 @@ body{
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.329); /* Semi-transparent black overlay */
+  background-color: rgba(0, 0, 0, 0.329); 
   justify-content: center;
   align-items: center;
   text-align: center;
-  z-index: 999; /* Ensure the overlay is on top of other elements */
+  z-index: 999; 
 }
 
 .overlay-content {
-  background-color: #fff; /* White background for the content */
+  background-color: #fff; 
   padding: 20px;
   border-radius: 10px;
 }
@@ -185,14 +145,14 @@ body{
 }
 
 .overlay .messages li {
-  color: #150707; /* Red color for error messages */
+  color: #150707;
   font-size: 18px;
   margin-bottom: 10px;
 }
 
 .overlay button {
   padding: 10px;
-  background-color: rgb(171, 166, 166); /* Match your existing background color */
+  background-color: rgb(171, 166, 166); 
   color: #181414;
   border: none;
   border-radius: 5px;
@@ -201,6 +161,45 @@ body{
 }
 
 .overlay button:hover {
-  background-color: #4a55a2; /* Darken the color on hover */
+  background-color: #4a55a2; 
 }
 
+@media (max-width: 900px) {
+  .loginput input {
+    font-size: 35px;
+  }
+}
+
+@media (max-width: 700px) {
+  .loginpage {
+    width: 90%;
+  }
+
+  .loginput input {
+    font-size: 25px;
+  }
+}
+
+@media (max-width: 500px) {
+
+  .background {
+    position: absolute;
+    margin: 0;
+    width: 100%; 
+  }
+
+  .login-container {
+    width: 100%; 
+    border-radius: 0; 
+    left: 0; 
+    margin: 0;
+  }
+
+  .admin-link {
+    right: 10px;
+  }
+
+  .loginput input {
+    font-size: 19px;
+  }
+}
