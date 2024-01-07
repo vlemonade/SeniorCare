@@ -1,36 +1,33 @@
-{% extends 'main.html' %} {% block content %} {% load static %}
+{% extends 'main.html' %} 
+{% block content %} 
+{% load static %}
 
-<link
-  rel="stylesheet"
-  type="text/css"
-  media="screen"
-  href="{% static 'styles/update_page.css' %}"
-/>
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-  integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
-  crossorigin="anonymous"
-  referrerpolicy="no-referrer"
-/>
+<link rel="stylesheet" type="text/css" media="screen" href="{% static 'styles/update_page.css' %}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
 <script defer src="{% static 'js/ViewInfo.js' %}"></script>
+
 <title>Update Page</title>
 
 <div class="claim-body">
+
   <div class="container">
-    <div class="filter-con">
-      <form action="/search/" method="GET">
+
+    <div class="searchBox">
+      <form action="/search/" method="GET" class="search-form">
         <div class="search-bar">
           <h2>Search:</h2>
-          <input placeholder="Search" type="search" name="q" class="left" />
+          <input placeholder="Search" type="search" name="q" />
         </div>
       </form>
-  
-      <form method="GET" id="statusFilterForm">
-        <div class="filter">
+    </div>
+    
+
+    <div class="column">
+      <div class="filter">
+        <form method="GET" id="statusFilterForm" class="claim-form">
+          <div class="claim-status">
           <label for="status_filter">Status:</label>
           <select name="status_filter" id="status_filter" onchange="document.getElementById('statusFilterForm').submit()">
             <option value="all" {% if request.GET.status_filter == 'all' %}selected{% endif %}>All</option>
@@ -38,11 +35,12 @@
             <option value="inactive" {% if request.GET.status_filter == 'inactive' %}selected{% endif %}>Inactive</option>
           </select>
         </div>
-      </form>
-    </div>
-  
-    <div class="brgy">
-      <button class="addButton" onclick="openModal()"><i class="fa-solid fa-plus"></i> Add Senior</button>
+        </form>
+      </div>
+      
+      <div class="brgy">
+        <button class="addButton" onclick="openModal()"><i class="fa-solid fa-plus"></i> Add Senior</button>
+      </div>
     </div>
   </div>
 
@@ -61,29 +59,27 @@
 
       <tbody>
         {% for senior in seniors %}
-        
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ senior.last_name }}</td>
-                <td>{{ senior.first_name }}</td>
-                <td>{{ senior.middle_name }}</td>
-                <td>
-                  {% if senior.status %}
-                    Active
-                  {% else %}
-                    Inactive
-                  {% endif %}
-                </td>
-                <td>
-                  {% if senior.deletion_reason %}
-                    <a href="/deleted/{{ senior.id }}">Deleted</a>
-                  {% else %}
-                    <a href="/update_viewinfo_page/{{ senior.id }}" class="claim-btn">ViewInfo</a>
-                  {% endif %}
-                </td>
-            </tr>
-          
-      {% endfor %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ senior.last_name }}</td>
+            <td>{{ senior.first_name }}</td>
+            <td>{{ senior.middle_name }}</td>
+            <td>
+              {% if senior.status %}
+                Active
+              {% else %}
+                Inactive
+              {% endif %}
+            </td>
+            <td>
+              {% if senior.deletion_reason %}
+                <a href="/deleted/{{ senior.id }}">Deleted</a>
+              {% else %}
+                <a href="/update_viewinfo_page/{{ senior.id }}" class="claim-btn">ViewInfo</a>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
       </tbody>
     </table>
   </div>
@@ -99,10 +95,10 @@
         <div class="modalBox">
           <div class="modalBody">
             <label for="oscaIdInput">Enter OSCA ID:</label>
-              <div class="modalInput">
-                <input class="oscaIdInput" type="text" id="oscaIdInput" name="osca_id">
-                <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-              </div>
+            <div class="modalInput">
+              <input class="oscaIdInput" type="text" id="oscaIdInput" name="osca_id">
+              <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
           </div>
       
           <div class="result-message"></div>

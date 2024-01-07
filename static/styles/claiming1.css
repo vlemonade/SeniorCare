@@ -14,6 +14,7 @@ td a{
   font-size: 20px;
   font-style: italic;
 }
+
 .filter{
   display: flex;
   align-items: center;
@@ -35,6 +36,13 @@ td a{
   color: black;
 }
 
+.column{
+  width: 100%;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+}
+
 .search-bar h2{
   font-size: 17px;
   display: block;
@@ -43,56 +51,39 @@ td a{
 
 .container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  align-items: end;
   margin: 0;
   padding: 0;
+  margin-bottom: 20px;
   max-width: 100%;
 }
 
+.brgy{
+  padding: 8px 0;
+}
+
 .verify-btn{
-  width: 100%;
-  padding: 13px 10px;
+  padding: 10px 10px;
   border: 1px solid black;
   border-radius: 4px;
   background-color: white;
   text-decoration: none;
   color: #000000;
 }
+
 .verify-btn i{
   padding-right: 5px;
+  color: #7895CB;
 }
-
-.footer{
-  display: flex;
-  justify-content: space-between;
-}
-  .status-circle {
-    display: inline-block;
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-  }
-
 
 form {
+  padding: 0;
+  margin: 0;
     display: flex;
     padding-top: 7px;
     justify-content: center;
     align-items: center;
 }
-
-.legend-container{
-  display: block;
-  background: #c5d5e7;
-  padding: 10px;
-  height: 60px;
-  border-radius: 7px;
-  margin-top: 15px;
-}
-
-
-
 
 label , .search-bar h2 {
   display: block;
@@ -117,32 +108,9 @@ select option:hover {
   background: #C5DFF8; 
 }
 
-
-
 .legend-container h1{
   font-size: 15px;
   border-bottom: 1px solid black;
-}
-
-.legend {
-  display: flex;
-  justify-content: space-evenly;
-}
-.active-legend{
-  font-size: 15px;
-  margin-right: 10px;
-}
-
-.inactive-legend{
-  font-size: 15px;
-}
-
-.active-legend i{
-  color: green;
-}
-
-.inactive-legend i{
-  color: red;
 }
 
 .modal-background {
@@ -157,8 +125,6 @@ select option:hover {
   align-items: center;
   z-index: 1;
 }
-
-
 
 .modalBox{
   display: flex;
@@ -224,7 +190,7 @@ select option:hover {
   padding: 8px;
   box-sizing: border-box;
   border-radius: 4px;
-  height: 40px; /* Adjust the height as needed */
+  height: 40px; 
 }
 
 .modalInput button i{
@@ -327,33 +293,6 @@ tr:nth-child(even) td{
   background-color: #C5DFF8; 
 }
 
-.custom-checkbox{
-  width: 34px;
-  height: 26px;
-  background-color: #4A55A2;
-  position: relative;
-  cursor: pointer;
-}
-
-.custom-checkbox::before {
-  content: "\2713"; 
-  font-size: 20px;
-  font-weight: 700;
-  padding: 1px 8px;
-  color: transparent; 
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: block;
-  border-radius: 5px;
-}
-
-.custom-checkbox:checked::before {
-  color: white; 
-  background-color: #21D01D;
-}
-
 .claim-btn{
   letter-spacing: .5px;
   font-weight: 500;
@@ -381,7 +320,6 @@ tr:nth-child(even) td{
   margin-bottom: 50px;
 }
 
-
 .button-container a{
   padding: 15px 50px;
   font-size: 22px;
@@ -396,27 +334,6 @@ tr:nth-child(even) td{
   transition: background-color 0.3s, box-shadow 0.3s;
 }
 
-.notify-btn{
-  margin-right: 20px;
-}
-
-.cancel-btn{
-  margin-right: 20px;
-}
-
-.button-container a i{
-  background: transparent;
-  padding-right: 15px;
-  font-size: 22px;
-  color: black;
-}
-
-.button-container .cancel-btn i{
-  background: transparent;
-  padding-right: 15px;
-  font-size: 22px;
-  color: red;
-}
 .button-container a:hover{
   background: #c5d5e7;
   color: #494a4e;
@@ -425,131 +342,44 @@ tr:nth-child(even) td{
   box-shadow: none;
 }
 
-
-@media(max-width: 1100px){
-  .right {
-      margin-top: 10px;
-      font-size: 35px;
-  }
-}
-
-
-@media(max-width: 790px){
-      
-  .right {
-      display: none;
-  }
-}
-
-@media(max-width: 700px){
-
-  .search-bar i {
-      top: 10px;
-      left: 15px;
-      font-size: 20px;
-    }
-
-  .button-container .verify-btn{
-      margin-top: -15px;
-      padding: 10px 40px;
-      font-size: 20px;
-      letter-spacing: .5px;
-      font-weight: 700;
+@media(max-width: 500px){
+  .container {
+    flex-direction: column;
+    justify-content: left;
   }
 
-  .button-container .notify-btn{
-      margin-top: -15px;
-      padding: 10px 40px;
-      font-size: 20px;
-      letter-spacing: .5px;
-      font-weight: 700;
-  }
-  
-  .button-container .notify-btn i{
-      padding-right: 10px;
-      font-size: 22px;
-  }
-
-  .button-container .verify-btn i{
-      padding-right: 10px;
-      font-size: 22px;
-  }
-
-  table {
-      font-size: 15px;
-  }    
- 
-  th, td {
-      padding: 12px;
+  .searchBox{
+    width: 100%;
+    margin: 0;
   }
 
   .search-bar{
-    margin-right: 20px;
-    text-align: left;
-    
+    width: 100%;
+    margin-right: 0;
   }
-  .search-bar input{
-    margin-top: -1px;
-    padding-left: 5px;
-    padding-right: 2px;
-  }
-}
 
-@media(max-width: 500px){
-  .search-bar h2 {
+  .search-bar h2{
+    display: none;
+  }
+  .claim-status label{
     display: none;
   }
 
-  .container {
-    margin-bottom: 20px;
+}
+
+
+
+@media(max-width: 430px){
+  .claim-status select{
+    margin: 0;
+    padding-right: 30px;
   }
 }
 
-@media(max-width: 415px){
-
-
-  .button-container .notify-btn{
-      padding: 10px 35px;
-      font-size: 18px;
-  }
-
-  .button-container .verify-btn{
-      padding: 10px 35px;
-      font-size: 18px;
-  }
-
-  .left {
-      position: relative;
-      font-size: 20px;
-      top: 15px;
+@media(max-width: 390px){
+  .claim-status select{
+    margin: 0;
+    padding-right: 10px;
   }
 }
 
-@media(max-width: 375px){
-
-  .button-container{
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-  }
-  .button-container .notify-btn, .verify-btn{
-      padding: 10px 90px;
-      font-size: 15px;
-  }
-
-  .button-container .verify-btn{
-      padding: 10px 90px;
-      font-size: 15px;
-  }
-
-  .button-container button i{
-      font-size: 15px;
-      padding-right: 2px;
-  }
-
-  .notify-btn{
-      margin-right: 0;
-      margin-bottom: 30px;
-  }
-}

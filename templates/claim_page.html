@@ -7,29 +7,34 @@
 
 <div class="claim-body">
   <div class="container">
-    <div class="filter">
-      <form action="/search/" method="GET">
+    <div class="searchBox">
+      <form action="/search/" method="GET" class="search-form">
         <div class="search-bar">
           <h2>Search:</h2>
           <input placeholder="Search" type="search" name="q" class="left" />
         </div>
-      </form>
-      <form method="GET" action="{% url 'claim_page' %}" id="statusFilterForm">
-        <div class="claim">
-          <label for="is_claimed">Claimed:</label>
-          <select name="is_claimed" id="is_claimed" onchange="document.getElementById('statusFilterForm').submit()">
-            <option value="all" {% if request.GET.is_claimed == 'all' %}selected{% endif %}>All</option>
-            <option value="claimed" {% if request.GET.is_claimed == 'claimed' %}selected{% endif %}>Claimed</option>
-            <option value="not_claimed" {% if request.GET.is_claimed == 'not_claimed' %}selected{% endif %}>Not Claimed</option>
-          </select>
-        </div>
-      </form>
+      </form>  
     </div>
 
-    <div class="brgy">
-      <a href="{% url 'claim_summary_page' %}" class="verify-btn" id="">
-        <i class="fa-regular fa-circle-check"></i>View Summary
-      </a>
+    <div class="column">
+      <div class="filter">
+        <form method="GET" action="{% url 'claim_page' %}" id="statusFilterForm" class="claim-form">
+          <div class="claim-status">
+            <label for="is_claimed">Claimed:</label>
+            <select name="is_claimed" id="is_claimed" onchange="document.getElementById('statusFilterForm').submit()">
+              <option value="all" {% if request.GET.is_claimed == 'all' %}selected{% endif %}>All</option>
+              <option value="claimed" {% if request.GET.is_claimed == 'claimed' %}selected{% endif %}>Claimed</option>
+              <option value="not_claimed" {% if request.GET.is_claimed == 'not_claimed' %}selected{% endif %}>Not Claimed</option>
+            </select>
+          </div>
+        </form>
+      </div>
+
+      <div class="brgy">
+        <a href="{% url 'claim_summary_page' %}" class="verify-btn">
+          <i class="fas fa-circle-check"></i> View Summary
+        </a>
+      </div>
     </div>
   </div>
 
@@ -43,7 +48,7 @@
           <th>Middle Initial</th>
           <th>Suffix</th>
           <th>Status</th>
-          <th></th>
+          <th>Action</th>
         </tr>
       </thead>
 
@@ -65,7 +70,7 @@
               </td>
               <td>
                 {% if senior.is_claimed %}
-                  <a href="/match/{{ senior.id }}">Claimed</a>              
+                  <a href="/match/{{ senior.id }}" class="claimed-btn">Claimed</a>              
                 {% else %}
                   <a href="/claim_detail_page/{{ senior.id }}" class="claim-btn">Claim</a>
                 {% endif %}
@@ -75,9 +80,6 @@
         {% endfor %}
       </tbody>
     </table>
-  </div>
-
-  <div class="footer">
   </div>
 </div>
 
