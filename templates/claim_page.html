@@ -1,45 +1,35 @@
-{% extends 'main.html' %} {% block content %} {% load static %}
+{% extends 'main.html' %} 
+{% block content %} 
+{% load static %}
 
-<link
-  rel="stylesheet"
-  type="text/css"
-  media="screen"
-  href="{% static 'styles/claiming1.css' %}"
-/>
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-  integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
-  crossorigin="anonymous"
-  referrerpolicy="no-referrer"
-/>
+<link rel="stylesheet" type="text/css" media="screen" href="{% static 'styles/claiming1.css' %}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 <div class="claim-body">
   <div class="container">
-    <form method="GET" id="statusFilterForm">
-
-
-      <div class="filter">
-          <form action="/search/" method="GET">
-            <div class="search-bar">
-              <h2>Search:</h2>
-              <input placeholder="Search" type="search" name="q" class="left" />
-            </div>
-          </form>
-
-      <div class="claim">
-      <label for="is_claimed">Claimed:</label>
-      <select name="is_claimed" id="is_claimed" onchange="document.getElementById('statusFilterForm').submit()">
-          <option value="all" {% if request.GET.is_claimed == 'all' %}selected{% endif %}>All</option>
-          <option value="claimed" {% if request.GET.is_claimed == 'claimed' %}selected{% endif %}>Claimed</option>
-          <option value="not_claimed" {% if request.GET.is_claimed == 'not_claimed' %}selected{% endif %}>Not Claimed</option>
-      </select>
-      </div>
+    <div class="filter">
+      <form action="/search/" method="GET">
+        <div class="search-bar">
+          <h2>Search:</h2>
+          <input placeholder="Search" type="search" name="q" class="left" />
+        </div>
+      </form>
+      <form method="GET" action="{% url 'claim_page' %}" id="statusFilterForm">
+        <div class="claim">
+          <label for="is_claimed">Claimed:</label>
+          <select name="is_claimed" id="is_claimed" onchange="document.getElementById('statusFilterForm').submit()">
+            <option value="all" {% if request.GET.is_claimed == 'all' %}selected{% endif %}>All</option>
+            <option value="claimed" {% if request.GET.is_claimed == 'claimed' %}selected{% endif %}>Claimed</option>
+            <option value="not_claimed" {% if request.GET.is_claimed == 'not_claimed' %}selected{% endif %}>Not Claimed</option>
+          </select>
+        </div>
+      </form>
     </div>
-  </form>
 
     <div class="brgy">
-      <h2 class="right">Barangay 558 / Zone 55</h2>
+      <a href="{% url 'claim_summary_page' %}" class="verify-btn" id="">
+        <i class="fa-regular fa-circle-check"></i>View Summary
+      </a>
     </div>
   </div>
 
@@ -58,42 +48,37 @@
       </thead>
 
       <tbody>
-        {%for senior in seniors%}
-        {% if not senior.deletion_reason %}
-        <tr>
-          <td>{{ forloop.counter }}</td>
-          <td>{{ senior.last_name }}</td>
-          <td>{{ senior.first_name }}</td>
-          <td>{{ senior.middle_name }}</td>
-          <td>{{ senior.suffix }}
-            <td>
-              {% if senior.status %}
-                Active
-              {% else %}
-                Inactive
-              {% endif %}
-            </td>
-          <td>
-            {% if senior.is_claimed %}
-              <a href="/match/{{ senior.id }}">Claimed</a>              
-            {% else %}
-              <a href="/claim_detail_page/{{ senior.id }}" class="claim-btn">Claim</a>
-            {% endif %}
-          </td>
-        </tr>
-        {% endif %}
+        {% for senior in seniors %}
+          {% if not senior.deletion_reason %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ senior.last_name }}</td>
+              <td>{{ senior.first_name }}</td>
+              <td>{{ senior.middle_name }}</td>
+              <td>{{ senior.suffix }}</td> 
+              <td>
+                {% if senior.status %}
+                  Active
+                {% else %}
+                  Inactive
+                {% endif %}
+              </td>
+              <td>
+                {% if senior.is_claimed %}
+                  <a href="/match/{{ senior.id }}">Claimed</a>              
+                {% else %}
+                  <a href="/claim_detail_page/{{ senior.id }}" class="claim-btn">Claim</a>
+                {% endif %}
+              </td>
+            </tr>
+          {% endif %}
         {% endfor %}
       </tbody>
     </table>
   </div>
 
   <div class="footer">
-  <div class="button-container">
-    <a href="{% url 'claim_summary_page' %}" class="verify-btn" id=""
-      ><i class="fa-regular fa-circle-check"></i>Verify</a
-    >
-  </div>
   </div>
 </div>
 
-{% endblock content%}
+{% endblock content %}

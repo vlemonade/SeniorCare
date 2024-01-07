@@ -258,6 +258,7 @@ def main_page(request):
 
 def update_page(request):
     status_filter = request.GET.get('status_filter', 'all')
+
     if status_filter == 'active':
         seniors = senior_list.objects.filter(status=True)
     elif status_filter == 'inactive':
@@ -265,12 +266,8 @@ def update_page(request):
     else:
         seniors = senior_list.objects.all()
 
-    
     total_active = seniors.filter(status=True).count()
     total_inactive = seniors.filter(status=False).count()
-    claimed_seniors = senior_list.objects.filter(status=True).order_by('last_name')
-    unclaimed_seniors = senior_list.objects.filter(status=False).order_by('last_name')
-    seniors = list(claimed_seniors) + list(unclaimed_seniors)
 
     return render(request, 'update_page.html', {'seniors': seniors, 'total_active': total_active, 'total_inactive': total_inactive})
 
@@ -381,15 +378,12 @@ def claim_page(request):
     elif is_claimed_filter == 'not_claimed':
         seniors = seniors.filter(is_claimed=False)
 
-    
     total_active = seniors.filter(status=True).count()
     total_inactive = seniors.filter(status=False).count()
 
-    claimed_seniors = senior_list.objects.filter(is_claimed=False).order_by('last_name')
-    unclaimed_seniors = senior_list.objects.filter(is_claimed=True).order_by('last_name')
-    seniors = list(claimed_seniors) + list(unclaimed_seniors)
-
     return render(request, 'claim_page.html', {'seniors': seniors, 'total_active': total_active, 'total_inactive': total_inactive})
+
+
 
 def claim_detail_page(request, id):
     seniors = senior_list.objects.get(id=id)
