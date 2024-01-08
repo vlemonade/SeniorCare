@@ -1,111 +1,120 @@
-{% extends 'main.html' %} {% block content %} {% load static %}
-<link
-  rel="stylesheet"
-  type="text/css"
-  media="screen"
-  href="{% static 'styles/edit1.css' %}"
-/>
-<title>Edit Info</title>
+{% extends 'main.html' %}
 
-<body>
-  <div class="container">
-    <div class="inner">
-      <form action="/update/{{seniors.id}}"  enctype="multipart/form-data" method="POST">
-        {% csrf_token %}
+{% block content %}
+  {% load static %}
 
-        <div class="head-container">
-          <div class="img">
-              {% if seniors.senior_image %}
+  <link rel="stylesheet" type="text/css" media="screen" href="{% static 'styles/edit1.css' %}" />
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script defer src="{% static 'js/edit.js' %}"></script>
+
+  <title>Edit Info</title>
+
+  <body>
+    <div class="container">
+      <div class="inner">
+        <form action="/update/{{seniors.id}}" enctype="multipart/form-data" method="POST" id="updateForm">
+          {% csrf_token %}
+
+          <div class="head-container">
+            <div class="img">
               <div class="photo-holder">
-                  <img src="{{ seniors.senior_image.url }}" alt="profile">
+                {% if seniors.senior_image %}
+                  <img id="seniorImage" src="{{ seniors.senior_image.url }}" alt="profile">
+                {% else %}
+                  <img id="seniorImage" src="{% static 'image/profile.png' %}" alt="profile">
+                {% endif %}
               </div>
-              {% else %}
-              <div class="photo-holder">
-                  <img src="{% static 'image/profile.png' %}" alt="profile">
-              </div>
-              {% endif %}
-              <a href="{% url 'camera' %}" target="_blank" class="camera-btn">Capture Image<i class="fa-solid fa-camera"></i></a>
-          </div>
-          <div class="detail-column">
+              <a href="#" id="openCameraBtn" class="camera-btn">Capture Image<i class="fa-solid fa-camera"></i></a>
+            </div>
+
+            <div class="detail-column">
               <div class="display-form">
-                  <label>Last Name</label>
-                  <input type="text" name="Lastname" value="{{ seniors.last_name}}"/>
+                <label>Last Name</label>
+                <input type="text" name="Lastname" value="{{ seniors.last_name }}">
               </div>
-      
+
               <div class="display-form">
-                  <label>First Name</label>
-                  <input type="text"name="Firstname" value="{{ seniors.first_name}}">
+                <label>First Name</label>
+                <input type="text" name="Firstname" value="{{ seniors.first_name }}">
               </div>
-      
+
               <div class="display-form">
-                  <label>Middle Name</label>
-                  <input type="text" name="Middlename" value="{{ seniors.middle_name}}"/>
+                <label>Middle Name</label>
+                <input type="text" name="Middlename" value="{{ seniors.middle_name }}">
               </div>
-          </div>
+            </div>
           </div>
 
-          
           <div class="detail-column4">
             <div class="display-form">
-                <label>Suffix</label>
-                <input type="text" name="Suffix" value="{{ seniors.suffix}}">
+              <label>Suffix</label>
+              <input type="text" name="Suffix" value="{{ seniors.suffix }}">
             </div>
             <div class="display-form">
-            <label>Age</label>
-                <input type="number" name="Age"  value="{{ seniors.age}}">
+              <label>Age</label>
+              <input type="number" name="Age" value="{{ seniors.age }}">
             </div>
-    
+
             <div class="display-form">
-                <label>Gender</label>
-                <input name="sex" id="sex" value="{{ seniors.sex}}">
+              <label>Gender</label>
+              <input name="sex" id="sex" value="{{ seniors.sex }}">
             </div>
-        </div>
+          </div>
 
-        
-        <div class="detail-column1">
-
-          <div class="display-form">
+          <div class="detail-column1">
+            <div class="display-form">
               <label>Birthdate</label>
-              <input type="text" name="Birthdate"  value="{{ seniors.birth_date}}" disabled>
-          </div>
+              <input type="text" name="Birthdate" value="{{ seniors.birth_date }}" disabled>
+            </div>
 
-          <div class="display-form">
+            <div class="display-form">
               <label>Phone no.</label>
-              <input type="text" name="phone_number"  value="{{ seniors.phone_number }}">
+              <input type="text" name="phone_number" value="{{ seniors.phone_number }}">
+            </div>
           </div>
+
+          <div class="detail-column2">
+            <div class="display-form">
+              <label>ID</label>
+              <input type="text" name="OSCA_ID" value="{{ seniors.OSCA_ID }}" disabled>
+            </div>
+
+            <div class="display-form">
+              <label>Address</label>
+              <input type="text" name="Adress" value="{{ seniors.address }}">
+            </div>
+
+            <div class="display-form" style="display: none;">
+              <label>Address</label>
+              <input type="text" name="status" value="{{ seniors.status }}">
+            </div>
+          </div>
+
+          <div class="detail-column2">
+            <div class="display-form">
+              <label>Upload Image</label>
+              <input type="file" class="form-control" name="senior_image" id="imageInput">
+            </div>
+          </div>
+
+          <div class="form-btn">
+            <button type="submit" class="btn-edit">Save</button>
+            <button class="cancel-btn">Cancel</button>
+          </div>
+
+          <input type="hidden" name="temporary_image" id="temporaryImageInput" value="">
+        </form>
       </div>
-
-      <div class="detail-column2">
-        <div class="display-form">
-            <label>ID</label>
-            <input  type="text" name="OSCA_ID" value="{{ seniors.OSCA_ID  }}" disabled>
-        </div>
-
-        <div class="display-form">
-            <label>Address</label>
-            <input type="text" name="Adress"  value="{{ seniors.address}}">
-        </div>
-
-        <div class="display-form" style="display: none;">
-          <label>Address</label>
-          <input type="text" name="status"  value="{{ seniors.status}}">
-        </div> 
     </div>
 
-    <div class="detail-column2">
-      <div class="display-form">
-          <label>Upload Image</label>
-          <input type="file" class="form-control" name="senior_image">
-      </div>
-  </div>
-
-        <div class="form-btn">
-          <button type="submit" class="btn-edit">Save</button>
-          <button class="cancel-btn">Cancel</button>
+    <div class="custom-modal" id="cameraModal">
+      <div class="modal-content">
+        <span class="close" id="closeModal">&times;</span>
+        <video id="cameraVideo" width="100%" height="auto" playsinline autoplay></video>
+        <div class="btnCamera">
+          <button id="captureBtn" class="btn-edit"><i class="fa-solid fa-camera"></i>Capture</button>
         </div>
-
-      </form>
+      </div>
     </div>
-  </div>
-</body>
-{% endblock content%}
+  </body>
+{% endblock content %}

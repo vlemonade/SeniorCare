@@ -132,6 +132,86 @@
   background-color:#4A55A2;
 }
 
+.custom-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  z-index: 1;
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding-top: 40px;
+  padding-bottom: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+  width: 90%; 
+  max-width: 600px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.btnCamera{
+  display: flex;
+  justify-content: space-around;
+}
+
+.close {
+  position: absolute;
+  top: -7px;
+  right: 10px;
+  font-size: 40px;
+  cursor: pointer;
+}
+
+#cameraVideo {
+  width: 100%;
+  height: auto;
+  margin-bottom: 15px;
+}
+
+.btnCamera{
+  text-align: center;
+}
+
+#captureBtn{
+  display: inline-block;
+  text-decoration: none;
+  background-color: #7895CB;
+  color: white;
+  padding: 10px 30px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: .2s ease;
+  border: none;
+
+}
+
+#captureBtn i{
+  padding-right: 10px;
+  font-size: 15px;
+}
+
+#closeModal:hover {
+  color: red;
+}
+
+@media (max-width: 700px){
+  .modal-content {
+    top: 40%;
+  }
+}
+
 @media (max-width: 500px)
 {
   .container{
@@ -159,6 +239,10 @@
 
 .display-form label{
   font-size: 17px;
+}
+
+.btnCamera{
+  text-align: center;
 }
 
 }

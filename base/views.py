@@ -272,6 +272,22 @@ def update_page(request):
     return render(request, 'update_page.html', {'seniors': seniors, 'total_active': total_active, 'total_inactive': total_inactive})
 
 
+def smss(request):
+    status_filter = request.GET.get('status_filter', 'all')
+
+    if status_filter == 'active':
+        seniors = senior_list.objects.filter(status=True)
+    elif status_filter == 'inactive':
+        seniors = senior_list.objects.filter(status=False)
+    else:
+        seniors = senior_list.objects.all()
+
+    total_active = seniors.filter(status=True).count()
+    total_inactive = seniors.filter(status=False).count()
+
+    return render(request, 'smss.html', {'seniors': seniors, 'total_active': total_active, 'total_inactive': total_inactive})
+
+
 
 def add_senior(request):
     result = None
@@ -315,15 +331,31 @@ def edit(request, id):
     return render(request, 'edit.html', {'seniors': seniors})
 
 def update(request, id):
-
     seniors = senior_list.objects.get(id=id)
+
     if request.method == 'POST':
-        form = register_form(request.POST, request.FILES, instance=seniors)
-        if form.is_valid():
-            if 'senior_image' in request.FILES:
-                if seniors.senior_image:
-                    os.remove(seniors.senior_image.url)
-                seniors.senior_image = request.FILES['senior_image']
+        temporary_image_data_url = request.POST.get('temporary_image', '')
+        if temporary_image_data_url:
+            _, temporary_image_base64 = temporary_image_data_url.split(',')
+            temporary_image = ContentFile(base64.b64decode(temporary_image_base64), name=f'temporary_image.png')
+
+            if seniors.senior_image:
+                os.remove(seniors.senior_image.path)
+
+            current_date = datetime.now().strftime("%Y%m%d")
+            new_image_name = f'updated_image_{seniors.OSCA_ID}_{current_date}.png'
+            seniors.senior_image.save(new_image_name, temporary_image, save=True)
+
+        elif 'senior_image' in request.FILES:
+            if seniors.senior_image:
+                os.remove(seniors.senior_image.path)
+
+            uploaded_image = request.FILES['senior_image']
+
+            current_date = datetime.now().strftime("%Y%m%d%H%M%S")
+            new_image_name = f'updated_image_{seniors.OSCA_ID}_{current_date}.png'
+            seniors.senior_image.save(new_image_name, uploaded_image)
+
         seniors.last_name = request.POST.get('Lastname')
         seniors.first_name = request.POST.get('Firstname')
         seniors.middle_name = request.POST.get('Middlename')
@@ -332,12 +364,11 @@ def update(request, id):
         seniors.sex = request.POST.get('sex')
         seniors.address = request.POST.get('Adress')
         seniors.phone_number = request.POST.get('phone_number')
-        new_status = request.POST.get('status')
-        seniors.status = new_status if new_status is not None else True
-        seniors.status = new_status
+        seniors.status = True
         seniors.save()
+
     context = {'seniors': seniors}
-    return render ( request, 'update_viewinfo_page.html', context)
+    return render(request, 'update_viewinfo_page.html', context)
     
 
 def search(request):
@@ -540,8 +571,7 @@ def capture_image(request):
 
     return JsonResponse({'error': 'Invalid request method.'}, status=400)
 
-
-
+from django.core.files.base import ContentFile
 
 @csrf_exempt
 def facial_recognition(request, id):
@@ -549,7 +579,7 @@ def facial_recognition(request, id):
 
     if request.method == 'POST':
         captured_image_data_url = request.POST.get('captured_image', '')
-        
+
         _, captured_image_base64 = captured_image_data_url.split(',')
         captured_image = np.frombuffer(base64.b64decode(captured_image_base64), np.uint8)
 
@@ -570,10 +600,15 @@ def facial_recognition(request, id):
                 seniors.status = True
                 seniors.is_claimed = True
                 seniors.claimed_date = timezone.now()
+                proof_image_name = f"proof_{seniors.id}_{timezone.now().strftime('%Y%m%d%H%M%S')}.png"
+                proof_image_path = os.path.join('proof/', proof_image_name)
+                proof_image_content = ContentFile(cv2.imencode('.png', captured_image_np)[1].tobytes())
+                seniors.proof_of_claiming.save(proof_image_name, proof_image_content, save=True)
+
                 seniors.save()
 
-                return JsonResponse({'match': True})
-    
+                return JsonResponse({'match': True, 'proof_of_claiming_url': seniors.proof_of_claiming.url})
+
     return JsonResponse({'match': False})
 
 def get_known_face_encoding(image_path):
@@ -592,6 +627,7 @@ def compare_faces(known_encoding, captured_encoding):
     distance = face_recognition.face_distance([known_encoding], captured_encoding)
 
     return distance <= threshold
+
 
 def camera_page(request, id):
     seniors = senior_list.objects.get(id=id)
