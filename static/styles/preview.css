@@ -1,6 +1,4 @@
-
-
-.preview-container{
+.preview-container {
   max-width: 750px;
   margin: 50px auto;
   background-color: #fff;
@@ -10,9 +8,9 @@
 }
 
 .photo-holder {
-  width: 270px; 
-  height: 255px; 
-  overflow: hidden; 
+  width: 270px;
+  height: 255px;
+  overflow: hidden;
   border: 2px solid black;
   border-radius: 10px;
 }
@@ -23,17 +21,18 @@
   object-fit: cover;
 }
 
-.head-container{
+.head-container {
   display: flex;
   justify-content: space-between;
   align-items: end;
 }
 
-.display-form, label{
+.display-form,
+label {
   background-color: transparent;
 }
 
-.detail-column{
+.detail-column {
   background-color: transparent;
   display: flex;
   flex-direction: column;
@@ -41,45 +40,44 @@
   margin-top: 15px;
 }
 
-.detail-column1{
+.detail-column1 {
   background-color: transparent;
   display: flex;
   column-gap: 20px;
 }
 
-.detail-column2{
-  background-color: transparent;
-  display: flex;
-  align-items: center;
-  column-gap: 20px;
-}
-
-.detail-column3{
+.detail-column2 {
   background-color: transparent;
   display: flex;
   align-items: center;
   column-gap: 20px;
 }
 
+.detail-column3 {
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  column-gap: 20px;
+}
 
-.detail-column4{
+.detail-column4 {
   background-color: transparent;
   display: flex;
   column-gap: 20px;
 }
 
-.display-form{
+.display-form {
   width: 100%;
   margin-top: 15px;
 }
 
-.display-form label{
+.display-form label {
   color: black;
   margin-left: 5px;
   font-size: 17px;
 }
 
-.display-form input{
+.display-form input {
   width: 100%;
   padding: 10px 10px;
   border-radius: 4px;
@@ -97,72 +95,159 @@
 .btn-preview a {
   display: inline-block;
   text-decoration: none;
-  background-color: #7895CB;
+  background-color: #7895cb;
   color: white;
   padding: 10px 30px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 18px;
-  transition: .2s ease;
+  transition: 0.2s ease;
 }
 
 .btn-preview button {
   display: inline-block;
   text-decoration: none;
   border: none;
-  background-color: #7895CB;
+  background-color: #7895cb;
   color: white;
   padding: 10px 30px;
   border-radius: 4px;
   cursor: pointer;
   font-size: 18px;
-  transition: .2s ease;
+  transition: 0.2s ease;
 }
 
-.btn-preview a i{
+.btn-preview a i {
   font-size: 16px;
   margin-left: 5px;
 }
 
 .btn-preview a:hover {
-  background-color:#4A55A2;
+  background-color: #4a55a2;
 }
 
 .btn-preview button:hover {
-  background-color:#4A55A2;
+  background-color: #4a55a2;
 }
 
-@media (max-width: 500px)
-{
-  .preview-container{
+@media (max-width: 500px) {
+  .preview-container {
     max-width: 95vw;
     margin: 20px auto;
     padding: 20px;
   }
 
-  .head-container{
+  .head-container {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
   }
 
-  
-.detail-column{
-  display: flex;
-  flex-direction: column;
+  .detail-column {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .display-form input {
+    font-size: 17px;
+  }
+
+  .display-form label {
+    font-size: 17px;
+  }
 }
 
-.display-form input{
-  font-size: 17px;
+/*add-popup*/
+
+.h2head {
+  color: #4a55a2;
+  background-color: #4a55a2;
+  display: block;
+  border-top-style: solid;
+  border-top-color: #4a55a2;
+  border-top-right-radius: 7px;
+  border-top-left-radius: 7px;
 }
 
-.display-form label{
-  font-size: 17px;
+h5 {
+  padding: 7%;
+  text-align: center;
 }
 
+.btnadd,
+.btncl {
+  margin-left: 1.18%;
 }
 
+.add {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  z-index: 9999;
+  overflow: auto;
+  position: fixed;
+  visibility: hidden;
+  margin-top: -250px;
+  background: rgba(0, 0, 0, 0.8);
+  transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -webkit-transition: all 0.3s ease-in-out;
+}
 
+.add:target {
+  opacity: 1;
+  margin-top: 0px;
+  visibility: visible;
+}
 
+.add-form {
+  width: 35%;
+  padding-bottom: 25px;
+  background: #fff;
+  max-width: 600px;
+  margin: 70px auto;
+  position: relative;
+  border-radius: 8px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+}
 
+.add-button {
+  text-align: center;
+}
+
+.confirm-add,
+.cancel-add {
+  text-decoration: none;
+  margin-left: 10%;
+  margin-right: 10%;
+  color: black;
+  display: inline-block;
+  height: 50px;
+  width: 90px;
+  line-height: 38pt;
+  font-size: 11pt;
+  border-radius: 12px;
+}
+
+.confirm-add,
+.cancel-add {
+  background-color: #7895cb;
+}
+
+.confirm-add:hover,
+.cancel-add:hover {
+  background-color: #4a55a2;
+}
+
+@media only screen and (min-width: 150px) and (max-width: 640px) {
+  .confirm-add,
+  .cancel-add {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 5pt;
+  }
+}
