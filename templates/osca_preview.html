@@ -1,107 +1,116 @@
-{% extends 'main.html' %}
+{% extends 'main.html' %} {% block content %} {% load static %}
+<head>
+  <title>Preview</title>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script defer src="{% static 'js/osca_preview.js' %}"></script>
+  <link
+    rel="stylesheet"
+    href="{% static 'styles/preview.css' %}"
+    type="text/css"
+    media="all"
+  />
+</head>
 
-{% block content %}
-  {% load static %}
-  <head>
-    <title>Preview</title>   
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script defer src="{% static 'js/osca_preview.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'styles/preview.css' %}" type="text/css" media="all">
-  </head>
-
-        <div class="preview-container">
-        <div class="container">
-        <div class="header">
-            <h2>Preview Information:</h2>
-        </div>
-        </div>
-                            
-    <form id="addSeniorForm">
-        {% csrf_token %}
-
-        <div class="head-container">
-        <div class="img">
-            {% if seniors.senior_image %}
-            <div class="photo-holder">
-                <img src="{{ seniors.senior_image.url }}" alt="profile">
-            </div>
-            {% else %}
-            <div class="photo-holder">
-                <img src="{% static 'image/profile.png' %}" alt="profile">
-            </div>
-            {% endif %}
-        </div>
-        <div class="detail-column">
-            <div class="display-form">
-                <label>Last Name</label>
-                <input value="{{ senior.last_name}}" disabled>
-            </div>
-    
-            <div class="display-form">
-                <label>First Name</label>
-                <input value="{{ senior.first_name}}"  disabled>
-            </div>
-    
-            <div class="display-form">
-                <label>Middle Name</label>
-                <input value="{{ senior.middle_name}}"  disabled>
-            </div>
-        </div>
-        </div>
-
-        <div class="detail-column4">
-            <div class="display-form">
-                <label>Suffix</label>
-                <input value="{{ senior.suffix}}" disabled>
-            </div>
-            <div class="display-form">
-            <label>Age</label>
-                <input value="{{ senior.age}}" disabled>
-            </div>
-    
-            <div class="display-form">
-                <label>Gender</label>
-                <input value="{{ senior.sex}}" disabled>
-            </div>
-        </div>
-
-        <div class="detail-column1">
-
-            <div class="display-form">
-                <label>Birthdate</label>
-                <input value="{{ senior.birth_date}}" disabled>
-            </div>
-
-            <div class="display-form">
-                <label>Phone no.</label>
-                <input value="{{ senior.phone_number}}"  disabled>
-            </div>
-        </div>
-
-        <div class="detail-column2">
-
-            <div class="display-form">
-                <label>Barangay</label>
-                <input  value="{{ senior.barangay}}" disabled>
-            </div>
-    
-            <div class="display-form">
-                <label>Address</label>
-                <input  value="{{ senior.address}}" disabled>
-            </div>
-        </div>
-
-        
-        <div class="detail-column2">
-            <div class="display-form">
-                <label>ID</label>
-                <input  value="{{ senior.OSCA_ID}}" disabled>
-            </div>
-        </div>
-        <div class="btn-preview">
-            <button type="submit">Add Senior Citizen</button>
-            <a href="#" onclick="goBack()">Back</a>
-          </div>
-        </form>
+<div class="preview-container">
+  <div class="container">
+    <div class="header">
+      <h2>Preview Information:</h2>
     </div>
+  </div>
+
+  <form id="addSeniorForm">
+    {% csrf_token %}
+
+    <div class="head-container">
+      <div class="img">
+        {% if seniors.senior_image %}
+        <div class="photo-holder">
+          <img src="{{ seniors.senior_image.url }}" alt="profile" />
+        </div>
+        {% else %}
+        <div class="photo-holder">
+          <img src="{% static 'image/profile.png' %}" alt="profile" />
+        </div>
+        {% endif %}
+      </div>
+      <div class="detail-column">
+        <div class="display-form">
+          <label>Last Name</label>
+          <input value="{{ senior.last_name}}" disabled />
+        </div>
+
+        <div class="display-form">
+          <label>First Name</label>
+          <input value="{{ senior.first_name}}" disabled />
+        </div>
+
+        <div class="display-form">
+          <label>Middle Name</label>
+          <input value="{{ senior.middle_name}}" disabled />
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-column4">
+      <div class="display-form">
+        <label>Suffix</label>
+        <input value="{{ senior.suffix}}" disabled />
+      </div>
+      <div class="display-form">
+        <label>Age</label>
+        <input value="{{ senior.age}}" disabled />
+      </div>
+
+      <div class="display-form">
+        <label>Gender</label>
+        <input value="{{ senior.sex}}" disabled />
+      </div>
+    </div>
+
+    <div class="detail-column1">
+      <div class="display-form">
+        <label>Birthdate</label>
+        <input value="{{ senior.birth_date}}" disabled />
+      </div>
+
+      <div class="display-form">
+        <label>Phone no.</label>
+        <input value="{{ senior.phone_number}}" disabled />
+      </div>
+    </div>
+
+    <div class="detail-column2">
+      <div class="display-form">
+        <label>Barangay</label>
+        <input value="{{ senior.barangay}}" disabled />
+      </div>
+
+      <div class="display-form">
+        <label>Address</label>
+        <input value="{{ senior.address}}" disabled />
+      </div>
+    </div>
+
+    <div class="detail-column2">
+      <div class="display-form">
+        <label>ID</label>
+        <input value="{{ senior.OSCA_ID}}" disabled />
+      </div>
+    </div>
+    <div class="btn-preview">
+      <a href="#add-popup" class="btnadd">Add Senior Citizen</button>
+      <a href="/update_page/" class="btncl">Back</a>
+    </div>
+  </form>
+  <div class="add" id="add-popup">
+    <div class="add-form">
+        <h2 class="h2head">A</h2>
+      <h5>Do you want to add this record?</h5>
+      <div class="add-button">
+        <a class="confirm-add" href="#">Yes</a>
+        <a class="cancel-add" href="/osca_preview/{{senior.id}}">Cancel</a>
+      </div>
+    </div>
+  </div>
+</div>
 {%endblock%}
