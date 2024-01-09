@@ -339,11 +339,11 @@ def update(request, id):
             _, temporary_image_base64 = temporary_image_data_url.split(',')
             temporary_image = ContentFile(base64.b64decode(temporary_image_base64), name=f'temporary_image.png')
 
-            if seniors.senior_image:
+            if seniors.senior_image and os.path.exists(seniors.senior_image.path):
                 os.remove(seniors.senior_image.path)
 
             current_date = datetime.now().strftime("%Y%m%d")
-            new_image_name = f'updated_image_{seniors.OSCA_ID}_{current_date}.png'
+            new_image_name = os.path.join('media', f'updated_image_{seniors.OSCA_ID}_{current_date}.png')
             seniors.senior_image.save(new_image_name, temporary_image, save=True)
 
         elif 'senior_image' in request.FILES:
