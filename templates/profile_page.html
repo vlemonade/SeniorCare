@@ -1,43 +1,45 @@
-{% extends 'main.html' %} 
-{% block content %} 
-{% load static %}
+{% extends 'main.html' %} {% block content %} {% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'styles/profile.css' %}" type="text/css" media="all">
-    <title>User Profile Page</title>
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{% static 'styles/profile.css' %}"
+      type="text/css"
+      media="all"
+    />
+    <title>{% block title %}User Profile{% endblock %}</title>
+  </head>
 
-<body>
+  <body>
     <div class="container">
-        <div class="profile-container">
-            <div class="profile-image">
-                {{ user.first_name.0|upper }}{{ user.last_name.0|upper }}
-                
-            </div>
-                <div class="profile-body">
-                <div class="profile-header">
-                    <h1>Welcome! {{user.username}}</h1>
-                </div>  
-                <div class="profile-info">
-                    <div class="control">
-                        <p><span class="label">First Name:</span>{{ user.first_name }} </p>
-                        <p><span class="label">Last Name:</span>{{ user.last_name }} </p>
-                    </div>
-
-                    <div class="control">
-                        <p><span class="label">Email:</span>{{ user.email }} </p>
-                        <p><span class="label">Location:</span> Brgy. 123 / Zone 00</p>
-                        <p><span class="label">Barangay Position:</span> Secretary</p>
-                    </div>
-                </div>
-            </div>
+      <div class="profile-container">
+        <div class="profile-image">
+          {{ user.first_name.0|upper }}{{ user.last_name.0|upper }}
         </div>
+        <div class="profile-body">
+          <div class="profile-header">
+            <h1>Welcome! {{user.username}}</h1>
+          </div>
+          <div class="profile-info">
+            <div class="control">
+              <p><span class="label">First Name:</span>{{ user.first_name }}</p>
+              <p><span class="label">Last Name:</span>{{ user.last_name }}</p>
+            </div>
+
+            <div class="control">
+              <p><span class="label">Email:</span>{{ user.email }}</p>
+              <p><span class="label">Location:</span> Brgy. 123 / Zone 00</p>
+              <p><span class="label">Barangay Position:</span> Secretary</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-</body>
+  </body>
 </html>
 
 {% endblock %}
