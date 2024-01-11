@@ -312,6 +312,35 @@ def update_viewinfo_page(request, id):
     seniors = senior_list.objects.get(id=id)
     return render(request, 'update_viewinfo_page.html', {'seniors': seniors})
 
+def add_senior_list(request, osca_id):
+    try:
+        if senior_list.objects.filter(OSCA_ID=osca_id).exists():
+            messages.warning(request, 'Senior with this OSCA ID already exists.')
+            return redirect('update_page')
+
+        osca_record = osca_list.objects.get(OSCA_ID=osca_id)
+
+        senior_record = senior_list(
+            first_name=osca_record.first_name,
+            last_name=osca_record.last_name,
+            middle_name=osca_record.middle_name,
+            suffix=osca_record.suffix,
+            age=osca_record.age,
+            sex=osca_record.sex,
+            birth_date=osca_record.birth_date,
+            barangay=osca_record.barangay,
+            address=osca_record.address,
+            phone_number=osca_record.phone_number,
+            OSCA_ID=osca_record.OSCA_ID,
+        )
+        senior_record.save()
+        messages.success(request, 'Senior added successfully.')
+        return redirect('update_page')
+    
+    except osca_list.DoesNotExist:
+        messages.error(request, 'OSCA record not found.')
+        return render(request, 'update_page.html', {'error_message': 'OSCA record not found'}) 
+    
 def delete(request, id):
     seniors = senior_list.objects.get(id=id)
 

@@ -84,6 +84,24 @@
     </table>
   </div>
 
+  {% if messages %}
+  <div class="alert-container">
+    <div class="alert alert-dismissible {% if messages.tags %} {{ messages.tags }}{% endif %}" role="alert" id="alertBox">
+      <ul class="messages">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <script>
+    setTimeout(function() {
+      var alertBox = document.getElementById('alertBox');
+      alertBox.remove();
+    }, 3000); 
+  </script>
+{% endif %}
+
   <div class="modal-background" id="addSeniorModal">
     <div class="modal-content">
       <div class="modalHeader">

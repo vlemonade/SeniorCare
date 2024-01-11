@@ -23,15 +23,9 @@
 
     <div class="head-container">
       <div class="img">
-        {% if seniors.senior_image %}
-        <div class="photo-holder">
-          <img src="{{ seniors.senior_image.url }}" alt="profile" />
-        </div>
-        {% else %}
         <div class="photo-holder">
           <img src="{% static 'image/profile.png' %}" alt="profile" />
         </div>
-        {% endif %}
       </div>
       <div class="detail-column">
         <div class="display-form">
@@ -107,7 +101,7 @@
         <h2 class="h2head">A</h2>
       <h5>Do you want to add this record?</h5>
       <div class="add-button">
-        <a class="confirm-add" href="#">Yes</a>
+        <a class="confirm-add" href="{% url 'add_senior_list'  senior.OSCA_ID %}">Yes</a>
         <a class="cancel-add" href="/osca_preview/{{senior.id}}">Cancel</a>
       </div>
     </div>
