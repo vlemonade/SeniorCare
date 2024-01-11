@@ -88,12 +88,12 @@ WSGI_APPLICATION = 'seniorcare.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'test_code5',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',  
-        'PORT': '3306',     
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': 'edgDdbDd51Be-aC2-E-2f32eACEGC1BF',
+        'HOST': 'monorail.proxy.rlwy.net',  
+        'PORT': '12323',     
     }
 }
 # Password validation

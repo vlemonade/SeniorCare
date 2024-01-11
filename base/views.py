@@ -67,8 +67,8 @@ def download_summary(request):
     all_data = [['Last Name','First Name', 'OSCA ID', 'Claimed Date', 'Allowance Type', 'Allowance Amount', 'Status']]
 
     claimed_count = seniors.filter(is_claimed=True).count()
-    claimed_oldest_month = seniors.filter(is_claimed=True).aggregate(oldest_month=Min(TruncMonth('claimed_date')))
-    claimed_latest_month = seniors.filter(is_claimed=True).aggregate(latest_month=Max(TruncMonth('claimed_date')))
+    claimed_oldest_month = seniors.filter(is_claimed=True).aggregate(oldest_month=Min('claimed_date'))
+    claimed_latest_month = seniors.filter(is_claimed=True).aggregate(latest_month=Max('claimed_date'))
     total_claimed_amount = seniors.filter(is_claimed=True).aggregate(total_amount=Sum('allowance_amount'))
     unclaimed_count = seniors.filter(is_claimed=False).count()
 
@@ -147,8 +147,8 @@ def download_summary(request):
     summary_report = [
         f'Total Senior Citizens Who Claimed Allowances: {claimed_count}',
         f'Total Unclaimed Senior Citizens: {unclaimed_count}',
-        f'Oldest Claimed Month: {claimed_oldest_month["oldest_month"].strftime("%B %Y") if claimed_oldest_month["oldest_month"] else "N/A"}',
-        f'Latest Claimed Month: {claimed_latest_month["latest_month"].strftime("%B %Y") if claimed_latest_month["latest_month"] else "N/A"}',
+        f'Oldest Claimed Date: {claimed_oldest_month["oldest_month"].strftime("%Y-%m-%d") if claimed_oldest_month["oldest_month"] else "N/A"}',
+        f'Latest Claimed Date: {claimed_latest_month["latest_month"].strftime("%Y-%m-%d") if claimed_latest_month["latest_month"] else "N/A"}',
         f'Total Amount of All Senior Allowance Amounts: {total_claimed_amount["total_amount"]}',
         '',
     ]
@@ -270,6 +270,8 @@ def update_page(request):
 
     total_active = seniors.filter(status=True).count()
     total_inactive = seniors.filter(status=False).count()
+
+    seniors = seniors.order_by('last_name')
 
     return render(request, 'update_page.html', {'seniors': seniors, 'total_active': total_active, 'total_inactive': total_inactive})
 
@@ -421,6 +423,8 @@ def claim_page(request):
         seniors = seniors.filter(is_claimed=True)
     elif is_claimed_filter == 'not_claimed':
         seniors = seniors.filter(is_claimed=False)
+
+    seniors = seniors.order_by('last_name')
 
     total_active = seniors.filter(status=True).count()
     total_inactive = seniors.filter(status=False).count()
