@@ -93,14 +93,14 @@ h2{
 
 .modal-container1 {
   position: fixed;
-  top: 20%;
-  left: 34%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background: white;
   border-radius: 10px;
   max-width: 500px;
   text-align: center;
 }
-
 
 .modal-content {
     padding-bottom: 30px;
