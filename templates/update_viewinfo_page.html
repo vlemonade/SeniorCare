@@ -6,7 +6,7 @@
   href="{% static 'styles/update_viewinfo_page1.css' %}"
 />
 <script defer src="{% static 'js/update_viewpage.js' %}"></script>
-<title>View Info</title>
+<title>{% block title %}Beneficiary Profile{% endblock %}</title>
 <body>
   <div class="container">
     <div class="inner">
@@ -15,75 +15,73 @@
 
         <div class="head-container">
           <div class="img">
-              {% if seniors.senior_image %}
-              <div class="photo-holder">
-                  <img src="{{ seniors.senior_image.url }}" alt="profile">
-              </div>
-              {% else %}
-              <div class="photo-holder">
-                  <img src="{% static 'image/profile.png' %}" alt="profile">
-              </div>
-              {% endif %}
+            {% if seniors.senior_image %}
+            <div class="photo-holder">
+              <img src="{{ seniors.senior_image.url }}" alt="profile" />
+            </div>
+            {% else %}
+            <div class="photo-holder">
+              <img src="{% static 'image/profile.png' %}" alt="profile" />
+            </div>
+            {% endif %}
           </div>
           <div class="detail-column">
-              <div class="display-form">
-                  <label>Last Name</label>
-                  <input value="{{ seniors.last_name}}" disabled>
-              </div>
-      
-              <div class="display-form">
-                  <label>First Name</label>
-                  <input value="{{ seniors.first_name}}"  disabled>
-              </div>
-      
-              <div class="display-form">
-                  <label>Middle Name</label>
-                  <input value="{{ seniors.middle_name}}"  disabled>
-              </div>
+            <div class="display-form">
+              <label>Last Name</label>
+              <input value="{{ seniors.last_name}}" disabled />
+            </div>
+
+            <div class="display-form">
+              <label>First Name</label>
+              <input value="{{ seniors.first_name}}" disabled />
+            </div>
+
+            <div class="display-form">
+              <label>Middle Name</label>
+              <input value="{{ seniors.middle_name}}" disabled />
+            </div>
           </div>
+        </div>
+
+        <div class="detail-column4">
+          <div class="display-form">
+            <label>Suffix</label>
+            <input value="{{ seniors.suffix}}" disabled />
+          </div>
+          <div class="display-form">
+            <label>Age</label>
+            <input value="{{ seniors.age}}" disabled />
           </div>
 
-          <div class="detail-column4">
-            <div class="display-form">
-                <label>Suffix</label>
-                <input value="{{ seniors.suffix}}" disabled>
-            </div>
-            <div class="display-form">
-            <label>Age</label>
-                <input value="{{ seniors.age}}" disabled>
-            </div>
-    
-            <div class="display-form">
-                <label>Gender</label>
-                <input value="{{ seniors.sex}}" disabled>
-            </div>
+          <div class="display-form">
+            <label>Gender</label>
+            <input value="{{ seniors.sex}}" disabled />
+          </div>
         </div>
 
         <div class="detail-column1">
-
           <div class="display-form">
-              <label>Birthdate</label>
-              <input value="{{ seniors.birth_date}}" disabled>
+            <label>Birthdate</label>
+            <input value="{{ seniors.birth_date}}" disabled />
           </div>
 
           <div class="display-form">
-              <label>Phone no.</label>
-              <input value="{{ seniors.phone_number}}"  disabled>
+            <label>Phone no.</label>
+            <input value="{{ seniors.phone_number}}" disabled />
           </div>
-      </div>
+        </div>
 
-      <div class="detail-column2">
+        <div class="detail-column2">
           <div class="display-form">
-              <label>ID</label>
-              <input  value="{{ seniors.OSCA_ID}}" disabled>
+            <label>ID</label>
+            <input value="{{ seniors.OSCA_ID}}" disabled />
           </div>
-  
+
           <div class="display-form">
-              <label>Address</label>
-              <input  value="{{ seniors.address}}" disabled>
+            <label>Address</label>
+            <input value="{{ seniors.address}}" disabled />
           </div>
-      </div>
-      
+        </div>
 
         <div class="btn-container">
           <a href="/edit/{{seniors.id}}" class="btn-edit">Edit</a>
@@ -96,45 +94,83 @@
     </div>
 
     <div id="confirmation-popup" class="confirmation-popup">
-        <div class="header"></div>
-        <div class="popup-body">
-          <form method="POST" action="{% url 'delete' seniors.id %}" id="deletionForm">
-            {% csrf_token %}
-        
-            <input type="hidden" name="selected_deletion_reason" id="selected_deletion_reason" value="">
-            
-            <p>What is the reason for deleting this information?</p><br>
-            <div class="delete-reasons">
-              <label>
-                <input type="radio" name="deletion_reason" value="deceased" onclick="toggleTextInput(false); updateActiveStatusAndSubmit('The person is deceased')"> The person is deceased
-              </label><br>
-              <label>
-                <input type="radio" name="deletion_reason" value="inactive" onclick="toggleTextInput(false); updateActiveStatusAndSubmit('The person no longer resides in Manila')"> The person no longer resides in Manila
-              </label><br>
-              <label>
-                <input type="radio" name="deletion_reason" value="custom_reason" onclick="toggleTextInput(true)"> Other
-              </label><br>
-            
-              <div id="customReasonInput" style="display: none;">
-                <label for="custom_reason">Custom Reason:</label>
-                <input type="text" name="custom_reason" id="custom_reason" onchange="updateActiveStatusAndSubmit(this.value)">
-              </div>
+      <div class="header"></div>
+      <div class="popup-body">
+        <form
+          method="POST"
+          action="{% url 'delete' seniors.id %}"
+          id="deletionForm"
+        >
+          {% csrf_token %}
+
+          <input
+            type="hidden"
+            name="selected_deletion_reason"
+            id="selected_deletion_reason"
+            value=""
+          />
+
+          <p>What is the reason for deleting this information?</p>
+          <br />
+          <div class="delete-reasons">
+            <label>
+              <input
+                type="radio"
+                name="deletion_reason"
+                value="deceased"
+                onclick="toggleTextInput(false); updateActiveStatusAndSubmit('The person is deceased')"
+              />
+              The person is deceased </label
+            ><br />
+            <label>
+              <input
+                type="radio"
+                name="deletion_reason"
+                value="inactive"
+                onclick="toggleTextInput(false); updateActiveStatusAndSubmit('The person no longer resides in Manila')"
+              />
+              The person no longer resides in Manila </label
+            ><br />
+            <label>
+              <input
+                type="radio"
+                name="deletion_reason"
+                value="custom_reason"
+                onclick="toggleTextInput(true)"
+              />
+              Other </label
+            ><br />
+
+            <div id="customReasonInput" style="display: none">
+              <label for="custom_reason">Custom Reason:</label>
+              <input
+                type="text"
+                name="custom_reason"
+                id="custom_reason"
+                onchange="updateActiveStatusAndSubmit(this.value)"
+              />
             </div>
-            <div class="confirm-delete">
-                <button type="submit" id="btn-delete" class="btn-delete1">Yes</button>
-                <a onclick="hideConfirmation()" class="btn-cancel1">Cancel</a>
-            </div>
+          </div>
+          <div class="confirm-delete">
+            <button type="submit" id="btn-delete" class="btn-delete1">
+              Yes
+            </button>
+            <a onclick="hideConfirmation()" class="btn-cancel1">Cancel</a>
+          </div>
         </form>
-        </div>
+      </div>
     </div>
-</div>
+  </div>
 
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
   <script>
     function updateActiveStatusAndSubmit(reason) {
-      console.log('Reason:', reason);
-      document.getElementById('selected_deletion_reason').value = reason;
-      console.log('Form Value:', document.getElementById('selected_deletion_reason').value);
+      console.log("Reason:", reason);
+      document.getElementById("selected_deletion_reason").value = reason;
+      console.log(
+        "Form Value:",
+        document.getElementById("selected_deletion_reason").value
+      );
     }
 
     function hideConfirmation() {
@@ -142,9 +178,9 @@
     }
 
     function toggleTextInput(showCustomReason) {
-    var customReasonInput = document.getElementById("customReasonInput");
-    customReasonInput.style.display = showCustomReason ? "block" : "none";
-  }
+      var customReasonInput = document.getElementById("customReasonInput");
+      customReasonInput.style.display = showCustomReason ? "block" : "none";
+    }
   </script>
 </body>
 {% endblock content%}

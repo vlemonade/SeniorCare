@@ -1,90 +1,108 @@
-{% extends 'main.html' %}
+{% extends 'main.html' %} {% block content %} {% load static %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  media="screen"
+  href="{% static 'styles/claim_match.css' %}"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+  integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
 
-{% block content %}
-  {% load static %}
-  <link rel="stylesheet" type="text/css" media='screen' href="{% static 'styles/claim_match.css' %}">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-  <head>
-    <title>Deleted Detail</title>
-  </head>
-  <body>
-    <div class="claim-detail-container">
-      <h1>Deleted Beneficiary</h1>  
-      <div class="detail-column">
-        <div class="display-form">
-            <label>Name</label>
-            <input value="{{ seniors.last_name}} {{ seniors.first_name}}" disabled>
-        </div>
-
-        <div class="display-form">
-            <label>OSCA ID</label>
-            <input  value="{{ seniors.OSCA_ID}}" disabled>
-        </div>
-
-        <div class="display-form">
-            <label>Registered on</label>
-            <input value="{{ seniors.created|date:'F j, Y'}}"  disabled>
-        </div>
-    </div>
-
+<head>
+  <title>{% block title %}Deleted Beneficiary{% endblock %}</title>
+</head>
+<body>
+  <div class="claim-detail-container">
+    <h1>Deleted Beneficiary</h1>
     <div class="detail-column">
-        <div class="display-form">
-            <label>Deleted on:</label>
-            <input  value="{{ seniors.date_of_deletion|date:'F j, Y' }}" disabled>
-        </div>
+      <div class="display-form">
+        <label>Name</label>
+        <input
+          value="{{ seniors.last_name}} {{ seniors.first_name}}"
+          disabled
+        />
+      </div>
 
-        <div class="display-form">
-            <label>Reason of delete:</label>
-            <input  value="{{ seniors.deletion_reason }}" disabled>
-        </div>
-    </div>
+      <div class="display-form">
+        <label>OSCA ID</label>
+        <input value="{{ seniors.OSCA_ID}}" disabled />
+      </div>
 
-    <div class="detail-column">
-        <div class="display-form">
-            <label>Deleted by:</label>
-            <input  value="{{ request.user.get_full_name }}" disabled>
-        </div>
-    </div>
-
-      <div class="btnn">
-        <a href="{% url 'claim_page' %}">Back</a>
-        <a href="#" onclick="retrieveEntry()">Retrieve</a>
+      <div class="display-form">
+        <label>Registered on</label>
+        <input
+          value="{{ seniors.created|date:'F j, Y'}} at {{seniors.created|time:'g:iA'}}"
+          disabled
+        />
       </div>
     </div>
-    
-    <script>
-        var csrfToken = "{{ csrf_token }}";
-    
-        function retrieveEntry() {
-            var seniorId = '{{ seniors.id }}';
 
-            var isConfirmed = confirm("Are you sure you want to retrieve this entry?");
-            
-            if (isConfirmed) {
-                fetch(`/retrieve_entry/${seniorId}/`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                        "X-CSRFToken": csrfToken,
-                    },
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.href = '/claim_page/';
-                    } else {
-                        console.error("Failed to retrieve entry:", data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error("Error during fetch:", error);
-                });
+    <div class="detail-column">
+      <div class="display-form">
+        <label>Deleted on:</label>
+        <input
+          value="{{ seniors.date_of_deletion|date:'F j, Y' }} at {{seniors.date_of_deletion|time:'g:iA'}}"
+          disabled
+        />
+      </div>
+
+      <div class="display-form">
+        <label>Reason of delete:</label>
+        <input value="{{ seniors.deletion_reason }}" disabled />
+      </div>
+    </div>
+
+    <div class="detail-column">
+      <div class="display-form">
+        <label>Deleted by:</label>
+        <input value="{{ request.user.get_full_name }}" disabled />
+      </div>
+    </div>
+
+    <div class="btnn">
+      <a href="{% url 'claim_page' %}">Back</a>
+      <a href="#" onclick="retrieveEntry()">Retrieve</a>
+    </div>
+  </div>
+
+  <script>
+    var csrfToken = "{{ csrf_token }}";
+
+    function retrieveEntry() {
+      var seniorId = "{{ seniors.id }}";
+
+      var isConfirmed = confirm(
+        "Are you sure you want to retrieve this entry?"
+      );
+
+      if (isConfirmed) {
+        fetch(`/retrieve_entry/${seniorId}/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": csrfToken,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              window.location.href = "/update_page/";
             } else {
-                console.log("Retrieval canceled.");
+              console.error("Failed to retrieve entry:", data.message);
             }
-        }
-    </script>
-    
-  </body>
+          })
+          .catch((error) => {
+            console.error("Error during fetch:", error);
+          });
+      } else {
+        console.log("Retrieval canceled.");
+      }
+    }
+  </script>
+</body>
 {% endblock content%}
