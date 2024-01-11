@@ -191,6 +191,8 @@ def download_summary(request):
 
         pdf.build([header_table] + summary_report_with_margin + [Spacer(1, table_margin), combined_table, Spacer(1, table_margin), deleted_accounts_table])
         seniors.update(is_claimed=False)
+        seniors_to_delete = seniors.filter(date_of_deletion__isnull=False)
+        seniors_to_delete.delete()
     else:
         pdf.build([header_table] + summary_report_with_margin + [Spacer(1, table_margin), combined_table])
         seniors.update(is_claimed=False)
@@ -270,24 +272,6 @@ def update_page(request):
     total_inactive = seniors.filter(status=False).count()
 
     return render(request, 'update_page.html', {'seniors': seniors, 'total_active': total_active, 'total_inactive': total_inactive})
-
-
-def smss(request):
-    status_filter = request.GET.get('status_filter', 'all')
-
-    if status_filter == 'active':
-        seniors = senior_list.objects.filter(status=True)
-    elif status_filter == 'inactive':
-        seniors = senior_list.objects.filter(status=False)
-    else:
-        seniors = senior_list.objects.all()
-
-    total_active = seniors.filter(status=True).count()
-    total_inactive = seniors.filter(status=False).count()
-
-    return render(request, 'smss.html', {'seniors': seniors, 'total_active': total_active, 'total_inactive': total_inactive})
-
-
 
 def add_senior(request):
     result = None
