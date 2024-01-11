@@ -1,30 +1,33 @@
+{% block content %} {% load static %}
 
-{% block content %}
-{% load static %} 
-    
-    <head>
-        <title>Live Camera Feed</title>
-        <meta charset='utf-8'>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="{% static 'styles/image_upload.css' %}" type="text/css" media="all">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-        <script defer src="{% static 'js/camera.js' %}"></script>
-    </head>
+<head>
+  <title>Capture Image</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link
+    rel="stylesheet"
+    href="{% static 'styles/image_upload.css' %}"
+    type="text/css"
+    media="all"
+  />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script defer src="{% static 'js/camera.js' %}"></script>
+</head>
 <body>
-    <div class="camera_body">
+  <div class="camera_body">
     <video id="live-camera-feed" width="640" height="480" autoplay></video>
-    </div>
+  </div>
 
-    <div class="btn_row">
-        <a href="#" class="btn" id="capture-button">Capture Image</a>
-        <a href="#" class="btn" id="cancel-button" onclick="window.close();">Cancel</a>
-        <a href="#" class="btn" id="retake-button" style="display: none;">Retake</a>
-        <img id="captured-image" alt="Captured Image" style="display: none;">
-        <a href="#" class="btn" id="upload-button" style="display: none;">Upload</a>
-    </div>
-
+  <div class="btn_row">
+    <a href="#" class="btn" id="capture-button">Capture Image</a>
+    <a href="#" class="btn" id="cancel-button" onclick="window.close();"
+      >Cancel</a
+    >
+    <a href="#" class="btn" id="retake-button" style="display: none">Retake</a>
+    <img id="captured-image" alt="Captured Image" style="display: none" />
+    <a href="#" class="btn" id="upload-button" style="display: none">Upload</a>
+  </div>
 </body>
-
 
 {% endblock content %}
