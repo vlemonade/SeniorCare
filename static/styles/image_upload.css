@@ -12,7 +12,6 @@ body {
 
 .camera_body{
   text-align: center;
-  margin-bottom: 10px;
 }
 
 .progress-msg{
@@ -34,9 +33,9 @@ h1{
 }
 
 .btn_row {
+  margin: 5px;
   display: flex;
   justify-content: center;
-  margin-top: 20px;
 }
 
 .btn {
@@ -108,21 +107,6 @@ h1{
 }
 
 
-
-@media (max-width: 800px) {
-  .camera_body{
-    width: 90%;
-  }
-  
-  h1{
-    font-size: 20px;
-  }
-  .confirmation-popup {
-    width: 50%;
-  }
-
-}
-
 @media (max-width: 500px) {
 
 
@@ -132,6 +116,7 @@ h1{
 
   .camera_body{
     width: 100%;
+    height: auto;
   }
 
   #live-camera-feed,
@@ -147,10 +132,6 @@ h1{
 h1{
   font-size: 14px;
 }
-
-  .btn_row {
-    margin-top: 20%;
-  }
 
   .btn {
     font-size: 13px;
