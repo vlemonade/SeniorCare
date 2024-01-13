@@ -53,19 +53,26 @@
                     backgroundElement.style.backgroundImage = 'url(' + images[index] + ')';
                     index = (index + 1) % images.length;
                 }
-
+        
+                // Call changeBackground to set the initial background
                 changeBackground();
         
-                setInterval(changeBackground, 3000);
-                
-                function closeOverlay() {
-                    document.getElementById('overlay').style.display = 'none';
-                }
+                // Call changeBackground again to make it change immediately upon loading
+                changeBackground();
         
-                {% if messages %}
-                    document.getElementById('overlay').style.display = 'flex';
-                {% endif %}
+                // Set up the interval for background change
+                setInterval(changeBackground, 3000);
             });
+        
+            // Function to close the overlay
+            function closeOverlay() {
+                document.getElementById('overlay').style.display = 'none';
+            }
+        
+            // Display the overlay when there are messages
+            {% if messages %}
+                document.getElementById('overlay').style.display = 'flex';
+            {% endif %}
         </script>
         </body>
 </html>

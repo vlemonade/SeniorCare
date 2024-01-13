@@ -209,7 +209,15 @@ h5 {
 
 .confirm-add:hover,
 .cancel-add:hover {
-  background-color: #4a55a2;
+  background-color: #4a55a2;}
+
+
+@media (max-width: 700px){
+  .detail-column {
+    margin-left: 10px;
+  }
+  
+  
 }
 
 @media (max-width: 500px) {
@@ -219,16 +227,22 @@ h5 {
     padding: 20px;
   }
 
+  .img{
+    display: flex;
+    justify-content: center;
+  }
+
   .head-container {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: none;
+    align-items: normal;
   }
 
   .detail-column {
     display: flex;
     flex-direction: column;
+    margin: 0;
   }
 
   .display-form input {
