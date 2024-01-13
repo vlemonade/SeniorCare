@@ -194,15 +194,15 @@ def download_summary(request):
     summary_report_with_margin = [Spacer(1, summary_report_margin)] + summary_report_paragraphs
     table_margin = 20
     
-    deleted_accounts_data = [['Last Name', 'First Name', 'OSCA ID', 'Registered Date', 'Deletion Date', 'Deletion Reason']]
+    deleted_accounts_data = [['OSCA ID', 'Last Name', 'First Name', 'Registered Date', 'Deletion Date', 'Deletion Reason']]
 
     deleted_accounts = seniors.filter(date_of_deletion__isnull=False)
 
     for deleted_senior in deleted_accounts.order_by('-date_of_deletion', 'last_name'):
         deleted_row = [
+            deleted_senior.OSCA_ID,
             deleted_senior.last_name,
             deleted_senior.first_name,
-            deleted_senior.OSCA_ID,
             deleted_senior.created.strftime('%Y-%m-%d') if deleted_senior.created else '',
             deleted_senior.date_of_deletion.strftime('%Y-%m-%d') if deleted_senior.date_of_deletion else '',
             deleted_senior.deletion_reason,
