@@ -53,7 +53,7 @@ from reportlab.platypus import Spacer
 from django.http import HttpResponse
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.utils import ImageReader
 from reportlab.platypus import Image
@@ -64,7 +64,9 @@ def download_summary(request):
 
     seniors = senior_list.objects.all()
 
-    all_data = [['Last Name','First Name', 'OSCA ID', 'Claimed Date', 'Allowance Type', 'Allowance Amount', 'Status']]
+    Claimed_accounts = seniors.filter(is_claimed=True)
+
+    Claimed_data = [['OSCA ID', 'Last Name','First Name', 'Claimed Date', 'Allowance Type', 'Allowance Amount']]
 
     claimed_count = seniors.filter(is_claimed=True).count()
     claimed_oldest_month = seniors.filter(is_claimed=True).aggregate(oldest_month=Min('claimed_date'))
@@ -72,37 +74,70 @@ def download_summary(request):
     total_claimed_amount = seniors.filter(is_claimed=True).aggregate(total_amount=Sum('allowance_amount'))
     unclaimed_count = seniors.filter(is_claimed=False).count()
 
-    for senior in seniors.order_by('-is_claimed', 'last_name'):
-        status = 'Claimed' if senior.is_claimed else 'Unclaimed'
+    for Claimed_senior in Claimed_accounts.order_by('last_name'):
         row = [
-            senior.last_name,
-            senior.first_name,
-            senior.OSCA_ID,
-            senior.claimed_date.strftime('%Y-%m-%d') if senior.is_claimed and senior.claimed_date else '',
-            senior.allowance_type if senior.is_claimed else '', 
-            senior.allowance_amount if senior.is_claimed else '',
-            status,
+            Claimed_senior.OSCA_ID,
+            Claimed_senior.last_name,
+            Claimed_senior.first_name,
+            Claimed_senior.claimed_date.strftime('%B %d, %Y'),
+            Claimed_senior.allowance_type, 
+            Claimed_senior.allowance_amount,
         ]
-        all_data.append(row)
+        Claimed_data.append(row)
 
-    combined_table = Table(all_data)
+    Claimed_Table = Table(Claimed_data)
 
     style = [
-    ('BACKGROUND', (0, 0), (-1, 0), colors.white),
-    ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
-    ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-    ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-    ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.white),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
     ]
 
-    for i in range(1, len(all_data)): 
-        if all_data[i][-1] == 'Claimed':
+    for i in range(1, len(Claimed_data)): 
+        if Claimed_data[i][-1] == 'Claimed':
             style.append(('BACKGROUND', (0, i), (-1, i), colors.white))
-        elif all_data[i][-1] == 'Unclaimed':
+        elif Claimed_data[i][-1] == 'Unclaimed':
             style.append(('BACKGROUND', (0, i), (-1, i), colors.white))
 
-    combined_table.setStyle(TableStyle(style))
+    Claimed_Table.setStyle(TableStyle(style))
+
+
+
+    Unclaimed_data = [['OSCA ID', 'Last Name','First Name', 'Last Claimed', 'Phone Number', 'Address']]
+    Unclaimed_accounts = seniors.filter(is_claimed=False)
+
+    for Unclaimed_senior in Unclaimed_accounts.order_by('-is_claimed', 'last_name'):
+        row = [
+            Unclaimed_senior.OSCA_ID,
+            Unclaimed_senior.last_name,
+            Unclaimed_senior.first_name,
+            Unclaimed_senior.claimed_date.strftime('%B %d, %Y') if Unclaimed_senior.claimed_date else "None",
+            Unclaimed_senior.address,
+            Unclaimed_senior.phone_number,
+        ]
+        Unclaimed_data.append(row)
+
+    Unclaimed_Table = Table(Unclaimed_data)
+
+    style = [
+        ('BACKGROUND', (0, 0), (-1, 0), colors.white),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]
+
+    for i in range(1, len(Unclaimed_data)): 
+        if Unclaimed_data[i][-1] == 'Claimed':
+            style.append(('BACKGROUND', (0, i), (-1, i), colors.white))
+        elif Unclaimed_data[i][-1] == 'Unclaimed':
+            style.append(('BACKGROUND', (0, i), (-1, i), colors.white))
+
+    Unclaimed_Table.setStyle(TableStyle(style))
 
     pdf = SimpleDocTemplate(response, pagesize=letter)
     left_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'mnl_logo.jpg')
@@ -145,11 +180,11 @@ def download_summary(request):
     pdf = SimpleDocTemplate(response, pagesize=letter)
 
     summary_report = [
-        f'Total Senior Citizens Who Claimed Allowances: {claimed_count}',
-        f'Total Unclaimed Senior Citizens: {unclaimed_count}',
-        f'Oldest Claimed Date: {claimed_oldest_month["oldest_month"].strftime("%Y-%m-%d") if claimed_oldest_month["oldest_month"] else "N/A"}',
-        f'Latest Claimed Date: {claimed_latest_month["latest_month"].strftime("%Y-%m-%d") if claimed_latest_month["latest_month"] else "N/A"}',
-        f'Total Amount of All Senior Allowance Amounts: {total_claimed_amount["total_amount"]}',
+        f'Total Claimed Seniors: {claimed_count}',
+        f'Total Unclaimed Seniors: {unclaimed_count}',
+        f'Total Allowance Amount: {total_claimed_amount["total_amount"]}',
+        f'Oldest Claimed Date: {claimed_oldest_month["oldest_month"].strftime("%B %d, %Y") if claimed_oldest_month["oldest_month"] else "N/A"}',
+        f'Latest Claimed Date: {claimed_latest_month["latest_month"].strftime("%B %d, %Y") if claimed_latest_month["latest_month"] else "N/A"}',
         '',
     ]
 
@@ -174,7 +209,7 @@ def download_summary(request):
         ]
         deleted_accounts_data.append(deleted_row)
 
-    if len(deleted_accounts_data) > 1: 
+    if len(deleted_accounts_data) > 1:
         deleted_accounts_table = Table(deleted_accounts_data)
 
         deleted_accounts_style = [
@@ -189,16 +224,54 @@ def download_summary(request):
 
         deleted_accounts_table.setStyle(TableStyle(deleted_accounts_style))
 
-        pdf.build([header_table] + summary_report_with_margin + [Spacer(1, table_margin), combined_table, Spacer(1, table_margin), deleted_accounts_table])
+        title_style = ParagraphStyle(
+            'Title',
+            parent=getSampleStyleSheet()['Heading2'],
+            alignment=1,  
+        )
+
+        claimed_title = Paragraph("Claimed Senior Citizens", title_style)
+        unclaimed_title = Paragraph("Unclaimed Senior Citizens", title_style)
+        deleted_title = Paragraph("Deleted Senior Citizens", title_style)
+
+        pdf_elements = [header_table] + summary_report_with_margin
+
+        if len(Claimed_data) > 1:
+            pdf_elements += [Spacer(1, table_margin), claimed_title, Claimed_Table, PageBreak(), header_table]
+
+        if len(Unclaimed_data) > 0:
+            pdf_elements += [Spacer(1, table_margin), unclaimed_title, Unclaimed_Table, PageBreak(), header_table]
+
+        pdf_elements += [Spacer(1, table_margin), deleted_title, deleted_accounts_table]
+
+        pdf.build(pdf_elements)
+
         seniors.update(is_claimed=False)
         seniors_to_delete = seniors.filter(date_of_deletion__isnull=False)
         seniors_to_delete.delete()
     else:
-        pdf.build([header_table] + summary_report_with_margin + [Spacer(1, table_margin), combined_table])
+
+        title_style = ParagraphStyle(
+            'Title',
+            parent=getSampleStyleSheet()['Heading2'],
+            alignment=1,  
+        )
+
+        claimed_title = Paragraph("Claimed Senior Citizens", title_style)
+        unclaimed_title = Paragraph("Unclaimed Senior Citizens", title_style)
+
+        pdf_elements = [header_table] + summary_report_with_margin
+
+        if len(Claimed_data) > 1:
+            pdf_elements += [Spacer(1, table_margin), claimed_title, Claimed_Table, PageBreak(), header_table]
+
+        if len(Unclaimed_data) > 0:
+            pdf_elements += [Spacer(1, table_margin), unclaimed_title, Unclaimed_Table]
+
+        pdf.build(pdf_elements)
         seniors.update(is_claimed=False)
 
     return response
-
     
 
 def index(request):
@@ -384,6 +457,55 @@ def update(request, id):
 
     context = {'seniors': seniors}
     return render(request, 'update_viewinfo_page.html', context)
+
+
+
+def edit_claim(request, id):
+    seniors = senior_list.objects.get(id=id)
+    return render(request, 'edit_claim.html', {'seniors': seniors})
+
+def update_claim(request, id):
+    seniors = senior_list.objects.get(id=id)
+
+    if request.method == 'POST':
+        temporary_image_data_url = request.POST.get('temporary_image', '')
+        if temporary_image_data_url:
+            _, temporary_image_base64 = temporary_image_data_url.split(',')
+            temporary_image = ContentFile(base64.b64decode(temporary_image_base64), name=f'temporary_image.png')
+
+            if seniors.senior_image and os.path.exists(seniors.senior_image.path):
+                os.remove(seniors.senior_image.path)
+
+            current_date = datetime.now().strftime("%Y%m%d")
+            new_image_name = os.path.join('media', f'updated_image_{seniors.OSCA_ID}_{current_date}.png')
+            seniors.senior_image.save(new_image_name, temporary_image, save=True)
+
+        elif 'senior_image' in request.FILES:
+            if seniors.senior_image:
+                os.remove(seniors.senior_image.path)
+
+            uploaded_image = request.FILES['senior_image']
+
+            current_date = datetime.now().strftime("%Y%m%d%H%M%S")
+            new_image_name = f'updated_image_{seniors.OSCA_ID}_{current_date}.png'
+            seniors.senior_image.save(new_image_name, uploaded_image)
+
+        seniors.last_name = request.POST.get('Lastname')
+        seniors.first_name = request.POST.get('Firstname')
+        seniors.middle_name = request.POST.get('Middlename')
+        seniors.suffix = request.POST.get('Suffix')
+        seniors.age = request.POST.get('Age')
+        seniors.sex = request.POST.get('sex')
+        seniors.address = request.POST.get('Adress')
+        seniors.phone_number = request.POST.get('phone_number')
+        seniors.status = True
+        seniors.save()
+
+        if not seniors.senior_image:
+            return redirect('claim_page')
+    
+    context = {'seniors': seniors}
+    return render(request, 'claim_detail_page.html', context)
     
 
 def search(request):

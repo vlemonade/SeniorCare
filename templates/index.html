@@ -45,28 +45,27 @@
 
         <script>
             document.addEventListener("DOMContentLoaded", function() {
-            var images = ['/static/image/1.jpg', '/static/image/2.jpg', '/static/image/3.jpg'];
-            var index = 0;
-            var backgroundElement = document.querySelector('.background');
+                var images = ['/static/image/1.jpg', '/static/image/2.jpg', '/static/image/3.jpg'];
+                var index = 0;
+                var backgroundElement = document.querySelector('.background');
+        
+                function changeBackground() {
+                    backgroundElement.style.backgroundImage = 'url(' + images[index] + ')';
+                    index = (index + 1) % images.length;
+                }
 
-            function changeBackground() {
-                backgroundElement.style.backgroundImage = 'url(' + images[index] + ')';
-                index = (index + 1) % images.length;
-            }
-            changeBackground();
-
-            setInterval(changeBackground, 3000);
+                changeBackground();
+        
+                setInterval(changeBackground, 3000);
+                
+                function closeOverlay() {
+                    document.getElementById('overlay').style.display = 'none';
+                }
+        
+                {% if messages %}
+                    document.getElementById('overlay').style.display = 'flex';
+                {% endif %}
             });
-            
-            // Function to close the overlay
-            function closeOverlay() {
-                document.getElementById('overlay').style.display = 'none';
-            }
-
-            // Display the overlay when there are messages
-            {% if messages %}
-                document.getElementById('overlay').style.display = 'flex';
-            {% endif %}
         </script>
         </body>
 </html>

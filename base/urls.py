@@ -22,6 +22,8 @@ urlpatterns = [
     path('add_senior_list/<str:osca_id>', views.add_senior_list, name='add_senior_list'),
     path('edit/<int:id>', views.edit, name='edit'),
     path('update/<int:id>', views.update, name='update'),
+    path('edit_claim/<int:id>', views.edit_claim, name='edit_claim'),
+    path('update_claim/<int:id>', views.update_claim, name='update_claim'),
     path('delete/<int:id>', views.delete, name = 'delete'),
    
 

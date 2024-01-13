@@ -130,36 +130,6 @@ label {
   background-color: #4a55a2;
 }
 
-@media (max-width: 500px) {
-  .preview-container {
-    max-width: 95vw;
-    margin: 20px auto;
-    padding: 20px;
-  }
-
-  .head-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .detail-column {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .display-form input {
-    font-size: 17px;
-  }
-
-  .display-form label {
-    font-size: 17px;
-  }
-}
-
-/*add-popup*/
-
 .h2head {
   color: #4a55a2;
   background-color: #4a55a2;
@@ -242,12 +212,40 @@ h5 {
   background-color: #4a55a2;
 }
 
-@media only screen and (min-width: 150px) and (max-width: 640px) {
-  .confirm-add,
-  .cancel-add {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 5pt;
+@media (max-width: 500px) {
+  .preview-container {
+    max-width: 95vw;
+    margin: 20px auto;
+    padding: 20px;
+  }
+
+  .head-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .detail-column {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .display-form input {
+    font-size: 17px;
+  }
+
+  .display-form label {
+    font-size: 17px;
+  }
+
+  .add-form {
+    width: 90%;
+    max-width: 600px;
+  }
+
+  .btn-preview a {
+    font-size: 20px;
+    padding: 10px 10px;
   }
 }

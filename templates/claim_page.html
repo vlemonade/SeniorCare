@@ -56,7 +56,7 @@
       <tbody>
         {% for senior in seniors %}
           {% if not senior.deletion_reason %}
-            <tr>
+          <tr>
               <td>{{ forloop.counter }}</td>
               <td>{{ senior.last_name }}</td>
               <td>{{ senior.first_name }}</td>
@@ -73,15 +73,59 @@
                 {% if senior.is_claimed %}
                   <a href="/match/{{ senior.id }}" class="claimed-btn">Claimed</a>              
                 {% else %}
-                  <a href="/claim_detail_page/{{ senior.id }}" class="claim-btn">Claim</a>
+                <button class="claim-btn" onclick="console.log('senior.senior_image:', '{{ senior.senior_image }}'); checkImage('{{ senior.id }}', '{% if senior.senior_image and senior.senior_image.url %}true{% else %}false{% endif %}')">Claim</button>
                 {% endif %}
               </td>
             </tr>
           {% endif %}
         {% endfor %}
       </tbody>
+
+      <div class="nopicture-container" id="addPictureModal">
+        <div class="nopicture-modal-content">
+        <div class="nopictureHeader">
+
+        </div>
+          <div class="modalBodyy">
+            <p>Senior has no picture. Do you want to add a picture first?</p>
+            <div class="btn-btn">
+              <a onclick="addpicture()">Add Picture</a>
+              <button onclick="closeAddPopup()">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </table>
   </div>
+
+  <script>
+    function checkImage(seniorId, hasImage) {
+        if (hasImage === 'false') {
+            openAddPictureModal(seniorId);
+        } else {
+            window.location.href = '/claim_detail_page/' + seniorId + '/';
+        }
+    }
+    function openAddPictureModal(seniorId) {
+        var addPictureModal = document.getElementById('addPictureModal');
+        addPictureModal.style.display = 'block';
+        console.log('Opening modal for senior ID:', seniorId);
+        window.currentSeniorId = seniorId;
+    }
+
+    function addpicture() {
+    var seniorId = window.currentSeniorId;
+    console.log('Adding picture for senior ID:', seniorId);
+    window.location.href = '/edit_claim/' + seniorId;
+  }
+
+
+    function closeAddPopup() {
+        var addPictureModal = document.getElementById('addPictureModal');
+        addPictureModal.style.display = 'none';
+    }
+</script>
+  
 </div>
 
 {% endblock content %}

@@ -158,6 +158,7 @@
   width: 90%; 
   max-width: 600px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  z-index: 999999;
 }
 
 .btnCamera{
@@ -165,7 +166,7 @@
   justify-content: space-around;
 }
 
-.close {
+.modal-content .close {
   position: absolute;
   top: -7px;
   right: 10px;

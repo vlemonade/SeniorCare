@@ -381,9 +381,11 @@ tr:nth-child(even) td{
   .search-bar h2{
     display: none;
   }
-  label{
+
+  .claim-status label{
     display: none;
   }
+  
 
 }
 

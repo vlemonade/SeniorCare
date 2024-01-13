@@ -10,8 +10,15 @@ body {
   position: relative;
   background-color: #ffff;
   height: 110px;
-  justify-content: center;
+  justify-content: flex-end; 
 }
+
+nav ul {
+  position: absolute;
+  list-style: none;
+  right: 30px; 
+}
+
 
 .logo img {
   width: 15rem;
@@ -20,11 +27,6 @@ body {
   top: 30px;
 }
 
-nav ul {
-  position: absolute;
-  list-style: none;
-  right: 16rem;
-}
 
 nav li {
   display: inline-block;
@@ -144,45 +146,7 @@ nav a:hover::before {
   display: none;
 }
 
-@media (max-width: 1240px) {
-  .logo img {
-    width: 12rem;
-    left: 2rem;
-    top: 35px;
-  }
 
-  nav a {
-    font-size: 1.6rem;
-  }
-
-  nav ul {
-    right: 9rem;
-  }
-
-  nav li {
-    margin-left: 40px;
-  }
-
-  .user img {
-    right: 3rem;
-    top: 32px;
-    width: 3.5rem;
-  }
-}
-
-@media (max-width: 1000px) {
-  nav a {
-    font-size: 1.6rem;
-  }
-
-  nav ul {
-    right: 4rem;
-  }
-
-  nav li {
-    margin-left: 30px;
-  }
-}
 
 @media (max-width: 850px) {
   .mobile-nav-toggle {
