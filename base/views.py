@@ -246,6 +246,222 @@ def download_summary(request):
 
         pdf.build(pdf_elements)
 
+        #seniors.update(is_claimed=False)
+        #seniors_to_delete = seniors.filter(date_of_deletion__isnull=False)
+        #seniors_to_delete.delete()
+    else:
+
+        title_style = ParagraphStyle(
+            'Title',
+            parent=getSampleStyleSheet()['Heading2'],
+            alignment=1,  
+        )
+
+        claimed_title = Paragraph("Claimed Senior Citizens", title_style)
+        unclaimed_title = Paragraph("Unclaimed Senior Citizens", title_style)
+
+        pdf_elements = [header_table] + summary_report_with_margin
+
+        if len(Claimed_data) > 1:
+            pdf_elements += [Spacer(1, table_margin), claimed_title, Claimed_Table, PageBreak(), header_table]
+
+        if len(Unclaimed_data) > 0:
+            pdf_elements += [Spacer(1, table_margin), unclaimed_title, Unclaimed_Table]
+
+        pdf.build(pdf_elements)
+        #seniors.update(is_claimed=False)
+
+    return response
+
+
+def download_summary_reset(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="senior_list_report.pdf"'
+
+    seniors = senior_list.objects.all()
+
+    Claimed_accounts = seniors.filter(is_claimed=True)
+
+    Claimed_data = [['OSCA ID', 'Last Name','First Name', 'Claimed Date', 'Allowance Type', 'Allowance Amount']]
+
+    claimed_count = seniors.filter(is_claimed=True).count()
+    claimed_oldest_month = seniors.filter(is_claimed=True).aggregate(oldest_month=Min('claimed_date'))
+    claimed_latest_month = seniors.filter(is_claimed=True).aggregate(latest_month=Max('claimed_date'))
+    total_claimed_amount = seniors.filter(is_claimed=True).aggregate(total_amount=Sum('allowance_amount'))
+    unclaimed_count = seniors.filter(is_claimed=False).count()
+
+    for Claimed_senior in Claimed_accounts.order_by('last_name'):
+        row = [
+            Claimed_senior.OSCA_ID,
+            Claimed_senior.last_name,
+            Claimed_senior.first_name,
+            Claimed_senior.claimed_date.strftime('%B %d, %Y'),
+            Claimed_senior.allowance_type, 
+            Claimed_senior.allowance_amount,
+        ]
+        Claimed_data.append(row)
+
+    Claimed_Table = Table(Claimed_data)
+
+    style = [
+        ('BACKGROUND', (0, 0), (-1, 0), colors.white),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]
+
+    for i in range(1, len(Claimed_data)): 
+        if Claimed_data[i][-1] == 'Claimed':
+            style.append(('BACKGROUND', (0, i), (-1, i), colors.white))
+        elif Claimed_data[i][-1] == 'Unclaimed':
+            style.append(('BACKGROUND', (0, i), (-1, i), colors.white))
+
+    Claimed_Table.setStyle(TableStyle(style))
+
+
+
+    Unclaimed_data = [['OSCA ID', 'Last Name','First Name', 'Last Claimed', 'Phone Number', 'Address']]
+    Unclaimed_accounts = seniors.filter(is_claimed=False)
+
+    for Unclaimed_senior in Unclaimed_accounts.order_by('-is_claimed', 'last_name'):
+        row = [
+            Unclaimed_senior.OSCA_ID,
+            Unclaimed_senior.last_name,
+            Unclaimed_senior.first_name,
+            Unclaimed_senior.claimed_date.strftime('%B %d, %Y') if Unclaimed_senior.claimed_date else "None",
+            Unclaimed_senior.address,
+            Unclaimed_senior.phone_number,
+        ]
+        Unclaimed_data.append(row)
+
+    Unclaimed_Table = Table(Unclaimed_data)
+
+    style = [
+        ('BACKGROUND', (0, 0), (-1, 0), colors.white),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]
+
+    for i in range(1, len(Unclaimed_data)): 
+        if Unclaimed_data[i][-1] == 'Claimed':
+            style.append(('BACKGROUND', (0, i), (-1, i), colors.white))
+        elif Unclaimed_data[i][-1] == 'Unclaimed':
+            style.append(('BACKGROUND', (0, i), (-1, i), colors.white))
+
+    Unclaimed_Table.setStyle(TableStyle(style))
+
+    pdf = SimpleDocTemplate(response, pagesize=letter)
+    left_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'mnl_logo.jpg')
+    right_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'brgy_logo.jpg')
+
+    left_image = Image(left_image_path, width=100, height=100)
+    right_image = Image(right_image_path, width=100, height=100)
+
+    header_text = """
+    <b>REPUBLIC OF THE PHILIPPINES</b><br/>
+    <b>CITY OF MANILA</b><br/>
+    <b>BRGY. 558, ZONE 55</b>
+    """
+
+    header_text_with_margin = f'{header_text}<br/><br/>'
+
+    header_style = ParagraphStyle(
+        'Header',
+        parent=getSampleStyleSheet()['Heading1'],
+        alignment=1,  
+        fontSize=14,
+    )
+
+    header = Paragraph(header_text_with_margin, header_style)
+
+    image_margin = 30
+
+    header_table_data = [
+        [left_image, Spacer(1, image_margin), header, Spacer(1, image_margin), right_image]
+    ]
+
+    header_table = Table(header_table_data, colWidths=[50, image_margin, None, image_margin, 50])
+
+    header_table_style = TableStyle([
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+    ])
+
+    header_table.setStyle(header_table_style)
+
+    pdf = SimpleDocTemplate(response, pagesize=letter)
+
+    summary_report = [
+        f'Total Claimed Seniors: {claimed_count}',
+        f'Total Unclaimed Seniors: {unclaimed_count}',
+        f'Total Allowance Amount: {total_claimed_amount["total_amount"]}',
+        f'Oldest Claimed Date: {claimed_oldest_month["oldest_month"].strftime("%B %d, %Y") if claimed_oldest_month["oldest_month"] else "N/A"}',
+        f'Latest Claimed Date: {claimed_latest_month["latest_month"].strftime("%B %d, %Y") if claimed_latest_month["latest_month"] else "N/A"}',
+        '',
+    ]
+
+    summary_report_paragraphs = [Paragraph(line, getSampleStyleSheet()['Normal']) for line in summary_report]
+
+    summary_report_margin = 30
+    summary_report_with_margin = [Spacer(1, summary_report_margin)] + summary_report_paragraphs
+    table_margin = 20
+    
+    deleted_accounts_data = [['OSCA ID', 'Last Name', 'First Name', 'Registered Date', 'Deletion Date', 'Deletion Reason']]
+
+    deleted_accounts = seniors.filter(date_of_deletion__isnull=False)
+
+    for deleted_senior in deleted_accounts.order_by('-date_of_deletion', 'last_name'):
+        deleted_row = [
+            deleted_senior.OSCA_ID,
+            deleted_senior.last_name,
+            deleted_senior.first_name,
+            deleted_senior.created.strftime('%Y-%m-%d') if deleted_senior.created else '',
+            deleted_senior.date_of_deletion.strftime('%Y-%m-%d') if deleted_senior.date_of_deletion else '',
+            deleted_senior.deletion_reason,
+        ]
+        deleted_accounts_data.append(deleted_row)
+
+    if len(deleted_accounts_data) > 1:
+        deleted_accounts_table = Table(deleted_accounts_data)
+
+        deleted_accounts_style = [
+            ('BACKGROUND', (0, 0), (-1, 0), colors.white),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ]
+
+        deleted_accounts_table.setStyle(TableStyle(deleted_accounts_style))
+
+        title_style = ParagraphStyle(
+            'Title',
+            parent=getSampleStyleSheet()['Heading2'],
+            alignment=1,  
+        )
+
+        claimed_title = Paragraph("Claimed Senior Citizens", title_style)
+        unclaimed_title = Paragraph("Unclaimed Senior Citizens", title_style)
+        deleted_title = Paragraph("Deleted Senior Citizens", title_style)
+
+        pdf_elements = [header_table] + summary_report_with_margin
+
+        if len(Claimed_data) > 1:
+            pdf_elements += [Spacer(1, table_margin), claimed_title, Claimed_Table, PageBreak(), header_table]
+
+        if len(Unclaimed_data) > 0:
+            pdf_elements += [Spacer(1, table_margin), unclaimed_title, Unclaimed_Table, PageBreak(), header_table]
+
+        pdf_elements += [Spacer(1, table_margin), deleted_title, deleted_accounts_table]
+
+        pdf.build(pdf_elements)
+
         seniors.update(is_claimed=False)
         seniors_to_delete = seniors.filter(date_of_deletion__isnull=False)
         seniors_to_delete.delete()
@@ -272,7 +488,367 @@ def download_summary(request):
         seniors.update(is_claimed=False)
 
     return response
+
+def download_summary_claimed(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="senior_list_report.pdf"'
+
+    seniors = senior_list.objects.all() 
+    Claimed_accounts = seniors.filter(is_claimed=True)
+
+    claimed_data = [['OSCA ID', 'Last Name', 'First Name', 'Claimed Date', 'Allowance Type', 'Allowance Amount']]
+
+    for senior in Claimed_accounts.order_by('last_name'):
+        row = [
+            senior.OSCA_ID,
+            senior.last_name,
+            senior.first_name,
+            senior.claimed_date.strftime('%B %d, %Y') if senior.is_claimed else '', 
+            senior.allowance_type,
+            senior.allowance_amount,
+        ]
+        claimed_data.append(row)
+
+    claimed_table = Table(claimed_data)
+
+    style = [
+        ('BACKGROUND', (0, 0), (-1, 0), colors.white),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]
+
+    for i in range(1, len(claimed_data)):
+        if claimed_data[i][-1] == 'Claimed' or claimed_data[i][-1] == 'Unclaimed':
+            style.append(('BACKGROUND', (0, i), (-1, i), colors.white))
+
+    claimed_table.setStyle(TableStyle(style))
+
+    pdf = SimpleDocTemplate(response, pagesize=letter)
+
+    left_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'mnl_logo.jpg')
+    right_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'brgy_logo.jpg')
+
+    left_image = Image(left_image_path, width=100, height=100)
+    right_image = Image(right_image_path, width=100, height=100)
+
+    header_text = """
+    <b>REPUBLIC OF THE PHILIPPINES</b><br/>
+    <b>CITY OF MANILA</b><br/>
+    <b>BRGY. 558, ZONE 55</b>
+    """
+
+    header_text_with_margin = f'{header_text}<br/><br/>'
+
+    header_style = ParagraphStyle(
+        'Header',
+        parent=getSampleStyleSheet()['Heading1'],
+        alignment=1,
+        fontSize=14,
+    )
+
+    header = Paragraph(header_text_with_margin, header_style)
+
+    image_margin = 30
+
+    header_table_data = [
+        [left_image, Spacer(1, image_margin), header, Spacer(1, image_margin), right_image]
+    ]
+
+    header_table = Table(header_table_data, colWidths=[50, image_margin, None, image_margin, 50])
+
+    header_table_style = TableStyle([
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+    ])
+
+    header_table.setStyle(header_table_style)
+
+    # Build the PDF document
+    pdf.build([header_table, Spacer(1, 20), claimed_table])
+
+    return response
+
+
+def download_summary_unclaimed(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="senior_list_report.pdf"'
+
+    seniors = senior_list.objects.all()
+
+    Unclaimed_data = [['OSCA ID', 'Last Name', 'First Name', 'Last Claimed', 'Phone Number', 'Address']]
+    Unclaimed_accounts = seniors.filter(is_claimed=False)
+
+    for Unclaimed_senior in Unclaimed_accounts.order_by('-is_claimed', 'last_name'):
+        row = [
+            Unclaimed_senior.OSCA_ID,
+            Unclaimed_senior.last_name,
+            Unclaimed_senior.first_name,
+            Unclaimed_senior.claimed_date.strftime('%B %d, %Y') if Unclaimed_senior.claimed_date else "None",
+            Unclaimed_senior.phone_number,
+            Unclaimed_senior.address,
+        ]
+        Unclaimed_data.append(row)
+
+    Unclaimed_Table = Table(Unclaimed_data)
+
+    style = [
+        ('BACKGROUND', (0, 0), (-1, 0), colors.white),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]
+
+    for i in range(1, len(Unclaimed_data)):
+        if Unclaimed_data[i][-1] == 'Claimed':
+            style.append(('BACKGROUND', (0, i), (-1, i), colors.white))
+        elif Unclaimed_data[i][-1] == 'Unclaimed':
+            style.append(('BACKGROUND', (0, i), (-1, i), colors.white))
+
+    Unclaimed_Table.setStyle(TableStyle(style))
+
+    pdf = SimpleDocTemplate(response, pagesize=letter)
+
+    left_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'mnl_logo.jpg')
+    right_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'brgy_logo.jpg')
+
+    left_image = Image(left_image_path, width=100, height=100)
+    right_image = Image(right_image_path, width=100, height=100)
+
+    header_text = """
+    <b>REPUBLIC OF THE PHILIPPINES</b><br/>
+    <b>CITY OF MANILA</b><br/>
+    <b>BRGY. 558, ZONE 55</b>
+    """
+
+    header_text_with_margin = f'{header_text}<br/><br/>'
+
+    header_style = ParagraphStyle(
+        'Header',
+        parent=getSampleStyleSheet()['Heading1'],
+        alignment=1,
+        fontSize=14,
+    )
+
+    header = Paragraph(header_text_with_margin, header_style)
+
+    image_margin = 30
+
+    header_table_data = [
+        [left_image, Spacer(1, image_margin), header, Spacer(1, image_margin), right_image]
+    ]
+
+    header_table = Table(header_table_data, colWidths=[50, image_margin, None, image_margin, 50])
+
+    header_table_style = TableStyle([
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+    ])
+
+    header_table.setStyle(header_table_style)
+
+    title_style = ParagraphStyle(
+        'Title',
+        parent=getSampleStyleSheet()['Heading2'],
+        alignment=1,
+    )
+
+    unclaimed_title = Paragraph("Unclaimed Senior Citizens", title_style)
+
+    table_margin = 10
+
+    pdf.build([header_table, Spacer(1, table_margin), unclaimed_title, Unclaimed_Table])
+
+    return response
     
+
+def download_summary_deleted(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="senior_list_report.pdf"'
+
+    seniors = senior_list.objects.all()
+
+    deleted_accounts_data = [['OSCA ID', 'Last Name', 'First Name', 'Registered Date', 'Deletion Date', 'Deletion Reason']]
+
+    deleted_accounts = seniors.filter(date_of_deletion__isnull=False)
+
+    for deleted_senior in deleted_accounts.order_by('-date_of_deletion', 'last_name'):
+        deleted_row = [
+            deleted_senior.OSCA_ID,
+            deleted_senior.last_name,
+            deleted_senior.first_name,
+            deleted_senior.created.strftime('%Y-%m-%d') if deleted_senior.created else '',
+            deleted_senior.date_of_deletion.strftime('%Y-%m-%d') if deleted_senior.date_of_deletion else '',
+            deleted_senior.deletion_reason,
+        ]
+        deleted_accounts_data.append(deleted_row)
+
+    deleted_accounts_table = Table(deleted_accounts_data)
+
+    deleted_accounts_style = [
+        ('BACKGROUND', (0, 0), (-1, 0), colors.white),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]
+
+    deleted_accounts_table.setStyle(TableStyle(deleted_accounts_style))
+
+    pdf = SimpleDocTemplate(response, pagesize=letter)
+
+    left_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'mnl_logo.jpg')
+    right_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'brgy_logo.jpg')
+
+    left_image = Image(left_image_path, width=100, height=100)
+    right_image = Image(right_image_path, width=100, height=100)
+
+    header_text = """
+    <b>REPUBLIC OF THE PHILIPPINES</b><br/>
+    <b>CITY OF MANILA</b><br/>
+    <b>BRGY. 558, ZONE 55</b>
+    """
+
+    header_text_with_margin = f'{header_text}<br/><br/>'
+
+    header_style = ParagraphStyle(
+        'Header',
+        parent=getSampleStyleSheet()['Heading1'],
+        alignment=1,
+        fontSize=14,
+    )
+
+    header = Paragraph(header_text_with_margin, header_style)
+
+    image_margin = 30
+
+    header_table_data = [
+        [left_image, Spacer(1, image_margin), header, Spacer(1, image_margin), right_image]
+    ]
+
+    header_table = Table(header_table_data, colWidths=[50, image_margin, None, image_margin, 50])
+
+    header_table_style = TableStyle([
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+    ])
+
+    header_table.setStyle(header_table_style)
+
+    title_style = ParagraphStyle(
+        'Title',
+        parent=getSampleStyleSheet()['Heading2'],
+        alignment=1,
+    )
+
+    deleted_title = Paragraph("Deleted Senior Citizens", title_style)
+
+    table_margin = 10
+
+    pdf_elements = [header_table, Spacer(1, table_margin), deleted_title, deleted_accounts_table]
+
+    pdf.build(pdf_elements)
+
+    return response
+
+
+def download_summary_senior(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="senior_list_report.pdf"'
+
+    seniors = senior_list.objects.all()
+
+    senior_data = [['OSCA ID', 'Last Name', 'First Name', 'Last Claimed', 'Phone Number', 'Address', 'Status']]
+
+    for senior in seniors.order_by('-is_claimed', 'last_name'):
+        status = 'Claimed' if senior.is_claimed else 'Unclaimed'
+        row = [
+            senior.OSCA_ID,
+            senior.last_name,
+            senior.first_name,
+            senior.claimed_date.strftime('%B %d, %Y') if senior.claimed_date else "None",
+            senior.phone_number,
+            senior.address,
+            status,
+        ]
+        senior_data.append(row)
+
+    senior_Table = Table(senior_data)
+
+    style = [
+        ('BACKGROUND', (0, 0), (-1, 0), colors.white),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ]
+
+    for i in range(1, len(senior_data)):
+        if senior_data[i][-1] == 'Claimed':
+            style.append(('BACKGROUND', (0, i), (-1, i), colors.white))
+        elif senior_data[i][-1] == 'Unclaimed':
+            style.append(('BACKGROUND', (0, i), (-1, i), colors.white))
+
+    senior_Table.setStyle(TableStyle(style))
+
+    pdf = SimpleDocTemplate(response, pagesize=letter)
+
+    left_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'mnl_logo.jpg')
+    right_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'brgy_logo.jpg')
+
+    left_image = Image(left_image_path, width=100, height=100)
+    right_image = Image(right_image_path, width=100, height=100)
+
+    header_text = """
+    <b>REPUBLIC OF THE PHILIPPINES</b><br/>
+    <b>CITY OF MANILA</b><br/>
+    <b>BRGY. 558, ZONE 55</b>
+    """
+
+    header_text_with_margin = f'{header_text}<br/><br/>'
+
+    header_style = ParagraphStyle(
+        'Header',
+        parent=getSampleStyleSheet()['Heading1'],
+        alignment=1,
+        fontSize=14,
+    )
+
+    header = Paragraph(header_text_with_margin, header_style)
+
+    image_margin = 30
+
+    header_table_data = [
+        [left_image, Spacer(1, image_margin), header, Spacer(1, image_margin), right_image]
+    ]
+
+    header_table = Table(header_table_data, colWidths=[50, image_margin, None, image_margin, 50])
+
+    header_table_style = TableStyle([
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+    ])
+
+    header_table.setStyle(header_table_style)
+
+    title_style = ParagraphStyle(
+        'Title',
+        parent=getSampleStyleSheet()['Heading2'],
+        alignment=1,
+    )
+
+    senior_title = Paragraph("List of Senior Citizens in Barangay 558", title_style)
+
+    table_margin = 10
+
+    pdf_elements = [header_table, Spacer(1, table_margin), senior_title, senior_Table]
+
+    pdf.build(pdf_elements)
+
+    return response
 
 def index(request):
     return render(request, 'index.html'  )
@@ -370,6 +946,10 @@ def osca_preview(request, id):
 def update_viewinfo_page(request, id):
     seniors = senior_list.objects.get(id=id)
     return render(request, 'update_viewinfo_page.html', {'seniors': seniors})
+
+def updated_claim(request, id):
+    seniors = senior_list.objects.get(id=id)
+    return render(request, 'updated_claim.html', {'seniors': seniors})
 
 def add_senior_list(request, osca_id):
     try:
@@ -505,7 +1085,7 @@ def update_claim(request, id):
             return redirect('claim_page')
     
     context = {'seniors': seniors}
-    return render(request, 'claim_detail_page.html', context)
+    return render(request, 'updated_claim.html', context)
     
 
 def search(request):

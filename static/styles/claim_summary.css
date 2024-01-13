@@ -54,6 +54,13 @@ h2{
   justify-content: space-between;
 }
 
+.claimBTN{
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  margin-left: 5px;
+}
+
 .btn-Back,
 .btn-Confirm {
   padding: 10px 20px;
@@ -65,6 +72,10 @@ h2{
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+}
+
+.btn-Confirm {
+  margin-left: 5px;
 }
 
 .btn-Back:hover,
@@ -140,4 +151,35 @@ h2{
 .btnContinue:hover,
 .btnCancel:hover {
   background-color: #4A55A2;
+}
+
+.dlIcon{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.dlIcon a{
+  text-decoration: none;
+
+}
+
+.dlIcon i{
+  color: #7895CB;
+  font-size: 25px;
+  margin-right: 10px;
+}
+
+@media (max-width: 500px){
+  .btn-Back,
+.btn-Confirm {
+  padding: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.dlIcon i{
+  font-size: 20px;
+  margin-right: 0;
+}
+
 }

@@ -35,6 +35,7 @@ urlpatterns = [
      path('delete_individual_message/<int:message_id>/',views.delete_individual_message, name='delete_individual_message'),
 
     path('claim_page/', views.claim_page, name='claim_page'),  
+    path('updated_claim/<int:id>/', views.updated_claim, name='claiupdated_claimm_page'), 
     path('claim_detail_page/<int:id>/', views.claim_detail_page, name='claim_detail_page'),
     path('claimed_succesfully/<int:id>', views.claimed_succesfully, name='claimed_succesfully'),
     path('claimed_success/<int:id>', views.claimed_success, name='claimed_success'),
@@ -45,9 +46,16 @@ urlpatterns = [
     path('osca_preview/<int:id>', views.osca_preview, name='osca_preview'),
     path('preview/<int:id>', views.preview, name='preview'),
     path('capture_image/', views.capture_image, name='capture_image'),
+    
 
     path('download_summary/', views.download_summary, name='download_summary'),
+    path('download_summary_reset/', views.download_summary_reset, name='download_summary_reset'),
+    path('download_summary_claimed/', views.download_summary_claimed, name='download_summary_claimed'),
+    path('download_summary_unclaimed/', views.download_summary_unclaimed, name='download_summary_unclaimed'),
+    path('download_summary_deleted/', views.download_summary_deleted, name='download_summary_deleted'),
+    path('download_summary_senior/', views.download_summary_senior, name='download_summary_senior'),
     
+
     path('camera_page/<int:id>/', views.camera_page, name='camera_page'),
     path('facial_recognition/<int:id>/', views.facial_recognition, name='facial_recognition'),
     path('match/<int:id>/', views.match, name='match'),

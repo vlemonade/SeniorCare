@@ -212,9 +212,14 @@ h5 {
   background-color: #4a55a2;}
 
 
-@media (max-width: 700px){
+@media (max-width: 900px){
   .detail-column {
     margin-left: 10px;
+  }
+
+  .add-form {
+    width: 90%;
+    max-width: 600px;
   }
   
   
@@ -251,11 +256,6 @@ h5 {
 
   .display-form label {
     font-size: 17px;
-  }
-
-  .add-form {
-    width: 90%;
-    max-width: 600px;
   }
 
   .btn-preview a {

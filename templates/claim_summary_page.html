@@ -36,30 +36,43 @@
       <div class="claimed_form">
         <div class="senior_detail">
           <p>Total Eligible Recipients:</p>
-          <h1>{{ overall_count }}</h1>
+          <div class="dlIcon">
+            <h1>{{ overall_count }}</h1>
+            <a href="#" onclick="downloadSummarySenior()" ><i class="fa-solid fa-download"></i></a>
+          </div>
         </div>
 
         <div class="senior_detail">
           <p>Total Deleted Accounts:</p>
-          <h1>{{ deleted_count }}</h1>
+          <div class="dlIcon">
+            <h1>{{ deleted_count }}</h1>
+            <a href="#" onclick="downloadSummaryDeleted()"><i class="fa-solid fa-download"></i></a>
+          </div>
         </div>
 
         <div class="senior_detail">
           <p>Total Claimed Allowance:</p>
-          <h1>{{ claimed_count }}</h1>
+          <div class="dlIcon">
+            <h1>{{ claimed_count }}</h1>
+            <a href="#" onclick="downloadSummaryClaimed()"><i class="fa-solid fa-download"></i></a>
+          </div>
         </div>
 
         <div class="senior_detail">
           <p>Total Unclaimed Allowance:</p>
-          <h1>{{ unclaimed_count }}</h1>
+          <div class="dlIcon">
+            <h1>{{ unclaimed_count }}</h1>
+            <a href="#" onclick="downloadSummaryUnclaimed()"><i class="fa-solid fa-download"></i></a>
+          </div>
         </div>
       </div>
 
       <div class="claimed_footer">
         <a href="{% url 'claim_page' %}" class="btn-Back">Back</a>
-        <a href="#" onclick="showPrintSummaryConfirmation()" class="btn-Confirm"
-          >Generate Summary</a
-        >
+        <div class="claimBTN">
+          <a href="#" onclick="downloadSummary()" class="btn-Confirm">Generate Summary</a>
+          <a href="#" onclick="showPrintSummaryConfirmation()" class="btn-Confirm">Generate and Reset</a>
+        </div>
       </div>
 
       <div id="confirmation-modal" class="modal">
@@ -101,7 +114,7 @@
 
           function downloadSummaryInNewTab() {
             var link = document.createElement("a");
-            link.href = "{% url 'download_summary' %}";
+            link.href = "{% url 'download_summary_reset' %}";
             link.target = "_blank";
             document.body.appendChild(link);
             link.click();
@@ -113,6 +126,53 @@
             }, 1000); // 1000 milliseconds = 1 second, adjust as needed
           }
         }
+
+        function downloadSummary() {
+            var link = document.createElement("a");
+            link.href = "{% url 'download_summary' %}";
+            link.target = "_blank";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+
+          function downloadSummaryClaimed() {
+            var link = document.createElement("a");
+            link.href = "{% url 'download_summary_claimed' %}";
+            link.target = "_blank";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+
+          function downloadSummaryUnclaimed() {
+            var link = document.createElement("a");
+            link.href = "{% url 'download_summary_unclaimed' %}";
+            link.target = "_blank";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+
+          function downloadSummaryDeleted() {
+            var link = document.createElement("a");
+            link.href = "{% url 'download_summary_deleted' %}";
+            link.target = "_blank";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+
+          function downloadSummarySenior() {
+            var link = document.createElement("a");
+            link.href = "{% url 'download_summary_senior' %}";
+            link.target = "_blank";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+
+          
       </script>
     </div>
   </body>

@@ -1,0 +1,93 @@
+{% extends 'main.html' %} {% block content %} {% load static %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  media="screen"
+  href="{% static 'styles/update_viewinfo_page1.css' %}"
+/>
+<script defer src="{% static 'js/update_viewpage.js' %}"></script>
+<title>{% block title %}Beneficiary Profile{% endblock %}</title>
+<body>
+  <div class="container">
+    <div class="inner">
+      <form method="POST">
+        {% csrf_token %}
+
+        <div class="head-container">
+          <div class="img">
+            {% if seniors.senior_image %}
+            <div class="photo-holder">
+              <img src="{{ seniors.senior_image.url }}" alt="profile" />
+            </div>
+            {% else %}
+            <div class="photo-holder">
+              <img src="{% static 'image/profile.png' %}" alt="profile" />
+            </div>
+            {% endif %}
+          </div>
+          <div class="detail-column">
+            <div class="display-form">
+              <label>Last Name</label>
+              <input value="{{ seniors.last_name}}" disabled />
+            </div>
+
+            <div class="display-form">
+              <label>First Name</label>
+              <input value="{{ seniors.first_name}}" disabled />
+            </div>
+
+            <div class="display-form">
+              <label>Middle Name</label>
+              <input value="{{ seniors.middle_name}}" disabled />
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-column4">
+          <div class="display-form">
+            <label>Suffix</label>
+            <input value="{{ seniors.suffix}}" disabled />
+          </div>
+          <div class="display-form">
+            <label>Age</label>
+            <input value="{{ seniors.age}}" disabled />
+          </div>
+
+          <div class="display-form">
+            <label>Gender</label>
+            <input value="{{ seniors.sex}}" disabled />
+          </div>
+        </div>
+
+        <div class="detail-column1">
+          <div class="display-form">
+            <label>Birthdate</label>
+            <input value="{{ seniors.birth_date}}" disabled />
+          </div>
+
+          <div class="display-form">
+            <label>Phone no.</label>
+            <input value="{{ seniors.phone_number}}" disabled />
+          </div>
+        </div>
+
+        <div class="detail-column2">
+          <div class="display-form">
+            <label>ID</label>
+            <input value="{{ seniors.OSCA_ID}}" disabled />
+          </div>
+
+          <div class="display-form">
+            <label>Address</label>
+            <input value="{{ seniors.address}}" disabled />
+          </div>
+        </div>
+
+        <div class="btn-container">
+          <a href="/claim_detail_page/{{seniors.id}}" class="btn-edit">Done</a>
+          <a href="/edit/{{seniors.id}}" class="btn-cancel">Edit</a>
+        </div>
+      </form>
+    </div>
+</body>
+{% endblock content%}
