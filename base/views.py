@@ -565,8 +565,17 @@ def download_summary_claimed(request):
 
     header_table.setStyle(header_table_style)
 
+    title_style = ParagraphStyle(
+        'Title',
+        parent=getSampleStyleSheet()['Heading2'],
+        alignment=1,
+    )
+
+    claimed_title = Paragraph("Claimed Senior Citizens", title_style)
+
+
     # Build the PDF document
-    pdf.build([header_table, Spacer(1, 20), claimed_table])
+    pdf.build([header_table, Spacer(1, 20),claimed_title, claimed_table])
 
     return response
 
