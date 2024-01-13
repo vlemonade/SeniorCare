@@ -159,7 +159,7 @@ nav a:hover::before {
     width: 2rem;
     top:1.5rem;
     right: 2rem;
-    z-index: 10000;
+    z-index: 9999;
     font-size: 25px;
 }
 
