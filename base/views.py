@@ -57,6 +57,29 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.utils import ImageReader
 from reportlab.platypus import Image
+from reportlab.lib.units import mm
+from reportlab.pdfgen import canvas
+
+class PageNumCanvas(canvas.Canvas):
+    def __init__(self, *args, **kwargs):
+        canvas.Canvas.__init__(self, *args, **kwargs)
+        self.pages = []
+
+    def showPage(self):
+        self.pages.append(dict(self.__dict__))
+        self._startPage()
+
+    def save(self):
+        for page in self.pages:
+            self.__dict__.update(page)
+            self.draw_page_number()
+            canvas.Canvas.showPage(self)
+        canvas.Canvas.save(self)
+
+    def draw_page_number(self):
+        page_number = "Page %d" % self._pageNumber
+        self.setFont("Helvetica", 9)
+        self.drawRightString(195 * mm, 15 * mm, page_number)
 
 def download_summary(request):
     response = HttpResponse(content_type='application/pdf')
@@ -115,8 +138,8 @@ def download_summary(request):
             Unclaimed_senior.last_name,
             Unclaimed_senior.first_name,
             Unclaimed_senior.claimed_date.strftime('%B %d, %Y') if Unclaimed_senior.claimed_date else "None",
-            Unclaimed_senior.address,
             Unclaimed_senior.phone_number,
+            Unclaimed_senior.address,
         ]
         Unclaimed_data.append(row)
 
@@ -139,7 +162,7 @@ def download_summary(request):
 
     Unclaimed_Table.setStyle(TableStyle(style))
 
-    pdf = SimpleDocTemplate(response, pagesize=letter)
+    pdf = SimpleDocTemplate(response, pagesize=letter, title="Summary Report of Senior Citizens in Barangay 558")
     left_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'mnl_logo.jpg')
     right_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'brgy_logo.jpg')
 
@@ -177,7 +200,7 @@ def download_summary(request):
 
     header_table.setStyle(header_table_style)
 
-    pdf = SimpleDocTemplate(response, pagesize=letter)
+    pdf = SimpleDocTemplate(response, pagesize=letter, title="Summary Report of Senior Citizens in Barangay 558")
 
     summary_report = [
         f'Total Claimed Seniors: {claimed_count}',
@@ -230,9 +253,9 @@ def download_summary(request):
             alignment=1,  
         )
 
-        claimed_title = Paragraph("Claimed Senior Citizens", title_style)
-        unclaimed_title = Paragraph("Unclaimed Senior Citizens", title_style)
-        deleted_title = Paragraph("Deleted Senior Citizens", title_style)
+        claimed_title = Paragraph("List of Claimed Senior Citizens' Allowances", title_style)
+        unclaimed_title = Paragraph("List of Unclaimed Senior Citizens' Allowances", title_style)
+        deleted_title = Paragraph("List of Deleted Senior Citizens", title_style)
 
         pdf_elements = [header_table] + summary_report_with_margin
 
@@ -244,7 +267,7 @@ def download_summary(request):
 
         pdf_elements += [Spacer(1, table_margin), deleted_title, deleted_accounts_table]
 
-        pdf.build(pdf_elements)
+        pdf.build(pdf_elements, canvasmaker=PageNumCanvas)
 
         #seniors.update(is_claimed=False)
         #seniors_to_delete = seniors.filter(date_of_deletion__isnull=False)
@@ -257,8 +280,8 @@ def download_summary(request):
             alignment=1,  
         )
 
-        claimed_title = Paragraph("Claimed Senior Citizens", title_style)
-        unclaimed_title = Paragraph("Unclaimed Senior Citizens", title_style)
+        claimed_title = Paragraph("List of Claimed Senior Citizens' Allowances", title_style)
+        unclaimed_title = Paragraph("List of Unclaimed Senior Citizens' Allowances", title_style)
 
         pdf_elements = [header_table] + summary_report_with_margin
 
@@ -268,7 +291,7 @@ def download_summary(request):
         if len(Unclaimed_data) > 0:
             pdf_elements += [Spacer(1, table_margin), unclaimed_title, Unclaimed_Table]
 
-        pdf.build(pdf_elements)
+        pdf.build(pdf_elements, canvasmaker=PageNumCanvas)
         #seniors.update(is_claimed=False)
 
     return response
@@ -331,8 +354,8 @@ def download_summary_reset(request):
             Unclaimed_senior.last_name,
             Unclaimed_senior.first_name,
             Unclaimed_senior.claimed_date.strftime('%B %d, %Y') if Unclaimed_senior.claimed_date else "None",
-            Unclaimed_senior.address,
             Unclaimed_senior.phone_number,
+            Unclaimed_senior.address,            
         ]
         Unclaimed_data.append(row)
 
@@ -355,7 +378,7 @@ def download_summary_reset(request):
 
     Unclaimed_Table.setStyle(TableStyle(style))
 
-    pdf = SimpleDocTemplate(response, pagesize=letter)
+    pdf = SimpleDocTemplate(response, pagesize=letter, title="Summary Report of Senior Citizens in Barangay 558")
     left_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'mnl_logo.jpg')
     right_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'brgy_logo.jpg')
 
@@ -393,7 +416,7 @@ def download_summary_reset(request):
 
     header_table.setStyle(header_table_style)
 
-    pdf = SimpleDocTemplate(response, pagesize=letter)
+    pdf = SimpleDocTemplate(response, pagesize=letter, title="Summary Report of Senior Citizens in Barangay 558")
 
     summary_report = [
         f'Total Claimed Seniors: {claimed_count}',
@@ -446,9 +469,9 @@ def download_summary_reset(request):
             alignment=1,  
         )
 
-        claimed_title = Paragraph("Claimed Senior Citizens", title_style)
-        unclaimed_title = Paragraph("Unclaimed Senior Citizens", title_style)
-        deleted_title = Paragraph("Deleted Senior Citizens", title_style)
+        claimed_title = Paragraph("List of Claimed Senior Citizens' Allowances", title_style)
+        unclaimed_title = Paragraph("List of Unclaimed Senior Citizens' Allowances", title_style)
+        deleted_title = Paragraph("List of Deleted Senior Citizens", title_style)
 
         pdf_elements = [header_table] + summary_report_with_margin
 
@@ -460,7 +483,7 @@ def download_summary_reset(request):
 
         pdf_elements += [Spacer(1, table_margin), deleted_title, deleted_accounts_table]
 
-        pdf.build(pdf_elements)
+        pdf.build(pdf_elements, canvasmaker=PageNumCanvas)
 
         seniors.update(is_claimed=False)
         seniors_to_delete = seniors.filter(date_of_deletion__isnull=False)
@@ -473,8 +496,8 @@ def download_summary_reset(request):
             alignment=1,  
         )
 
-        claimed_title = Paragraph("Claimed Senior Citizens", title_style)
-        unclaimed_title = Paragraph("Unclaimed Senior Citizens", title_style)
+        claimed_title = Paragraph("List of Claimed Senior Citizens' Allowances", title_style)
+        unclaimed_title = Paragraph("List of Unclaimed Senior Citizens' Allowances", title_style)
 
         pdf_elements = [header_table] + summary_report_with_margin
 
@@ -484,7 +507,7 @@ def download_summary_reset(request):
         if len(Unclaimed_data) > 0:
             pdf_elements += [Spacer(1, table_margin), unclaimed_title, Unclaimed_Table]
 
-        pdf.build(pdf_elements)
+        pdf.build(pdf_elements, canvasmaker=PageNumCanvas)
         seniors.update(is_claimed=False)
 
     return response
@@ -526,7 +549,7 @@ def download_summary_claimed(request):
 
     claimed_table.setStyle(TableStyle(style))
 
-    pdf = SimpleDocTemplate(response, pagesize=letter)
+    pdf = SimpleDocTemplate(response, pagesize=letter, title="List of Claimed Allowance of Senior Citizens in Barangay 558")
 
     left_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'mnl_logo.jpg')
     right_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'brgy_logo.jpg')
@@ -571,11 +594,9 @@ def download_summary_claimed(request):
         alignment=1,
     )
 
-    claimed_title = Paragraph("Claimed Senior Citizens", title_style)
+    claimed_title = Paragraph("List of Claimed Senior Citizens' Allowances", title_style)
 
-
-    # Build the PDF document
-    pdf.build([header_table, Spacer(1, 20),claimed_title, claimed_table])
+    pdf.build([header_table, Spacer(1, 20),claimed_title, claimed_table], canvasmaker=PageNumCanvas)
 
     return response
 
@@ -619,7 +640,7 @@ def download_summary_unclaimed(request):
 
     Unclaimed_Table.setStyle(TableStyle(style))
 
-    pdf = SimpleDocTemplate(response, pagesize=letter)
+    pdf = SimpleDocTemplate(response, pagesize=letter, title="List of Unclaimed Allowance of Senior Citizens")
 
     left_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'mnl_logo.jpg')
     right_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'brgy_logo.jpg')
@@ -664,11 +685,11 @@ def download_summary_unclaimed(request):
         alignment=1,
     )
 
-    unclaimed_title = Paragraph("Unclaimed Senior Citizens", title_style)
+    unclaimed_title = Paragraph("List of Unclaimed Senior Citizens' Allowances", title_style)
 
     table_margin = 10
 
-    pdf.build([header_table, Spacer(1, table_margin), unclaimed_title, Unclaimed_Table])
+    pdf.build([header_table, Spacer(1, table_margin), unclaimed_title, Unclaimed_Table], canvasmaker=PageNumCanvas)
 
     return response
     
@@ -708,7 +729,7 @@ def download_summary_deleted(request):
 
     deleted_accounts_table.setStyle(TableStyle(deleted_accounts_style))
 
-    pdf = SimpleDocTemplate(response, pagesize=letter)
+    pdf = SimpleDocTemplate(response, pagesize=letter, title="List of Deleted Allowance of Senior Citizens in Barangay 558")
 
     left_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'mnl_logo.jpg')
     right_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'brgy_logo.jpg')
@@ -753,20 +774,21 @@ def download_summary_deleted(request):
         alignment=1,
     )
 
-    deleted_title = Paragraph("Deleted Senior Citizens", title_style)
+    
+    deleted_title = Paragraph("List of Deleted Senior Citizens", title_style)
 
     table_margin = 10
 
     pdf_elements = [header_table, Spacer(1, table_margin), deleted_title, deleted_accounts_table]
 
-    pdf.build(pdf_elements)
+    pdf.build(pdf_elements, canvasmaker=PageNumCanvas)
 
     return response
 
 
 def download_summary_senior(request):
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'filename="senior_list_report.pdf"'
+    response['Content-Disposition'] = 'filename="senior_list.pdf"'
 
     seniors = senior_list.objects.all()
 
@@ -804,7 +826,7 @@ def download_summary_senior(request):
 
     senior_Table.setStyle(TableStyle(style))
 
-    pdf = SimpleDocTemplate(response, pagesize=letter)
+    pdf = SimpleDocTemplate(response, pagesize=letter, title="List of Senior Citizens in Barangay 558")
 
     left_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'mnl_logo.jpg')
     right_image_path = os.path.join(settings.STATIC_ROOT, 'image', 'brgy_logo.jpg')
@@ -853,9 +875,7 @@ def download_summary_senior(request):
 
     table_margin = 10
 
-    pdf_elements = [header_table, Spacer(1, table_margin), senior_title, senior_Table]
-
-    pdf.build(pdf_elements)
+    pdf.build([header_table, Spacer(1, table_margin), senior_title, senior_Table], canvasmaker=PageNumCanvas)
 
     return response
 

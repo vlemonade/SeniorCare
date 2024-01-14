@@ -160,14 +160,18 @@ h2{
 }
 .dlIcon a{
   text-decoration: none;
-
 }
 
 .dlIcon i{
-  color: #7895CB;
+  color: #a0bfe0;
   font-size: 25px;
   margin-right: 10px;
 }
+
+.dlIcon a i:hover{
+  color: #4a55a2;
+}
+
 
 @media (max-width: 500px){
   .btn-Back,
